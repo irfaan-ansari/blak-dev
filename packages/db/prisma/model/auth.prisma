@@ -1,0 +1,178 @@
+model User {
+    id                  String         @id
+    name                String
+    email               String
+    emailVerified       Boolean        @default(false)
+    image               String?
+    createdAt           DateTime       @default(now())
+    updatedAt           DateTime       @updatedAt
+    role                String?
+    banned              Boolean?       @default(false)
+    banReason           String?
+    banExpires          DateTime?
+    phoneNumber         String?
+    phoneNumberVerified Boolean?
+    sessions            Session[]
+    accounts            Account[]
+    members             Member[]
+    invitations         Invitation[]
+    reviews             Review[]
+    vehicle             Vehicle?
+    driver              Driver?
+
+    @@unique([email])
+    @@unique([phoneNumber])
+    @@map("user")
+}
+
+model Session {
+    id                   String   @id
+    expiresAt            DateTime
+    token                String
+    createdAt            DateTime @default(now())
+    updatedAt            DateTime @updatedAt
+    ipAddress            String?
+    userAgent            String?
+    userId               String
+    user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    impersonatedBy       String?
+    activeMarketId       String?
+    activeOrganizationId String?
+
+    @@unique([token])
+    @@index([userId])
+    @@map("session")
+}
+
+model Account {
+    id                    String    @id
+    accountId             String
+    providerId            String
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
+
+    issuer String
+
+    @@unique([issuer, accountId], map: "account_issuer_accountId_uidx")
+    @@index([userId])
+    @@map("account")
+}
+
+model Verification {
+    id         String   @id
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@index([identifier])
+    @@map("verification")
+}
+
+model Organization {
+    id          String             @id
+    marketId    String?
+    market      Market?            @relation(fields: [marketId], references: [id], onDelete: Cascade)
+    name        String
+    legalName   String
+    slug        String
+    logo        String?
+    type        OrganizationType
+    createdAt   DateTime
+    metadata    String?
+    phoneNumber String
+    email       String
+    status      OrganizationStatus @default(PENDING_ONBOARDING)
+
+    website        String?
+    registrationNo String?
+    taxId          String?
+
+    contactName  String
+    contactTitle String
+    contactEmail String
+    contactPhone String
+
+    onboardingStartedAt DateTime?
+    activatedAt         DateTime?
+    members             Member[]
+    invitations         Invitation[]
+    application         Application?
+    vehicles            Vehicle[]
+    drivers             Driver[]
+
+    @@unique([slug])
+    @@map("organization")
+}
+
+model Member {
+    id             String       @id
+    organizationId String
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    userId         String
+    user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role           String       @default("member")
+    createdAt      DateTime
+
+    @@index([organizationId])
+    @@index([userId])
+    @@map("member")
+}
+
+model Invitation {
+    id             String       @id
+    organizationId String
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    email          String
+    role           String?
+    userRole       String
+    status         String       @default("pending")
+    expiresAt      DateTime
+    createdAt      DateTime     @default(now())
+    inviterId      String
+    user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+    @@index([organizationId])
+    @@index([email])
+    @@map("invitation")
+}
+
+model Apikey {
+    id                  String    @id
+    configId            String    @default("default")
+    name                String?
+    start               String?
+    referenceId         String
+    prefix              String?
+    key                 String
+    refillInterval      Int?
+    refillAmount        Int?
+    lastRefillAt        DateTime?
+    enabled             Boolean?  @default(true)
+    rateLimitEnabled    Boolean?  @default(true)
+    rateLimitTimeWindow Int?      @default(86400000)
+    rateLimitMax        Int?      @default(10)
+    requestCount        Int?      @default(0)
+    remaining           Int?
+    lastRequest         DateTime?
+    expiresAt           DateTime?
+    createdAt           DateTime
+    updatedAt           DateTime
+    permissions         String?
+    metadata            String?
+
+    @@index([configId])
+    @@index([referenceId])
+    @@index([key])
+    @@map("apikey")
+}

@@ -1,0 +1,3 @@
+{
+  "extends": "@blak/ts-config/base.json"
+}

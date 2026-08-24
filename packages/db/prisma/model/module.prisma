@@ -1,0 +1,207 @@
+model Application {
+    id            String            @id @default(cuid())
+    type          ApplicationType
+    currentStatus ApplicationStatus @default(UNDER_REVIEW)
+
+    marketId String?
+    market   Market? @relation(fields: [marketId], references: [id], onDelete: Restrict)
+
+    organizationId String?       @unique
+    organization   Organization? @relation(fields: [organizationId], references: [id])
+
+    contactName  String
+    contactPhone String
+    contactEmail String
+    contactTitle String
+
+    submittedAt     DateTime?
+    decidedAt       DateTime?
+    rejectionReason String?
+
+    invitationId String? @unique
+
+    operatorApplication OperatorApplication?
+    partnerApplication  PartnerApplication?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([currentStatus])
+    @@index([type])
+    @@index([marketId])
+    @@map("application")
+}
+
+model OperatorApplication {
+    id            String      @id @default(cuid())
+    applicationId String      @unique
+    application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+    legalBusinessName String
+    operatingName     String?
+    businessType      String
+    website           String?
+    businessEmail     String
+    businessPhone     String
+
+    address String
+    city    String
+    state   String
+    pincode String
+    country String
+
+    commerciallyLicensedInsured Boolean
+    operatesLuxurySedansSuvs    Boolean
+    yearsInOperation            Int
+
+    operatingMarkets String[]
+
+    vehicleCount   Int
+    chauffeurCount Int?
+    serviceTypes   String[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("operator_application")
+}
+
+model PartnerApplication {
+    id            String      @id @default(cuid())
+    applicationId String      @unique
+    application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+    legalBusinessName String
+    operatingName     String?
+    businessType      String
+    website           String?
+    businessEmail     String
+    businessPhone     String
+
+    address String
+    city    String
+    state   String
+    pincode String
+    country String
+
+    propertiesRooms        String
+    monthlyBookings        String?
+    currentTransportation  String
+    transportationDetails  String?
+    transportationServices String[]
+
+    partnershipUses       String[]
+    additionalInformation String?
+    acknowledgedAt        DateTime
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("partner_application")
+}
+
+model Vehicle {
+    id String @id @default(cuid())
+
+    make               String
+    model              String
+    year               Int
+    color              String
+    plateNumber        String    @unique
+    registrationNumber String?   @unique
+    vin                String?   @unique
+    registrationExpiry DateTime?
+
+    category VehicleCategory
+    status   VehicleStatus   @default(PENDING_APPROVAL)
+
+    organizationId String
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+    driverId String? @unique
+    driver   User?   @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([organizationId])
+    @@index([status])
+    @@map("vehicles")
+}
+
+model Review {
+    id String @id @default(cuid())
+
+    entityType ReviewEntity
+    entityId   String
+
+    status ReviewStatus @default(PENDING)
+    reason String?
+
+    reviewerId String?
+    reviewer   User?     @relation(fields: [reviewerId], references: [id], onDelete: SetNull)
+    reviewedAt DateTime?
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+
+    @@index([entityType, entityId])
+    @@index([status])
+    @@map("review")
+}
+
+model Document {
+    id String @id @default(cuid())
+
+    entity   String
+    entityId String
+
+    type     DocumentType
+    category String?
+
+    name     String?
+    fileName String
+    mimeType String
+    size     BigInt
+
+    storageKey String  @unique
+    url        String?
+
+    status DocumentStatus?
+
+    documentNumber String?
+    issuedAt       DateTime?
+    expiresAt      DateTime?
+
+    metadata Json?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([entity, entityId])
+    @@index([entity, entityId, category])
+    @@index([expiresAt])
+    @@map("document")
+}
+
+model Driver {
+    id String @id @default(cuid())
+
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    organizationId String?
+    organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+    licenseNumber String   @unique
+    licenseExpiry DateTime
+    country       String
+
+    status DriverStatus @default(PENDING)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([organizationId])
+    @@index([status])
+    @@map("driver")
+}

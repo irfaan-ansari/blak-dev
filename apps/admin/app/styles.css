@@ -1,0 +1,10 @@
+@import "@blak/ui/globals.css";
+
+:root {
+  --radius: 0.675rem;
+  --sidebar-accent: var(--primary);
+  --sidebar-accent-foreground: var(--background);
+}
+@theme inline {
+  --font-sans: var(--font-sans);
+}

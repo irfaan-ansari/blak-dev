@@ -1,0 +1,17 @@
+import { defineConfig } from "tsup"
+
+export default defineConfig({
+  entry: ["src/index.ts"],
+
+  format: ["esm"],
+
+  target: "node22",
+
+  sourcemap: true,
+  dts: true,
+  clean: true,
+
+  splitting: false,
+
+  external: ["@prisma/client", "@prisma/adapter-neon"],
+})

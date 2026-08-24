@@ -1,0 +1,98 @@
+enum DocumentType {
+    IMAGE
+    VIDEO
+    AUDIO
+    DOCUMENT
+    OTHER
+}
+
+enum DocumentStatus {
+    PENDING
+    APPROVED
+    REJECTED
+    EXPIRED
+}
+
+enum MarketStatus {
+    DRAFT
+    PENDING_LICENSE
+    COMING_SOON
+    ACTIVE
+    LIMITED
+    SUSPENDED
+    INACTIVE
+    ARCHIVED
+}
+
+enum MarketScope {
+    COUNTRY
+    REGION
+    CITY
+}
+
+enum OrganizationStatus {
+    PENDING_ONBOARDING
+    UNDER_REVIEW
+    ACTIVE
+    SUSPENDED
+    INACTIVE
+}
+
+enum OrganizationType {
+    OPERATOR
+    PARTNER
+}
+
+enum ApplicationType {
+    OPERATOR
+    PARTNER
+    DRIVER
+}
+
+enum ApplicationStatus {
+    PENDING
+    UNDER_REVIEW
+    INFO_REQUIRED
+    APPROVED
+    REJECTED
+}
+
+enum VehicleCategory {
+    LUXURY_SEDAN
+    LUXURY_SUV
+    LIMOUSINE
+    EXECUTIVE_VAN
+}
+
+enum VehicleStatus {
+    PENDING_APPROVAL
+    ACTIVE
+    REJECTED
+    INACTIVE
+    MAINTENANCE
+}
+
+enum ReviewEntity {
+    VEHICLE
+    DRIVER
+    DOCUMENT
+    APPLICATION
+    OPERATOR
+    PARTNER
+}
+
+enum ReviewStatus {
+    PENDING
+    UNDER_REVIEW
+    INFO_REQUIRED
+    APPROVED
+    REJECTED
+}
+
+enum DriverStatus {
+    PENDING
+    UNDER_REVIEW
+    INFO_REQUIRED
+    APPROVED
+    REJECTED
+}

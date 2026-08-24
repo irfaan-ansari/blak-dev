@@ -1,0 +1,200 @@
+model Country {
+    id String @id @default(cuid())
+
+    name     String
+    code     String  @unique // IN, AE, US
+    dialCode String? // +91, +971, +1
+
+    currencyId String
+    currency   Currency @relation(fields: [currencyId], references: [id])
+
+    regions Region[]
+    markets Market[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    cities    City[]
+
+    @@map("country")
+}
+
+model Region {
+    id String @id @default(cuid())
+
+    countryId String
+    country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+    name String
+    code String
+
+    cities  City[]
+    markets MarketRegion[]
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    taxRules  TaxRule[]
+
+    @@unique([countryId, code])
+    @@unique([id, countryId])
+    @@index([countryId])
+    @@map("region")
+}
+
+model City {
+    id   String @id @default(cuid())
+    name String
+    code String
+
+    countryId String
+    country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+    regionId String?
+    region   Region? @relation(fields: [regionId], references: [id])
+
+    markets MarketCity[]
+
+    isActive Boolean @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([id, countryId])
+    @@unique([countryId, code])
+    @@index([regionId, code])
+    @@map("city")
+}
+
+model Currency {
+    id       String @id @default(cuid())
+    code     String @unique
+    name     String
+    symbol   String
+    decimals Int    @default(2)
+
+    markets   Market[]
+    countries Country[]
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    @@map("currency")
+}
+
+model Market {
+    id   String @id @default(cuid())
+    name String
+    code String @unique
+
+    countryId String  @unique
+    country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+    scope MarketScope @default(COUNTRY)
+
+    timezone  String
+    locale    String?
+    status    MarketStatus @default(DRAFT)
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+
+    currencyId String
+    currency   Currency @relation(fields: [currencyId], references: [id])
+
+    regions           MarketRegion[]
+    cities            MarketCity[]
+    organizations     Organization[]
+    serviceAreas      ServiceArea[]
+    applications      Application[]
+    taxRules          TaxRule[]
+    requiredDocuments RequiredDocument[]
+
+    @@unique([id, countryId])
+    @@index([status])
+    @@map("market")
+}
+
+model MarketRegion {
+    marketId  String
+    regionId  String
+    countryId String
+
+    market Market @relation(fields: [marketId, countryId], references: [id, countryId], onDelete: Cascade)
+    region Region @relation(fields: [regionId, countryId], references: [id, countryId], onDelete: Cascade)
+
+    @@id([marketId, regionId])
+    @@unique([regionId])
+    @@index([regionId])
+    @@index([countryId])
+    @@map("market_region")
+}
+
+model MarketCity {
+    marketId  String
+    cityId    String
+    countryId String
+
+    market Market @relation(fields: [marketId, countryId], references: [id, countryId], onDelete: Cascade)
+    city   City   @relation(fields: [cityId, countryId], references: [id, countryId], onDelete: Cascade)
+
+    @@id([marketId, cityId])
+    @@unique([cityId])
+    @@index([cityId])
+    @@index([countryId])
+    @@map("market_city")
+}
+
+model ServiceArea {
+    id       String @id @default(cuid())
+    marketId String
+    market   Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+    name     String
+    boundary Json // GeoJSON polygon
+    isActive Boolean @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("service_area")
+}
+
+model TaxRule {
+    id       String @id @default(cuid())
+    marketId String
+    market   Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+    regionId String? // null = applies market-wide
+    region   Region? @relation(fields: [regionId], references: [id])
+
+    name          String // "VAT", "GST", "Sales Tax"
+    rate          Decimal   @db.Decimal(6, 4)
+    effectiveFrom DateTime
+    effectiveTo   DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([marketId, effectiveFrom])
+    @@map("tax_rule")
+}
+
+model RequiredDocument {
+    id String @id @default(cuid())
+
+    marketId String
+    market   Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+    applicationType ApplicationType
+    category        String
+    label           String
+    isRequired      Boolean         @default(true)
+
+    allowedMimeTypes String[]
+    maxFileSizeBytes BigInt?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([marketId, applicationType, category])
+    @@map("required_document")
+}
+
+// compliences

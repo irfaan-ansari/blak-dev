@@ -11,7 +11,7 @@ export const useAccounts = () => {
 }
 
 export const useAccount = () => {
-  return useQuery<ApiResponse<OperatorAccount[]>, AppError>({
+  return useQuery<ApiResponse<OperatorAccount>, AppError>({
     queryKey: ["account"],
     queryFn: () => apiClient.get("/v1/operator/accounts/active"),
   })

@@ -77,8 +77,8 @@ export const SigninForm = () => {
           REDIRECT_MAP[data.user.role as keyof typeof REDIRECT_MAP] ??
           REDIRECT_MAP.user
       }
-
-      window.location.href = URL!
+      console.log(URL)
+      // window.location.href = URL!
     }
   }
 

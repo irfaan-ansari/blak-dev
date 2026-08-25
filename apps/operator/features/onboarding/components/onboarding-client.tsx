@@ -3,7 +3,6 @@
 import React from "react"
 import { redirect } from "next/navigation"
 
-import { useAccount } from "../onboarding.data"
 import { ErrorState, PageSkeleton } from "@blak/ui/components/blak/empty-state"
 
 import OnboardingForm from "../form/onboarding-form"
@@ -16,6 +15,7 @@ import {
 } from "@blak/ui/components/card"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
 import { Info } from "lucide-react"
+import { useAccount } from "@/features/account/account.data"
 
 const OnboardingClient = () => {
   const { data, isPending, isError, error } = useAccount()

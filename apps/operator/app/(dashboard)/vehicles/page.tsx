@@ -2,6 +2,7 @@ import React from "react"
 import { Button } from "@blak/ui/components/button"
 import { ChevronDown, ListFilter, Plus } from "lucide-react"
 import VehicleClient from "@/features/vehicle/components/vehicle-client"
+import { VehicleDialog } from "@/features/vehicle/components/vehicle-dialog"
 
 const VehiclesPage = () => {
   return (
@@ -24,10 +25,12 @@ const VehiclesPage = () => {
           Sort by
           <ListFilter />
         </Button>
-        <Button size="sm">
-          <Plus />
-          Add New
-        </Button>
+        <VehicleDialog>
+          <Button size="sm">
+            <Plus />
+            Add New
+          </Button>
+        </VehicleDialog>
       </div>
       <VehicleClient />
     </div>

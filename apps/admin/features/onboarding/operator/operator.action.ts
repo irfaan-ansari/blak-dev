@@ -22,21 +22,24 @@ export const processOperatorApplication = withPermission({
 
     if (!application) throw new Error("Application not found")
 
+    let inviteUrl = null
     if (action === "reject") {
       await rejectApplication(id, session.userId)
     }
 
     if (action === "approve") {
-      await approveApplication(
+      const result = await approveApplication(
         {
           ...application,
           application: application.operatorApplication!,
         },
         session.userId
       )
+      const url = new URL(process.env.NEXT_PUBLIC_AUTH_URL!)
+      inviteUrl = `${url.origin}/auth/accept-invitation/${result.id}`
     }
 
-    return { success: true }
+    return { success: true, inviteUrl }
   })
 
 /** reject application */
@@ -79,7 +82,7 @@ export async function approveApplication(
     headers: await headers(),
   })
 
-  return prisma.$transaction([
+  await prisma.$transaction([
     prisma.application.update({
       where: { id: application.id },
       data: {
@@ -99,6 +102,8 @@ export async function approveApplication(
       },
     }),
   ])
+
+  return invitation
 }
 
 /** create organization */

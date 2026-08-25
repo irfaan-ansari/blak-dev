@@ -27,10 +27,11 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
           action: {
             label: "Yes, approve",
             onClick: async () => {
-              const { serverError } = await processOperatorApplication({
-                id: data.id,
-                action,
-              })
+              const { serverError, data: response } =
+                await processOperatorApplication({
+                  id: data.id,
+                  action,
+                })
               if (serverError) {
                 toast.error(serverError.message)
               } else {
@@ -38,6 +39,23 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
                 queryClient.invalidateQueries({
                   queryKey: ["operator-applications"],
                 })
+                if (response?.inviteUrl) {
+                  open({
+                    variant: "info",
+                    title: "Invitation Sent",
+                    description: (
+                      <div className="space-y-2">
+                        <p>
+                          Share the link below with the invitee to accept the
+                          invitation:
+                        </p>
+                        <p className="rounded-md bg-muted p-2 text-sm break-all">
+                          {response?.inviteUrl}
+                        </p>
+                      </div>
+                    ),
+                  })
+                }
               }
             },
           },

@@ -78,7 +78,7 @@ export const SigninForm = () => {
           REDIRECT_MAP.user
       }
       console.log(URL)
-      // window.location.href = URL!
+      window.location.href = URL!
     }
   }
 

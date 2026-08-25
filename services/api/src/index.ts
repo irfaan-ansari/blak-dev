@@ -6,7 +6,7 @@ const PORT = Number(process.env.PORT ?? 4000)
 
 const app = createApp()
 
-serve({ fetch: app.fetch, port: PORT }, (info) => {
+serve({ fetch: app.fetch, port: PORT, hostname: "0.0.0.0" }, (info) => {
   console.log(info)
 })
 

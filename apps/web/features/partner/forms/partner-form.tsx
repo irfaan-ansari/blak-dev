@@ -16,19 +16,20 @@ import {
 
 import { STEPS } from "./form.steps"
 import { INITIAL_VALUES } from "./form.const"
-import { type PartnerSchema, partnerSchema } from "../partner.schema"
-import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
 import { useRouter } from "@/i18n/navigation"
 import { createPartner } from "../partner.action"
+import { type PartnerSchema, partnerSchema } from "../partner.schema"
+import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
 
 const SUBMIT_STEP = STEPS.length - 1
 
 export function PartnerForm() {
-  const commonT = useTranslations("common")
   const router = useRouter()
   const { open } = useAppDialog()
+
+  const commonT = useTranslations("common")
   const t = useTranslations("partner.form")
-  const [active, setActive] = React.useState(0)
+  const [active, setActive] = React.useState(3)
   const [pending, setPending] = React.useState(false)
 
   const form = useForm<PartnerSchema>({
@@ -89,7 +90,7 @@ export function PartnerForm() {
     <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="relative grid gap-6 rounded-2xl bg-muted/80 p-8 shadow-[1px_-1px_0px_0px_#ffffff20] lg:p-12"
+        className="relative grid gap-6 rounded-2xl bg-muted/30 p-8 shadow-[1px_-1px_0px_0px_#ffffff20] lg:p-12"
       >
         {STEPS.map((step, i) => {
           if (i !== active) return null

@@ -85,11 +85,7 @@ export const FormOperation = () => {
               className="grid gap-3 sm:grid-cols-3"
             >
               {TRANSPORTATION_OPTIONS.map((option) => (
-                <FieldLabel
-                  key={option.value}
-                  htmlFor={option.value}
-                  className="bg-secondary/50"
-                >
+                <FieldLabel key={option.value} htmlFor={option.value}>
                   <Field orientation="horizontal">
                     <FieldContent>
                       <FieldTitle>{option.label}</FieldTitle>
@@ -146,11 +142,7 @@ export const FormOperation = () => {
                 const checked = field.value.includes(option.value)
 
                 return (
-                  <FieldLabel
-                    key={option.value}
-                    htmlFor={option.value}
-                    className="bg-secondary/50"
-                  >
+                  <FieldLabel key={option.value} htmlFor={option.value}>
                     <Field orientation="horizontal">
                       <FieldContent>
                         <FieldTitle>{option.label}</FieldTitle>

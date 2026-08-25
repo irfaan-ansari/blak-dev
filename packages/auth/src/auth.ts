@@ -153,8 +153,25 @@ export const auth = betterAuth({
       },
     },
   },
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: getRootDomain(process.env.BETTER_AUTH_URL as string),
+    },
+    defaultCookieAttributes: {
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
+    },
+  },
   trustedOrigins: (process.env.BETTER_AUTH_ORIGINS ?? "")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean),
 })
+
+function getRootDomain(url: string): string {
+  const hostname = new URL(url).hostname
+  const parts = hostname.split(".")
+  return parts.slice(-2).join(".")
+}

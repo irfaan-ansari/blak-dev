@@ -13,6 +13,14 @@ enum DocumentStatus {
     EXPIRED
 }
 
+enum SymbolPosition {
+    PREFIX
+    SUFFIX
+}
+enum DistanceUnit {
+    KM
+    MILES
+}
 enum MarketStatus {
     DRAFT
     PENDING_LICENSE
@@ -26,7 +34,7 @@ enum MarketStatus {
 
 enum MarketScope {
     COUNTRY
-    REGION
+    STATE
     CITY
 }
 

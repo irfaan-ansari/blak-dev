@@ -6,4 +6,5 @@ export type GetOptions = {
 
 export type ApiClientOptions = {
   baseURL: string
+  basePath?: string
 }

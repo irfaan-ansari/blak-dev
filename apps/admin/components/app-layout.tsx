@@ -23,10 +23,10 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
 const AppHeader = () => {
   return (
-    <header className="@container border-b px-4 lg:px-6">
+    <header className="@container border-b bg-card px-4 lg:px-6">
       <div className="flex h-20 w-full items-center gap-4">
         <Link className="inline-flex items-center" href="/">
-          <Image src="/logo/logo.png" width={140} height={40} alt="Blak" />
+          <Image src="/logo/logo-blak.png" width={140} height={40} alt="Blak" />
         </Link>
         <span className="flex-1"></span>
         <InputGroup className="max-w-xs">

@@ -114,7 +114,7 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
       open={isOpen}
       setOpen={setIsOpen}
       trigger={
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" disabled={!actions.length}>
           <EllipsisVertical />
         </Button>
       }

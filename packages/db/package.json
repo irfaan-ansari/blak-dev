@@ -17,8 +17,9 @@
     "generate": "prisma generate",
     "typecheck": "tsc --noEmit",
     "migrate": "prisma migrate dev",
-    "migrate:deploy": "prisma migrate deploy",
-    "studio": "prisma studio"
+    "deploy": "prisma migrate deploy",
+    "studio": "prisma studio",
+    "seed": "tsx seed.ts"
   },
   "dependencies": {
     "@prisma/adapter-neon": "^7.9.1",

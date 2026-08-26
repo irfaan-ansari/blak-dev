@@ -1,24 +1,27 @@
 model Country {
     id String @id @default(cuid())
 
-    name     String
-    code     String  @unique // IN, AE, US
-    dialCode String? // +91, +971, +1
+    name  String
+    iso2  String  @unique // IN, AE, US
+    iso3  String? @unique // IND, ARE, USA
+
+    phoneCode String? // +91, +971, +1
 
     currencyId String
     currency   Currency @relation(fields: [currencyId], references: [id])
 
-    regions Region[]
+    states State[]
+    cities    City[]
+    
     markets Market[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    cities    City[]
 
     @@map("country")
 }
 
-model Region {
+model State {
     id String @id @default(cuid())
 
     countryId String
@@ -26,9 +29,10 @@ model Region {
 
     name String
     code String
+    type String?
 
     cities  City[]
-    markets MarketRegion[]
+    markets MarketState[]
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
@@ -37,40 +41,41 @@ model Region {
     @@unique([countryId, code])
     @@unique([id, countryId])
     @@index([countryId])
-    @@map("region")
+    @@map("state")
 }
 
 model City {
     id   String @id @default(cuid())
     name String
-    code String
+    timezone  String
 
     countryId String
     country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
 
-    regionId String?
-    region   Region? @relation(fields: [regionId], references: [id])
+    stateId String?
+    state   State? @relation(fields: [stateId], references: [id])
 
     markets MarketCity[]
 
-    isActive Boolean @default(true)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@unique([id, countryId])
-    @@unique([countryId, code])
-    @@index([regionId, code])
     @@map("city")
 }
 
 model Currency {
     id       String @id @default(cuid())
-    code     String @unique
-    name     String
-    symbol   String
-    decimals Int    @default(2)
 
+    code     String @unique  // ISO 4217 alpha, e.g. "INR"
+    numericCode String? @unique // ISO 4217 numeric, e.g. "356" — some banking/compliance systems require this
+    name        String
+    symbol      String
+
+    symbolPosition SymbolPosition @default(PREFIX)
+    decimals    Int    @default(2) // JPY=0, BHD=3, most others=2
+    
     markets   Market[]
     countries Country[]
     createdAt DateTime  @default(now())
@@ -82,12 +87,13 @@ model Currency {
 model Market {
     id   String @id @default(cuid())
     name String
-    code String @unique
+    iso2 String @unique
 
     countryId String  @unique
     country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
 
     scope MarketScope @default(COUNTRY)
+    distanceUnit DistanceUnit @default(KM)
 
     timezone  String
     locale    String?
@@ -98,7 +104,7 @@ model Market {
     currencyId String
     currency   Currency @relation(fields: [currencyId], references: [id])
 
-    regions           MarketRegion[]
+    states           MarketState[]
     cities            MarketCity[]
     organizations     Organization[]
     serviceAreas      ServiceArea[]
@@ -111,19 +117,19 @@ model Market {
     @@map("market")
 }
 
-model MarketRegion {
+model MarketState {
     marketId  String
-    regionId  String
+    stateId  String
     countryId String
 
     market Market @relation(fields: [marketId, countryId], references: [id, countryId], onDelete: Cascade)
-    region Region @relation(fields: [regionId, countryId], references: [id, countryId], onDelete: Cascade)
+    state State @relation(fields: [stateId, countryId], references: [id, countryId], onDelete: Cascade)
 
-    @@id([marketId, regionId])
-    @@unique([regionId])
-    @@index([regionId])
+    @@id([marketId, stateId])
+    @@unique([stateId])
+    @@index([stateId])
     @@index([countryId])
-    @@map("market_region")
+    @@map("market_state")
 }
 
 model MarketCity {
@@ -161,8 +167,8 @@ model TaxRule {
     marketId String
     market   Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
 
-    regionId String? // null = applies market-wide
-    region   Region? @relation(fields: [regionId], references: [id])
+    stateId String? // null = applies market-wide
+    state   State? @relation(fields: [stateId], references: [id])
 
     name          String // "VAT", "GST", "Sales Tax"
     rate          Decimal   @db.Decimal(6, 4)

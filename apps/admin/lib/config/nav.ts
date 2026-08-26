@@ -23,7 +23,7 @@ export const SIDEBAR_NAV = {
     items: [
       { label: "Bookings", href: "/operation/bookings" },
       { label: "Live Dispatch", href: "/operation/dispatch" },
-      { label: "Fleet", href: "/operation/fleet" },
+      { label: "Vehicles", href: "/operation/vehicles" },
     ],
   },
   network: {

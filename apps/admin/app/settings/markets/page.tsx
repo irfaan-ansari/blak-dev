@@ -10,10 +10,10 @@ const MarketsPage = () => {
         <h1 className="flex-1 text-xl font-bold">
           Manage BLAK's operating markets, coverage, and availability.
         </h1>
-        <Button variant="secondary" size="sm" suffix={<ChevronDown />}>
+        <Button variant="outline" size="sm" suffix={<ChevronDown />}>
           Filter by Status
         </Button>
-        <Button variant="secondary" size="sm" prefix={<ListFilter />}>
+        <Button variant="outline" size="sm" prefix={<ListFilter />}>
           Sort By
         </Button>
       </div>

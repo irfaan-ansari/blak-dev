@@ -32,7 +32,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         varela.variable,
-        "font-sans font-normal antialiased selection:bg-primary/10"
+        "font-sans font-normal antialiased selection:bg-primary"
       )}
     >
       <body>
@@ -47,7 +47,7 @@ export default function RootLayout({
             }
           >
             <AppSidebar variant="sidebar" />
-            <SidebarInset>
+            <SidebarInset className="bg-neutral-50">
               <AppLayout>{children}</AppLayout>
             </SidebarInset>
           </SidebarProvider>

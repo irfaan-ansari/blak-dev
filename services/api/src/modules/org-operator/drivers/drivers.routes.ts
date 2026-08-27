@@ -3,9 +3,7 @@ import type { OrgContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
 import { prisma } from "@blak/db"
 
-const router = new Hono<OrgContext>()
-
-router.get("/", async (c) => {
+const drivers = new Hono<OrgContext>().get("/", async (c) => {
   const organizationId = c.get("organizationId")
   const { q, status, cat, ...rest } = c.req.query()
   const { page, take, skip } = parsePagination(rest)
@@ -51,4 +49,4 @@ router.get("/", async (c) => {
   })
 })
 
-export { router as drivers }
+export default drivers

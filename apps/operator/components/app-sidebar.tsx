@@ -30,8 +30,10 @@ import {
 import { SIDEBAR_NAV } from "@/lib/config/nav"
 import Link from "next/link"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
+import { useAccount } from "@/features/account/account.data"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data } = useAccount()
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -44,9 +46,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </AvatarFallback>
               </Avatar>
               <div className="grid min-w-0 flex-1">
-                <span className="font-medium">Lorem Fleet</span>
+                <span className="font-medium">{data?.data?.name}</span>
                 <span className="text-xs font-medium text-muted-foreground">
-                  United Sates
+                  {data?.data?.status}
                 </span>
               </div>
               <ChevronsUpDown className="self-center" />

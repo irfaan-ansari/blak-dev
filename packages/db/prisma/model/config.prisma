@@ -1,9 +1,9 @@
 model Country {
     id String @id @default(cuid())
 
-    name  String
-    iso2  String  @unique // IN, AE, US
-    iso3  String? @unique // IND, ARE, USA
+    name String
+    iso2 String  @unique // IN, AE, US
+    iso3 String? @unique // IND, ARE, USA
 
     phoneCode String? // +91, +971, +1
 
@@ -11,8 +11,8 @@ model Country {
     currency   Currency @relation(fields: [currencyId], references: [id])
 
     states State[]
-    cities    City[]
-    
+    cities City[]
+
     markets Market[]
 
     createdAt DateTime @default(now())
@@ -45,18 +45,17 @@ model State {
 }
 
 model City {
-    id   String @id @default(cuid())
-    name String
-    timezone  String
+    id       String @id @default(cuid())
+    name     String
+    timezone String
 
     countryId String
     country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
 
     stateId String?
-    state   State? @relation(fields: [stateId], references: [id])
+    state   State?  @relation(fields: [stateId], references: [id])
 
     markets MarketCity[]
-
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -66,16 +65,16 @@ model City {
 }
 
 model Currency {
-    id       String @id @default(cuid())
+    id String @id @default(cuid())
 
-    code     String @unique  // ISO 4217 alpha, e.g. "INR"
+    code        String  @unique // ISO 4217 alpha, e.g. "INR"
     numericCode String? @unique // ISO 4217 numeric, e.g. "356" — some banking/compliance systems require this
     name        String
     symbol      String
 
     symbolPosition SymbolPosition @default(PREFIX)
-    decimals    Int    @default(2) // JPY=0, BHD=3, most others=2
-    
+    decimals       Int            @default(2) // JPY=0, BHD=3, most others=2
+
     markets   Market[]
     countries Country[]
     createdAt DateTime  @default(now())
@@ -92,7 +91,7 @@ model Market {
     countryId String  @unique
     country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
 
-    scope MarketScope @default(COUNTRY)
+    scope        MarketScope  @default(COUNTRY)
     distanceUnit DistanceUnit @default(KM)
 
     timezone  String
@@ -104,7 +103,7 @@ model Market {
     currencyId String
     currency   Currency @relation(fields: [currencyId], references: [id])
 
-    states           MarketState[]
+    states            MarketState[]
     cities            MarketCity[]
     organizations     Organization[]
     serviceAreas      ServiceArea[]
@@ -119,11 +118,11 @@ model Market {
 
 model MarketState {
     marketId  String
-    stateId  String
+    stateId   String
     countryId String
 
     market Market @relation(fields: [marketId, countryId], references: [id, countryId], onDelete: Cascade)
-    state State @relation(fields: [stateId, countryId], references: [id, countryId], onDelete: Cascade)
+    state  State  @relation(fields: [stateId, countryId], references: [id, countryId], onDelete: Cascade)
 
     @@id([marketId, stateId])
     @@unique([stateId])
@@ -168,7 +167,7 @@ model TaxRule {
     market   Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
 
     stateId String? // null = applies market-wide
-    state   State? @relation(fields: [stateId], references: [id])
+    state   State?  @relation(fields: [stateId], references: [id])
 
     name          String // "VAT", "GST", "Sales Tax"
     rate          Decimal   @db.Decimal(6, 4)

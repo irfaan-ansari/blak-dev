@@ -4,11 +4,16 @@ import { Button } from "@blak/ui/components/button"
 import {
   Card,
   CardAction,
-  CardContent,
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
-import { EllipsisVertical, Globe2 } from "lucide-react"
+import {
+  CheckCircle,
+  CircleCheck,
+  CornerDownRight,
+  EllipsisVertical,
+  Globe2,
+} from "lucide-react"
 import React from "react"
 
 export const MarketCard = () => {
@@ -16,29 +21,31 @@ export const MarketCard = () => {
     <Card size="sm">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <Avatar>
+          <Avatar size="lg">
             <AvatarFallback>
               <Globe2 className="size-4" />
             </AvatarFallback>
           </Avatar>
           <div className="grid gap-0.5">
             <CardTitle>Lorem, ipsum dolor.</CardTitle>
+            <div className="flex items-start gap-1">
+              <CornerDownRight className="size-3 text-muted-foreground opacity-80" />
+              <span className="text-xs text-muted-foreground">12 States</span>
+              <span className="text-xs text-muted-foreground">18 Cities</span>
+            </div>
           </div>
         </div>
         <CardAction className="flex items-center gap-3">
-          <Badge>Active</Badge>
+          <Badge variant="outline" className="h-7 tracking-wider uppercase">
+            <CircleCheck className="size-3.5 text-green-500" />
+            Active
+            <span className="border-l pl-2">$</span>
+          </Badge>
           <Button variant="outline" size="icon">
-            <EllipsisVertical />
+            <EllipsisVertical className="size-4" />
           </Button>
         </CardAction>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="border-t"></div>
-        <div className="flex gap-4">
-          <span className="text-xs text-muted-foreground">12 States</span>
-          <span className="text-xs text-muted-foreground">18 Cities</span>
-        </div>
-      </CardContent>
     </Card>
   )
 }

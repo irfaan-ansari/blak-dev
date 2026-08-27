@@ -1,20 +1,18 @@
 "use client"
 import React from "react"
+
+import { Toaster } from "sonner"
 import { TooltipProvider } from "@blak/ui/components/tooltip"
 import { AppDialogProvider } from "@blak/ui/components/blak/app-dialog"
-import { ThemeProvider } from "./theme-provider"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { Toaster } from "sonner"
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryProvider>
-      <ThemeProvider>
-        <TooltipProvider>
-          <AppDialogProvider>{children}</AppDialogProvider>
-        </TooltipProvider>
-        <Toaster />
-      </ThemeProvider>
+      <TooltipProvider>
+        <AppDialogProvider>{children}</AppDialogProvider>
+      </TooltipProvider>
+      <Toaster />
     </QueryProvider>
   )
 }

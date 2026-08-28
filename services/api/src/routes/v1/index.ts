@@ -9,13 +9,13 @@ import applications from "@/modules/application/application.routes"
 
 import operator from "./org-operator"
 import partner from "./org-partner"
+import countries from "@/modules/countries/countries.routes"
 
 const v1 = new Hono<AppContext>()
+  .route("/countries", countries)
   .use("*", requireAuth)
-  .route("/countries", applications)
-  .route("/regions", applications)
-  .route("/cities", applications)
-  .route("/curriencies", applications)
+
+  .route("/currencies", applications)
   .route("/markets", applications)
 
   .route("/uploads", uploads)

@@ -8,10 +8,13 @@ const countries = new Hono<AppContext>()
     const { q, status, cat, ...rest } = c.req.query()
     const { page, take, skip } = parsePagination(rest)
 
-    const [countries, total] = await prisma.$transaction([
+    const [countries, total] = await Promise.all([
       prisma.country.findMany({
         take,
         skip,
+        include: {
+          states: true,
+        },
       }),
       prisma.country.count(),
     ])

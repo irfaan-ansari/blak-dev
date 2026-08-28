@@ -39,7 +39,7 @@ export const DropDrawer = ({
   className,
   open,
   setOpen,
-  modal = false,
+  modal = true,
   ...props
 }: DropDrawerProps) => {
   const isMobile = useMobile()

@@ -1,84 +1,43 @@
 import { apiClient } from "@/lib/api-client"
 import { City, Country, State } from "@blak/db"
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { PaginatedResponse } from "@/features/shared/shared.type"
+import { type AppError } from "@blak/utils"
 
 export const useCountries = () => {
-  return useInfiniteQuery({
+  return useQuery<PaginatedResponse<Country>, AppError>({
     queryKey: ["countries"],
-    initialPageParam: 1,
-    queryFn: async ({ pageParam }) => {
-      const response = await apiClient.get<PaginatedResponse<Country[]>>(
-        `/countries`,
-        {
-          params: {
-            page: pageParam,
-          },
-        }
-      )
+    queryFn: async () => {
+      const response =
+        await apiClient.get<PaginatedResponse<Country>>("/countries")
 
       return response
     },
-
-    getNextPageParam: (lastPage) => {
-      const { page, pageCount } = lastPage.pagination
-      return page < pageCount ? page + 1 : undefined
-    },
+    staleTime: 1000 * 60 * 60,
   })
 }
 
-export const useStates = (countryId: string) => {
-  return useInfiniteQuery({
-    queryKey: ["states", countryId],
-
-    initialPageParam: 1,
-    queryFn: async ({ pageParam }) => {
-      const response = await apiClient.get<PaginatedResponse<State[]>>(
-        `/countries/${countryId}/states`,
-        {
-          params: {
-            page: pageParam,
-          },
-        }
-      )
+export const useCountryStates = () => {
+  return useQuery<PaginatedResponse<State>, AppError>({
+    queryKey: ["states"],
+    queryFn: async () => {
+      const response =
+        await apiClient.get<PaginatedResponse<State>>("/countries")
 
       return response
     },
-
-    getNextPageParam: (lastPage) => {
-      const { page, pageCount } = lastPage.pagination
-
-      return page < pageCount ? page + 1 : undefined
-    },
-    enabled: !!countryId,
+    staleTime: 1000 * 60 * 60,
   })
 }
-
-export const useCities = (stateId: string) => {
-  return useInfiniteQuery({
-    queryKey: ["cities", stateId],
-
-    initialPageParam: 1,
-
-    queryFn: async ({ pageParam }) => {
-      const response = await apiClient.get<PaginatedResponse<City[]>>(
-        `/countries/states/${stateId}/cities`,
-        {
-          params: {
-            page: pageParam,
-          },
-        }
-      )
+export const useStateCities = () => {
+  return useQuery<PaginatedResponse<City>, AppError>({
+    queryKey: ["cities"],
+    queryFn: async () => {
+      const response =
+        await apiClient.get<PaginatedResponse<City>>("/countries")
 
       return response
     },
-
-    getNextPageParam: (lastPage) => {
-      const { page, pageCount } = lastPage.pagination
-
-      return page < pageCount ? page + 1 : undefined
-    },
-
-    enabled: !!stateId,
+    staleTime: 1000 * 60 * 60,
   })
 }

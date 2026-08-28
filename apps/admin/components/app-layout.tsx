@@ -11,6 +11,7 @@ import {
 } from "@blak/ui/components/input-group"
 import Image from "next/image"
 import Link from "next/link"
+import { SearchQueryParam } from "@blak/ui/components/blak/search-input"
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -29,17 +30,7 @@ const AppHeader = () => {
           <Image src="/logo/logo-blak.png" width={140} height={40} alt="Blak" />
         </Link>
         <span className="flex-1"></span>
-        <InputGroup className="max-w-xs">
-          <InputGroupAddon>
-            <Search className="size-4" />
-          </InputGroupAddon>
-          <InputGroupInput placeholder="Search..." />
-          <InputGroupAddon align="inline-end">
-            <InputGroupButton>
-              <X />
-            </InputGroupButton>
-          </InputGroupAddon>
-        </InputGroup>
+        <SearchQueryParam className="bg-secondary/50" />
         <Button variant="ghost" size="lg" className="relative rounded-full">
           <Bell className="size-5" />
           <Badge variant="warning" className="rounded-full">

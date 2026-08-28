@@ -8,6 +8,8 @@ import {
   AppDrawerTitle,
   AppDrawerTrigger,
 } from "@blak/ui/components/blak/app-drawer"
+import { CountrySelector } from "./country-selector"
+import { Button } from "@blak/ui/components/button"
 
 export const MarketDialog = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = React.useState(false)
@@ -21,6 +23,9 @@ export const MarketDialog = ({ children }: { children: React.ReactNode }) => {
             New Market
           </AppDrawerTitle>
         </AppDrawerHeader>
+        <CountrySelector>
+          <Button>Country</Button>
+        </CountrySelector>
       </AppDrawerContent>
     </AppDrawer>
   )

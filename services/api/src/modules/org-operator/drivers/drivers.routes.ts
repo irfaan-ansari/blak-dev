@@ -36,15 +36,15 @@ const drivers = new Hono<OrgContext>().get("/", async (c) => {
     }),
   ])
 
-  const totalPages = Math.ceil(total / take)
+  const pageCount = Math.ceil(total / take)
 
   return c.json({
     data: results,
     pagination: {
       page,
-      limit: take,
+      pageSize: take,
+      pageCount,
       total,
-      totalPages,
     },
   })
 })

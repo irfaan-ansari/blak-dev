@@ -32,15 +32,15 @@ const operators = new Hono<AppContext>().get("/", async (c) => {
     ...application,
     application: operatorApplication,
   }))
-  const totalPages = Math.ceil(total / take)
+  const pageCount = Math.ceil(total / take)
 
   return c.json({
     data: data,
     pagination: {
       page,
-      limit: take,
+      pageSize: take,
+      pageCount,
       total,
-      totalPages,
     },
   })
 })

@@ -44,15 +44,15 @@ const router = new Hono<OrgContext>()
       active: res.id === (activeOrganizationId as string),
     }))
 
-    const totalPages = Math.ceil(total / take)
+    const pageCount = Math.ceil(total / take)
 
     return c.json({
       data: transformed,
       pagination: {
         page,
-        limit: take,
+        pageSize: take,
+        pageCount,
         total,
-        totalPages,
       },
     })
   })

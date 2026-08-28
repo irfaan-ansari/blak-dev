@@ -1,11 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Search } from "lucide-react"
+import { Search, X } from "lucide-react"
 
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@blak/ui/components/input-group"
 import { cn } from "@blak/ui/lib/utils"
@@ -32,7 +33,13 @@ export function SearchQueryParam({
       <InputGroupAddon>
         <Search className="size-4" />
       </InputGroupAddon>
-
+      {search && (
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton onClick={() => setSearch("")}>
+            <X />
+          </InputGroupButton>
+        </InputGroupAddon>
+      )}
       <InputGroupInput
         value={search}
         placeholder={placeholder}
@@ -73,6 +80,18 @@ export function SearchBar({
       <InputGroupAddon>
         <Search className="size-4" />
       </InputGroupAddon>
+
+      {value && (
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            onClick={() => {
+              setSearch("")
+            }}
+          >
+            <X />
+          </InputGroupButton>
+        </InputGroupAddon>
+      )}
 
       <InputGroupInput
         value={search}

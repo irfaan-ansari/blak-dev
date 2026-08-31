@@ -13,6 +13,7 @@ const countries = new Hono<AppContext>()
         take,
         skip,
         include: {
+          currency: true,
           _count: {
             select: {
               states: true,
@@ -110,6 +111,31 @@ const countries = new Hono<AppContext>()
     return c.json({
       success: true,
       data: cities,
+      pagination: {
+        page,
+        pageSize: take,
+        pageCount,
+        total,
+      },
+    })
+  })
+  .get("/currencies", async (c) => {
+    const query = c.req.query()
+    const { page, take, skip } = parsePagination(query)
+
+    const [currencies, total] = await prisma.$transaction([
+      prisma.currency.findMany({
+        take,
+        skip,
+      }),
+      prisma.currency.count({}),
+    ])
+
+    const pageCount = Math.ceil(total / take)
+
+    return c.json({
+      success: true,
+      data: currencies,
       pagination: {
         page,
         pageSize: take,

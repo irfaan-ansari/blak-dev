@@ -13,16 +13,25 @@ const countries = new Hono<AppContext>()
         take,
         skip,
         include: {
-          states: true,
+          _count: {
+            select: {
+              states: true,
+            },
+          },
         },
       }),
       prisma.country.count(),
     ])
 
+    const countriesWithStateCount = countries.map(({ _count, ...rest }) => ({
+      ...rest,
+      stateCount: _count.states,
+    }))
+
     const pageCount = Math.ceil(total / take)
     return c.json({
       success: true,
-      data: countries,
+      data: countriesWithStateCount,
       pagination: {
         page,
         pageSize: take,
@@ -43,8 +52,14 @@ const countries = new Hono<AppContext>()
         },
         take,
         skip,
+        include: {
+          _count: {
+            select: {
+              cities: true,
+            },
+          },
+        },
       }),
-
       prisma.state.count({
         where: {
           countryId,
@@ -54,9 +69,14 @@ const countries = new Hono<AppContext>()
 
     const pageCount = Math.ceil(total / take)
 
+    const statesWithCityCount = states.map(({ _count, ...rest }) => ({
+      ...rest,
+      cityCount: _count.cities,
+    }))
+
     return c.json({
       success: true,
-      data: states,
+      data: statesWithCityCount,
       pagination: {
         page,
         pageSize: take,

@@ -17,10 +17,12 @@ enum SymbolPosition {
     PREFIX
     SUFFIX
 }
+
 enum DistanceUnit {
     KM
     MILES
 }
+
 enum MarketStatus {
     DRAFT
     PENDING_LICENSE
@@ -39,11 +41,12 @@ enum MarketScope {
 }
 
 enum OrganizationStatus {
-    PENDING_ONBOARDING
-    UNDER_REVIEW
+    ONBOARDING
+    SUBMITTED
     ACTIVE
     SUSPENDED
     INACTIVE
+    TERMINATED
 }
 
 enum OrganizationType {
@@ -51,18 +54,31 @@ enum OrganizationType {
     PARTNER
 }
 
-enum ApplicationType {
+enum EntityType {
     OPERATOR
     PARTNER
     DRIVER
 }
 
+enum ComplianceType {
+    NUMBER
+    DOCUMENT
+}
+
 enum ApplicationStatus {
-    PENDING
+    SUBMITTED
     UNDER_REVIEW
     INFO_REQUIRED
     APPROVED
     REJECTED
+}
+
+enum ComplianceStatus {
+    PENDING
+    UNDER_REVIEW
+    VERIFIED
+    REJECTED
+    EXPIRED
 }
 
 enum VehicleCategory {

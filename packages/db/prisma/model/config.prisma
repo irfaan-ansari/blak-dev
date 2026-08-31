@@ -103,13 +103,13 @@ model Market {
     currencyId String
     currency   Currency @relation(fields: [currencyId], references: [id])
 
-    states            MarketState[]
-    cities            MarketCity[]
-    organizations     Organization[]
-    serviceAreas      ServiceArea[]
-    applications      Application[]
-    taxRules          TaxRule[]
-    requiredDocuments RequiredDocument[]
+    states                 MarketState[]
+    cities                 MarketCity[]
+    organizations          Organization[]
+    serviceAreas           ServiceArea[]
+    applications           Application[]
+    taxRules               TaxRule[]
+    complianceRequirements ComplianceRequirement[]
 
     @@unique([id, countryId])
     @@index([status])
@@ -181,25 +181,52 @@ model TaxRule {
     @@map("tax_rule")
 }
 
-model RequiredDocument {
+model ComplianceRequirement {
     id String @id @default(cuid())
 
     marketId String
     market   Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
 
-    applicationType ApplicationType
-    category        String
-    label           String
-    isRequired      Boolean         @default(true)
+    entityType EntityType
 
-    allowedMimeTypes String[]
-    maxFileSizeBytes BigInt?
+    name  String
+    label String
+    type  ComplianceType
+
+    isRequired Boolean @default(true)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@unique([marketId, applicationType, category])
-    @@map("required_document")
+    records ComplianceRecord[]
+
+    @@unique([marketId, entityType, name])
+    @@index([marketId, entityType])
+    @@map("compliance_requirement")
 }
 
-// compliences
+model ComplianceRecord {
+    id String @id @default(cuid())
+
+    requirementId String
+    requirement   ComplianceRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+
+    entityType EntityType
+    entityId   String
+
+    value String?
+
+    documentId String?
+    document   Document? @relation(fields: [documentId], references: [id])
+
+    status String @default("PENDING")
+
+    expiresAt DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([entityType, entityId])
+    @@index([requirementId])
+    @@map("compliance_record")
+}

@@ -3,7 +3,24 @@ import { apiClient } from "@/lib/api-client"
 import { useQuery } from "@tanstack/react-query"
 import { PaginatedResponse } from "@/features/shared/shared.type"
 import { type AppError } from "@blak/utils"
-import { CountryWithStateCount, StateWithCityCount } from "./market.type"
+import {
+  CountryWithStateCount,
+  MarketWithRelations,
+  StateWithCityCount,
+} from "./market.type"
+
+export const useMarkets = () => {
+  return useQuery<PaginatedResponse<MarketWithRelations>, AppError>({
+    queryKey: ["countries"],
+    queryFn: async () => {
+      const response =
+        await apiClient.get<PaginatedResponse<MarketWithRelations>>("/markets")
+      console.log(response)
+      return response
+    },
+    staleTime: 1000 * 60 * 60,
+  })
+}
 
 export const useCountries = () => {
   return useQuery<PaginatedResponse<CountryWithStateCount>, AppError>({

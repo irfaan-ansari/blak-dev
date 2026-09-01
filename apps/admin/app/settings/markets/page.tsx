@@ -1,8 +1,9 @@
 import React from "react"
-import Link from "next/link"
+
 import { ChevronDown, ListFilter, Plus } from "lucide-react"
 import { Button } from "@blak/ui/components/button"
 import { MarketClient } from "@/features/settings/market/components/market-client"
+import { MarketDialog } from "@/features/settings/market/components/market-dialog"
 
 const MarketsPage = () => {
   return (
@@ -16,9 +17,11 @@ const MarketsPage = () => {
           Sort By
         </Button>
 
-        <Button size="lg" prefix={<Plus />} asChild>
-          <Link href="/settings/markets/new">Add New</Link>
-        </Button>
+        <MarketDialog>
+          <Button size="lg" prefix={<Plus />}>
+            Add New
+          </Button>
+        </MarketDialog>
       </div>
       <MarketClient />
     </div>

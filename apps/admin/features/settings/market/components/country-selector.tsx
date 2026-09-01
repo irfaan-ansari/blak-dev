@@ -35,7 +35,7 @@ export const CountrySelector = ({
   }, [countries, query])
 
   return (
-    <DropDrawer trigger={children} open={open} setOpen={setOpen} modal={false}>
+    <DropDrawer trigger={children} open={open} setOpen={setOpen} modal={true}>
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="p-2">
           <SearchBar

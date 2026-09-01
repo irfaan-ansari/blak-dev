@@ -11,7 +11,7 @@ import { StatusActionConfig, StatusConfig } from "@/features/shared/shared.type"
 import { ApplicationStatus } from "@/features/onboarding/application.type"
 
 export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
-  PENDING: {
+  SUBMITTED: {
     label: "New",
     icon: CircleDashed,
     className: "text-primary-foreground! bg-amber-200! border-amber-300!",
@@ -41,7 +41,7 @@ export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
 export const AVAILABLE_ACTIONS: Partial<
   Record<ApplicationStatus, StatusActionConfig[]>
 > = {
-  UNDER_REVIEW: [
+  SUBMITTED: [
     {
       label: "Approve",
       variant: "ghost",

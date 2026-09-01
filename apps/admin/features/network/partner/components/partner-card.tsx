@@ -12,11 +12,9 @@ import { CopyButton } from "@blak/ui/components/blak/copy-button"
 import { Avatar, AvatarFallback, AvatarImage } from "@blak/ui/components/avatar"
 
 import { StatusBadge } from "@/features/shared/components/status-badge"
-import { Operator } from "../operator.type"
-import { STATUS_MAP } from "../operator.const"
-import { OperatorAction } from "./operator-action"
+import { Partner } from "../partner.type"
 
-export const OperatorCard = ({ data }: { data: Operator }) => {
+export const PartnerCard = ({ data }: { data: Partner }) => {
   return (
     <Card size="sm">
       <CardHeader>
@@ -49,8 +47,8 @@ export const OperatorCard = ({ data }: { data: Operator }) => {
           </div>
         </div>
         <CardAction className="flex items-center gap-3">
-          <StatusBadge status={data.status} statusMap={STATUS_MAP} />
-          <OperatorAction data={data} />
+          {/* <StatusBadge status={data.status} statusMap={STATUS_MAP} />
+          <OperatorAction data={data} /> */}
         </CardAction>
       </CardHeader>
     </Card>

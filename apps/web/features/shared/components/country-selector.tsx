@@ -1,43 +1,46 @@
 import React from "react"
+import type { Currency, Country } from "@blak/db"
 import { Check } from "lucide-react"
-import type { Currency } from "@blak/db"
-import { useCurrencies } from "../market.data"
+
 import { Button } from "@blak/ui/components/button"
 import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { SearchBar } from "@blak/ui/components/blak/search-input"
 
 import { QueryState } from "@blak/ui/components/blak/query-state"
+import { useCountries } from "../shared.data"
 
-export const CurrencySelector = ({
+export const CountrySelector = ({
   children,
   selected,
   onSelectedChange,
 }: {
   children: React.ReactNode
   selected?: string
-  onSelectedChange?: (value: Currency) => void
+  onSelectedChange?: (value: Country) => void
 }) => {
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
 
-  const { data, isPending } = useCurrencies()
-  const currencies = data?.data ?? []
+  const { data, isPending } = useCountries()
+  const countries = data?.data ?? []
 
   const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return currencies
+    if (!q) return countries
 
-    return currencies.filter((country) =>
-      country.name.toLowerCase().includes(q)
+    return countries.filter(
+      (country) =>
+        country.name.toLowerCase().includes(q) ||
+        country.iso2.toLowerCase().includes(q)
     )
-  }, [currencies, query])
+  }, [countries, query])
 
   return (
     <DropDrawer trigger={children} open={open} setOpen={setOpen} modal={true}>
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="p-2">
           <SearchBar
-            placeholder="Search currencies..."
+            placeholder="Search countries..."
             className="max-w-full"
             value={query}
             onSearch={setQuery}
@@ -51,20 +54,20 @@ export const CurrencySelector = ({
             isEmpty={filtered.length === 0}
           >
             <div>
-              {filtered.map((currency) => {
-                const checked = selected === currency.id
+              {filtered.map((country) => {
+                const checked = selected === country.id
                 return (
                   <Button
-                    key={currency.id}
+                    key={country.id}
                     variant="ghost"
                     size="lg"
                     className="w-full justify-start"
                     onClick={() => {
-                      onSelectedChange?.(currency)
+                      onSelectedChange?.(country)
                       setOpen(false)
                     }}
                   >
-                    {`${currency.name} - ${currency.symbol}`}
+                    {country.name}
                     {checked ? (
                       <Check className="ml-auto text-muted-foreground" />
                     ) : null}

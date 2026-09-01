@@ -39,6 +39,7 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
                 queryClient.invalidateQueries({
                   queryKey: ["operator-applications"],
                 })
+                console.log(response)
                 if (response?.inviteUrl) {
                   open({
                     variant: "info",

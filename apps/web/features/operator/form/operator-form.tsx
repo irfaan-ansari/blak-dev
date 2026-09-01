@@ -34,7 +34,7 @@ export const OperatorForm = () => {
     setPending(true)
     try {
       const { success } = await createOperator(values)
-      console.log(values)
+
       if (!success) {
         return
       }
@@ -81,7 +81,7 @@ export const OperatorForm = () => {
 
     setActive((current) => current + 1)
   }
-
+  console.log(form.formState.errors)
   return (
     <FormProvider {...form}>
       <form

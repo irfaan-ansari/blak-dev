@@ -1,17 +1,23 @@
 import React from "react"
+
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@blak/ui/components/card"
-import { Button } from "@blak/ui/components/button"
-import { Input } from "@blak/ui/components/input"
+
 import { Plus, Trash2 } from "lucide-react"
+
+import { Input } from "@blak/ui/components/input"
+import { Button } from "@blak/ui/components/button"
+
 import { Controller, useFieldArray, useFormContext } from "react-hook-form"
 
 import { MarketFormValues } from "../market.schema"
+
 import { Field, FieldGroup, FieldLabel } from "@blak/ui/components/field"
+
 import {
   Select,
   SelectContent,
@@ -19,82 +25,99 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@blak/ui/components/select"
-import { COMPLIANCE_ENTITY, COMPLIANCE_TYPE } from "../market.const"
+
+import { COMPLIANCE_TYPE } from "../market.const"
 import { Badge } from "@blak/ui/components/badge"
 
+type ComplianceName = "OPERATOR" | "DRIVER" | "PARTNER"
+
+interface ComplianceCardProps {
+  name: ComplianceName
+  label: string
+}
+
 export const MarketComplience = () => {
-  const form = useFormContext<MarketFormValues>()
-
-  const { fields: compliances } = useFieldArray({
-    control: form.control,
-    name: "compliance",
-  })
-
   return (
     <div className="space-y-4">
-      {compliances.map((compliance, index) => (
-        <ComplianceCard key={compliance.id} index={index} />
-      ))}
+      <ComplianceCard name="OPERATOR" label="Operator" />
+      <ComplianceCard name="DRIVER" label="Driver" />
+      <ComplianceCard name="PARTNER" label="Partner" />
     </div>
   )
 }
-function ComplianceCard({ index }: { index: number }) {
+
+function ComplianceCard({ name, label }: ComplianceCardProps) {
   const form = useFormContext<MarketFormValues>()
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: `compliance.${index}.requirments`,
+    name: "complianceRequirements",
   })
 
-  const entityType = form.watch(`compliance.${index}.entityType`)
+  const requirements = fields
+    .map((field, index) => ({
+      field,
+      index,
+    }))
+    .filter(({ field }) => field.entityType === name)
 
   return (
     <Card size="sm">
       <CardHeader>
         <Badge variant="info-light" className="h-7 px-2.5">
-          {COMPLIANCE_ENTITY.find((ent) => ent.value === entityType)?.label}{" "}
-          Compliance
+          {label} Compliance
         </Badge>
       </CardHeader>
 
-      <CardContent>
-        {fields.length === 0 ? (
+      <CardContent className="space-y-4">
+        {requirements.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No requirements added yet.
+            No compliance added yet.
           </p>
         ) : (
-          <Card size="sm">
-            <CardContent>
-              {fields.map((requirement, requirementIndex) => (
-                <FieldGroup className="relative">
-                  <Controller
-                    key={requirement.id}
-                    control={form.control}
-                    name={`compliance.${index}.requirments.${requirementIndex}.name`}
-                    render={({ field }) => (
-                      <Field>
-                        <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                        <Input id={field.name} {...field} />
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    key={requirement.id}
-                    control={form.control}
-                    name={`compliance.${index}.requirments.${requirementIndex}.label`}
-                    render={({ field }) => (
-                      <Field>
-                        <FieldLabel htmlFor={field.name}>Label</FieldLabel>
-                        <Input id={field.name} {...field} />
-                      </Field>
-                    )}
-                  />
+          requirements.map(({ field: requirement, index }) => (
+            <Card size="sm" className="relative" key={requirement.id}>
+              <CardContent>
+                <FieldGroup>
                   <Controller
                     control={form.control}
-                    name={`compliance.${index}.requirments.${requirementIndex}.type`}
+                    name={`complianceRequirements.${index}.name`}
                     render={({ field, fieldState }) => (
                       <Field>
                         <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+
+                        <Input
+                          id={field.name}
+                          {...field}
+                          aria-invalid={fieldState.invalid}
+                        />
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    control={form.control}
+                    name={`complianceRequirements.${index}.label`}
+                    render={({ field, fieldState }) => (
+                      <Field>
+                        <FieldLabel htmlFor={field.name}>Label</FieldLabel>
+
+                        <Input
+                          id={field.name}
+                          {...field}
+                          aria-invalid={fieldState.invalid}
+                        />
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    control={form.control}
+                    name={`complianceRequirements.${index}.type`}
+                    render={({ field, fieldState }) => (
+                      <Field>
+                        <FieldLabel htmlFor={field.name}>Type</FieldLabel>
+
                         <Select
                           name={field.name}
                           value={field.value}
@@ -106,6 +129,7 @@ function ComplianceCard({ index }: { index: number }) {
                           >
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
+
                           <SelectContent position="item-aligned">
                             {COMPLIANCE_TYPE.map((comp) => (
                               <SelectItem key={comp.value} value={comp.value}>
@@ -117,20 +141,20 @@ function ComplianceCard({ index }: { index: number }) {
                       </Field>
                     )}
                   />
-
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => remove(requirementIndex)}
-                    className="absolute -top-2 right-0"
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
                 </FieldGroup>
-              ))}
-            </CardContent>
-          </Card>
+
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="ghost"
+                  onClick={() => remove(index)}
+                  className="absolute top-2 right-2"
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </CardContent>
+            </Card>
+          ))
         )}
       </CardContent>
 
@@ -139,17 +163,19 @@ function ComplianceCard({ index }: { index: number }) {
           type="button"
           variant="outline"
           size="sm"
-          className="w-full"
+          className="w-full border-dashed"
           prefix={<Plus />}
           onClick={() =>
             append({
+              entityType: name,
               name: "",
               label: "",
-              type: "",
+              type: "DOCUMENT",
+              isRequired: true,
             })
           }
         >
-          Add Requirement
+          Add Compliance
         </Button>
       </CardFooter>
     </Card>

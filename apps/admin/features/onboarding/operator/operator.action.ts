@@ -7,6 +7,7 @@ import { slugify } from "@blak/utils/string"
 import { withPermission } from "@/lib/safe-action"
 import { OperatorApplication } from "./operator.type"
 import { processOperatorApplicationschema } from "./operator.schema"
+import { AppError } from "@blak/utils/error"
 
 export const processOperatorApplication = withPermission({
   application: ["update"],
@@ -123,6 +124,23 @@ async function createOrgForApplication(
     country,
   } = application.application
 
+  const market = await prisma.market.findFirst({
+    where: {
+      country: {
+        name: {
+          contains: country,
+          mode: "insensitive",
+        },
+      },
+    },
+  })
+
+  if (!market) {
+    throw new AppError("NOT_FOUND", {
+      message: "Market not found",
+    })
+  }
+
   const org = await auth.api.createOrganization({
     body: {
       slug: slugify(legalBusinessName),
@@ -137,6 +155,7 @@ async function createOrgForApplication(
       contactTitle: application.contactTitle,
       contactPhone: application.contactPhone,
       contactEmail: application.contactEmail,
+      marketId: market.id,
     },
     headers: await headers(),
   })

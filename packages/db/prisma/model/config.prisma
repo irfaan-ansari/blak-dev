@@ -94,7 +94,7 @@ model Market {
     scope        MarketScope  @default(COUNTRY)
     distanceUnit DistanceUnit @default(KM)
 
-    timezone  String
+    timezone  String?
     locale    String?
     status    MarketStatus @default(DRAFT)
     createdAt DateTime     @default(now())

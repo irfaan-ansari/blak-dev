@@ -20,9 +20,11 @@ export const createOperator = async (data: OperatorFormValues) => {
         contactTitle,
         contactPhone,
         contactEmail,
+        currentStatus: "SUBMITTED",
         operatorApplication: {
           create: {
             ...application,
+
             vehicleCount: Number(application.vehicleCount),
             chauffeurCount: Number(application.chauffeurCount),
             yearsInOperation: Number(application.yearsInOperation),
@@ -35,10 +37,11 @@ export const createOperator = async (data: OperatorFormValues) => {
       data: {
         entityId: result.id,
         entityType: "APPLICATION",
-        status: "UNDER_REVIEW",
+        status: "PENDING",
         reason: "Application submitted",
       },
     })
+
     return { success: true }
   } catch (error) {
     console.log("Error creating operator:", error)

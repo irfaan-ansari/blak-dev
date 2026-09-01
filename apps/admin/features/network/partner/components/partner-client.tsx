@@ -2,15 +2,15 @@
 
 import React from "react"
 
-import { OperatorCard } from "./operator-card"
-import { useOperators } from "../operator.data"
+import { PartnerCard } from "./partner-card"
+import { usePartners } from "../partner.data"
 import { QueryBoundary } from "@/components/query-boundry"
 import { Pagination } from "@blak/ui/components/blak/pagination"
 import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
-export const OperatorClient = () => {
+export const PartnerClient = () => {
   const { queryParams } = useRouterStuff()
-  const query = useOperators()
+  const query = usePartners()
 
   return (
     <QueryBoundary query={query} isEmpty={query.data?.data?.length === 0}>
@@ -18,7 +18,7 @@ export const OperatorClient = () => {
         <>
           <div className="space-y-2">
             {data?.data.map((app) => (
-              <OperatorCard data={app} key={app.id} />
+              <PartnerCard data={app} key={app.id} />
             ))}
           </div>
           <Pagination

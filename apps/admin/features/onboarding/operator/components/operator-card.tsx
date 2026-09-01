@@ -33,9 +33,6 @@ export const OperatorCard = ({ data }: { data: OperatorApplication }) => {
     <Card size="sm">
       <CardHeader>
         <div className="flex items-start gap-3">
-          <Avatar size="lg">
-            <AvatarFallback>{legalBusinessName[0]}</AvatarFallback>
-          </Avatar>
           <div className="grid min-w-0 flex-1 gap-2">
             <CardTitle>{legalBusinessName}</CardTitle>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
@@ -48,6 +45,26 @@ export const OperatorCard = ({ data }: { data: OperatorApplication }) => {
                 {pluralize(vehicleCount, "Vehicle")}
               </span>
             </div>
+
+            <div className="flex gap-2">
+              <div className="flex items-center gap-1">
+                <CircleUser className="size-3.5" />
+                <span className="text-muted-foreground">
+                  {data.contactName}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  ({data.contactTitle})
+                </span>
+              </div>
+              <CopyButton
+                prefix={<Smartphone className="size-3.5" />}
+                value={data.contactPhone}
+              />
+              <CopyButton
+                prefix={<Mail className="size-3.5" />}
+                value={data.contactEmail}
+              />
+            </div>
           </div>
         </div>
         <CardAction className="flex items-center gap-3">
@@ -55,34 +72,6 @@ export const OperatorCard = ({ data }: { data: OperatorApplication }) => {
           <OperatorAction data={data} />
         </CardAction>
       </CardHeader>
-
-      <CardContent className="space-y-4">
-        <div className="border-t border-dashed"></div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1">
-            <CircleUser className="size-3.5" />
-            <span className="text-muted-foreground">{data.contactName}</span>
-            <span className="text-xs text-muted-foreground">
-              ({data.contactTitle})
-            </span>
-          </div>
-          <CopyButton
-            prefix={<Smartphone className="size-3.5" />}
-            value={data.contactPhone}
-          />
-          <CopyButton
-            prefix={<Mail className="size-3.5" />}
-            value={data.contactEmail}
-          />
-          <div className="ml-auto flex items-center gap-1">
-            <Calendar className="size-3.5" />
-            <span className="text-muted-foreground">
-              {formatRelative(data.createdAt)}
-            </span>
-            <ArrowRight className="size-4 transition-transform group-hover/card:translate-x-0.5" />
-          </div>
-        </div>
-      </CardContent>
     </Card>
   )
 }

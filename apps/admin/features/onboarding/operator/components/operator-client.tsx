@@ -1,23 +1,22 @@
 "use client"
 
 import React from "react"
-
 import { OperatorCard } from "./operator-card"
-import { useOperators } from "../operator.data"
+import { useOperatorApplications } from "../operator.data"
 import { QueryBoundary } from "@/components/query-boundry"
 import { Pagination } from "@blak/ui/components/blak/pagination"
 import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
 export const OperatorClient = () => {
   const { queryParams } = useRouterStuff()
-  const query = useOperators()
+  const query = useOperatorApplications()
 
   return (
-    <QueryBoundary query={query} isEmpty={query.data?.data?.length === 0}>
+    <QueryBoundary query={query} isEmpty={query.data?.data.length === 0}>
       {(data) => (
         <>
           <div className="space-y-2">
-            {data?.data.map((app) => (
+            {data.data.map((app) => (
               <OperatorCard data={app} key={app.id} />
             ))}
           </div>

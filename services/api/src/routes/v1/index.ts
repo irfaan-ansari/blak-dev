@@ -10,6 +10,7 @@ import applications from "@/modules/application/application.routes"
 import operator from "./org-operator"
 import partner from "./org-partner"
 import countries from "@/modules/countries/countries.routes"
+import markets from "@/modules/market/market.routes"
 
 const v1 = new Hono<AppContext>()
   .route("/countries", countries)
@@ -20,6 +21,7 @@ const v1 = new Hono<AppContext>()
 
   .route("/uploads", uploads)
   .route("/application", applications)
+  .route("/markets", markets)
   .route("/operators", operators)
   .route("/partners", partners)
   .route("/vehicles", vehicles)

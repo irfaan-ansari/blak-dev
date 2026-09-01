@@ -58,6 +58,7 @@ enum EntityType {
     OPERATOR
     PARTNER
     DRIVER
+    VEHICLE
 }
 
 enum ComplianceType {

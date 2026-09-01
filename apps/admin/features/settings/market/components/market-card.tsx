@@ -1,22 +1,18 @@
-import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
 import { Badge } from "@blak/ui/components/badge"
 import { Button } from "@blak/ui/components/button"
+import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
 import {
   Card,
   CardAction,
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
-import {
-  CheckCircle,
-  CircleCheck,
-  CornerDownRight,
-  EllipsisVertical,
-  Globe2,
-} from "lucide-react"
+import { CircleCheck, CornerDownRight, Globe2, PenSquare } from "lucide-react"
 import React from "react"
+import type { MarketWithRelations } from "../market.type"
+import { MarketDialog } from "./market-dialog"
 
-export const MarketCard = () => {
+export const MarketCard = ({ data }: { data: MarketWithRelations }) => {
   return (
     <Card size="sm">
       <CardHeader>
@@ -27,23 +23,39 @@ export const MarketCard = () => {
             </AvatarFallback>
           </Avatar>
           <div className="grid gap-0.5">
-            <CardTitle>Lorem, ipsum dolor.</CardTitle>
+            <CardTitle>
+              {data.name}{" "}
+              <span className="text-xs text-muted-foreground">
+                ({data?.country?.name})
+              </span>
+            </CardTitle>
             <div className="flex items-start gap-1">
               <CornerDownRight className="size-3 text-muted-foreground opacity-80" />
-              <span className="text-xs text-muted-foreground">12 States</span>
-              <span className="text-xs text-muted-foreground">18 Cities</span>
+              <span className="text-xs text-muted-foreground">
+                {data.stateCount} States
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {data.cityCount} Cities
+              </span>
             </div>
           </div>
         </div>
         <CardAction className="flex items-center gap-3">
-          <Badge variant="outline" className="h-7 tracking-wider uppercase">
+          <Badge variant="outline" className="h-7 tracking-wider">
             <CircleCheck className="size-3.5 text-green-500" />
-            Active
-            <span className="border-l pl-2">$</span>
+            {data?.status}
           </Badge>
-          <Button variant="outline" size="icon">
-            <EllipsisVertical className="size-4" />
-          </Button>
+          <MarketDialog
+            id={data.id}
+            values={{
+              ...data,
+              status: data.status as "ACTIVE" | "INACTIVE",
+            }}
+          >
+            <Button variant="outline" size="icon">
+              <PenSquare className="size-3.5" />
+            </Button>
+          </MarketDialog>
         </CardAction>
       </CardHeader>
     </Card>

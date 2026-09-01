@@ -13,16 +13,26 @@ const countries = new Hono<AppContext>()
         take,
         skip,
         include: {
-          states: true,
+          currency: true,
+          _count: {
+            select: {
+              states: true,
+            },
+          },
         },
       }),
       prisma.country.count(),
     ])
 
+    const countriesWithStateCount = countries.map(({ _count, ...rest }) => ({
+      ...rest,
+      stateCount: _count.states,
+    }))
+
     const pageCount = Math.ceil(total / take)
     return c.json({
       success: true,
-      data: countries,
+      data: countriesWithStateCount,
       pagination: {
         page,
         pageSize: take,
@@ -43,8 +53,14 @@ const countries = new Hono<AppContext>()
         },
         take,
         skip,
+        include: {
+          _count: {
+            select: {
+              cities: true,
+            },
+          },
+        },
       }),
-
       prisma.state.count({
         where: {
           countryId,
@@ -54,9 +70,14 @@ const countries = new Hono<AppContext>()
 
     const pageCount = Math.ceil(total / take)
 
+    const statesWithCityCount = states.map(({ _count, ...rest }) => ({
+      ...rest,
+      cityCount: _count.cities,
+    }))
+
     return c.json({
       success: true,
-      data: states,
+      data: statesWithCityCount,
       pagination: {
         page,
         pageSize: take,
@@ -90,6 +111,31 @@ const countries = new Hono<AppContext>()
     return c.json({
       success: true,
       data: cities,
+      pagination: {
+        page,
+        pageSize: take,
+        pageCount,
+        total,
+      },
+    })
+  })
+  .get("/currencies", async (c) => {
+    const query = c.req.query()
+    const { page, take, skip } = parsePagination(query)
+
+    const [currencies, total] = await prisma.$transaction([
+      prisma.currency.findMany({
+        take,
+        skip,
+      }),
+      prisma.currency.count({}),
+    ])
+
+    const pageCount = Math.ceil(total / take)
+
+    return c.json({
+      success: true,
+      data: currencies,
       pagination: {
         page,
         pageSize: take,

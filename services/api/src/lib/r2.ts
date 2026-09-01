@@ -1,4 +1,5 @@
-import { S3Client } from "@aws-sdk/client-s3"
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
 export const r2 = new S3Client({
   region: "auto",
@@ -10,3 +11,14 @@ export const r2 = new S3Client({
 })
 
 export const R2_BUCKET = process.env.R2_BUCKET_NAME!
+
+export async function getR2Url(key: string, expiresIn = 24 * 60 * 60) {
+  const command = new GetObjectCommand({
+    Bucket: R2_BUCKET,
+    Key: key,
+  })
+
+  return getSignedUrl(r2, command, {
+    expiresIn,
+  })
+}

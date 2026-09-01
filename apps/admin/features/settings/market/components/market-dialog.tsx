@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react"
 import {
   AppDrawer,
   AppDrawerContent,
@@ -8,24 +7,30 @@ import {
   AppDrawerTitle,
   AppDrawerTrigger,
 } from "@blak/ui/components/blak/app-drawer"
-import { CountrySelector } from "./country-selector"
-import { Button } from "@blak/ui/components/button"
+import React from "react"
+import MarketForm from "../forms/market-form"
+import { MarketFormValues } from "../market.schema"
 
-export const MarketDialog = ({ children }: { children: React.ReactNode }) => {
+export const MarketDialog = ({
+  id,
+  values,
+  children,
+}: {
+  id?: string
+  values?: MarketFormValues
+  children: React.ReactNode
+}) => {
   const [open, setOpen] = React.useState(false)
-
   return (
     <AppDrawer open={open} onOpenChange={setOpen}>
       <AppDrawerTrigger asChild>{children}</AppDrawerTrigger>
-      <AppDrawerContent className="sm:min-w-2xl">
+      <AppDrawerContent className="sm:max-w-2xl">
         <AppDrawerHeader>
           <AppDrawerTitle className="text-xl font-bold">
-            New Market
+            {id ? "Edit Market" : "Add Market"}
           </AppDrawerTitle>
         </AppDrawerHeader>
-        <CountrySelector>
-          <Button>Country</Button>
-        </CountrySelector>
+        <MarketForm id={id} values={values} onSuccess={() => setOpen(false)} />
       </AppDrawerContent>
     </AppDrawer>
   )

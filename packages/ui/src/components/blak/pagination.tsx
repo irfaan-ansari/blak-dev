@@ -19,7 +19,7 @@ export const Pagination = ({
   const end = Math.min(page * pageSize, total)
 
   return (
-    <div className="sticky bottom-4 z-2 mx-auto mt-auto flex min-h-16 w-full max-w-2xl items-center justify-between rounded-2xl border-2 border-background bg-secondary/20 p-3 text-sm text-muted-foreground shadow-sm ring-1 ring-ring/20 backdrop-blur-2xl">
+    <div className="sticky bottom-4 z-2 mx-auto mt-auto flex min-h-16 w-full max-w-2xl items-center justify-between rounded-lg border-2 bg-background p-3 text-sm text-muted-foreground shadow-lg backdrop-blur-2xl">
       <span>
         Showing {start}–{end} of {total}
       </span>

@@ -18,7 +18,9 @@ export const VehicleDialog = ({ children }: { children: React.ReactNode }) => {
 
       <AppDrawerContent className="sm:max-w-2xl">
         <AppDrawerHeader>
-          <AppDrawerTitle>Add Vehicle</AppDrawerTitle>
+          <AppDrawerTitle className="text-xl font-bold">
+            Add Vehicle
+          </AppDrawerTitle>
         </AppDrawerHeader>
         <VehicleForm onSuccess={() => setOpen(false)} />
       </AppDrawerContent>

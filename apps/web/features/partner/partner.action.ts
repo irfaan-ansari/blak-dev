@@ -21,6 +21,7 @@ export const createPartner = async (data: Payload) => {
         contactTitle,
         contactPhone,
         contactEmail,
+        currentStatus: "SUBMITTED",
         partnerApplication: {
           create: {
             ...application,
@@ -34,7 +35,7 @@ export const createPartner = async (data: Payload) => {
       data: {
         entityId: result.id,
         entityType: "APPLICATION",
-        status: "UNDER_REVIEW",
+        status: "PENDING",
         reason: "Application submitted",
       },
     })

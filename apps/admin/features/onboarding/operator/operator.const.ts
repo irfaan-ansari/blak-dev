@@ -11,10 +11,10 @@ import { StatusActionConfig, StatusConfig } from "@/features/shared/shared.type"
 import { ApplicationStatus } from "@/features/onboarding/application.type"
 
 export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
-  PENDING: {
+  SUBMITTED: {
     label: "New",
     icon: CircleDashed,
-    className: "text-primary-foreground! bg-amber-200! border-amber-300!",
+    className: "text-primary-foreground! bg-yellow-200! border-yellow-300!",
   },
   UNDER_REVIEW: {
     label: "Under Review",
@@ -24,35 +24,29 @@ export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
   APPROVED: {
     label: "Approved",
     icon: BadgeCheck,
-    className: "text-primary-foreground bg-green-500 border-green-600",
+    className: "text-primary-foreground bg-lime-300 border-lime-400",
   },
   REJECTED: {
     label: "Rejected",
     icon: CircleSlash,
-    className: "text-primary-foreground bg-red-500 border-red-600",
+    className: "text-primary-foreground bg-red-300 border-red-400",
   },
   INFO_REQUIRED: {
     label: "Withdrawn",
     icon: CircleMinus,
-    className: "text-primary-foreground bg-violet-500 border-violet-600",
+    className: "text-primary-foreground bg-violet-300 border-violet-400",
   },
 } as const
 
 export const AVAILABLE_ACTIONS: Partial<
   Record<ApplicationStatus, StatusActionConfig[]>
 > = {
-  UNDER_REVIEW: [
+  SUBMITTED: [
     {
       label: "Approve",
       variant: "ghost",
       icon: BadgeCheck,
       action: "approve",
-    },
-    {
-      label: "Request information",
-      variant: "ghost",
-      icon: Info,
-      action: "request_information",
     },
     {
       label: "Reject",

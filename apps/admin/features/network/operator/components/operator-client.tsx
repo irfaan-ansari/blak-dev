@@ -1,31 +1,37 @@
 "use client"
 
 import React from "react"
-import {
-  EmptyState,
-  ErrorState,
-  PageSkeleton,
-} from "@blak/ui/components/blak/empty-state"
+
 import { OperatorCard } from "./operator-card"
 import { useOperators } from "../operator.data"
+import { QueryBoundary } from "@/components/query-boundry"
+import { Pagination } from "@blak/ui/components/blak/pagination"
+import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
-const OperatorClient = () => {
-  const { data, isPending, isError, error } = useOperators()
-
-  if (isPending) return <PageSkeleton />
-
-  if (isError) return <ErrorState title={error.message} />
-
-  if (data?.data?.length === 0)
-    return <EmptyState title="No operators found." />
+export const OperatorClient = () => {
+  const { queryParams } = useRouterStuff()
+  const query = useOperators()
 
   return (
-    <div className="space-y-3">
-      {data?.data.map((app) => (
-        <OperatorCard data={app} key={app.id} />
-      ))}
-    </div>
+    <QueryBoundary query={query} isEmpty={query.data?.data?.length === 0}>
+      {(data) => (
+        <>
+          <div className="space-y-2">
+            {data?.data.map((app) => (
+              <OperatorCard data={app} key={app.id} />
+            ))}
+          </div>
+          <Pagination
+            page={data?.pagination.page}
+            pageSize={data?.pagination.pageSize}
+            pageCount={data?.pagination.pageCount}
+            total={data?.pagination.total}
+            onPageChange={(page) =>
+              queryParams({ set: { page: page.toString() } })
+            }
+          />
+        </>
+      )}
+    </QueryBoundary>
   )
 }
-
-export default OperatorClient

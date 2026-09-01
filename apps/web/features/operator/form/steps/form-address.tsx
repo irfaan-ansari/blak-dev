@@ -16,6 +16,9 @@ import {
   SelectValue,
 } from "@blak/ui/components/select"
 import { COUNTRIES } from "@/features/shared/shared.const"
+import { CountrySelector } from "@/features/shared/components/country-selector"
+import { Button } from "@blak/ui/components/button"
+import { ChevronDown } from "lucide-react"
 
 export const FormAddress = () => {
   const t = useTranslations("operator.form")
@@ -102,19 +105,21 @@ export const FormAddress = () => {
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel>{t("country.label")}</FieldLabel>
 
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger aria-invalid={fieldState.invalid}>
-                <SelectValue placeholder={t("country.placeholder")} />
-              </SelectTrigger>
-
-              <SelectContent>
-                {COUNTRIES.map((country) => (
-                  <SelectItem key={country.code} value={country.name}>
-                    {country.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <CountrySelector
+              selected={field.value}
+              onSelectedChange={(value) => {
+                field.onChange(value.name)
+              }}
+            >
+              <Button
+                id="country"
+                className="w-full justify-start"
+                variant="outline"
+              >
+                <span>{field.value || "Select country"}</span>
+                <ChevronDown className="ml-auto self-center" />
+              </Button>
+            </CountrySelector>
 
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>

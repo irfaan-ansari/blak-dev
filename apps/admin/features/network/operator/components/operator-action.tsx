@@ -7,6 +7,7 @@ import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
 import { useQueryClient } from "@tanstack/react-query"
 import { AVAILABLE_ACTIONS } from "../operator.const"
+import { updateOperatorStatus } from "../operator.action"
 
 export const OperatorAction = ({ data }: { data: Operator }) => {
   const { open } = useAppDialog()
@@ -17,27 +18,27 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
 
   const handleAction = (action: string) => {
     switch (action) {
-      case "approve":
+      case "activate":
         open({
           variant: "success",
-          title: "Approve application",
+          title: "Activate account",
           description:
-            "Approving this application will send an invitation email to the operator.",
+            "This will activate the account and send an invitation email with instructions to access the platform.",
           action: {
-            label: "Yes, approve",
+            label: "Activate Account",
             onClick: async () => {
-              //   const { serverError } = await processOperatorApplication({
-              //     id: data.id,
-              //     action,
-              //   })
-              //   if (serverError) {
-              //     toast.error(serverError.message)
-              //   } else {
-              //     toast.success("Approved and invitation sent.")
-              //     queryClient.invalidateQueries({
-              //       queryKey: ["operator-applications"],
-              //     })
-              //   }
+              const { serverError } = await updateOperatorStatus({
+                id: data.id,
+                action,
+              })
+              if (serverError) {
+                toast.error(serverError.message)
+              } else {
+                toast.success("Approved and invitation sent.")
+                queryClient.invalidateQueries({
+                  queryKey: ["operators"],
+                })
+              }
             },
           },
           cancel: {
@@ -48,39 +49,25 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
       case "reject":
         open({
           variant: "warning",
-          title: "Reject application",
+          title: "Decline submitted documents",
           description:
-            "Rejecting this application will send a notification email to the operator.",
+            "The submitted documents do not meet the review requirements. The operator will be notified and asked to provide updated documentation.",
           action: {
-            label: "Yes, reject",
+            label: "Yes, Decline",
             onClick: async () => {
-              //   const { serverError } = await processOperatorApplication({
-              //     id: data.id,
-              //     action,
-              //   })
-              //   if (serverError) {
-              //     toast.error(serverError.message)
-              //   } else {
-              //     toast.success("Approved and invitation sent.")
-              //     queryClient.invalidateQueries({
-              //       queryKey: ["operator-applications"],
-              //     })
-              //   }
+              const { serverError } = await updateOperatorStatus({
+                id: data.id,
+                action,
+              })
+              if (serverError) {
+                toast.error(serverError.message)
+              } else {
+                toast.success("Documents declined and notification email sent.")
+                queryClient.invalidateQueries({
+                  queryKey: ["operators"],
+                })
+              }
             },
-          },
-          cancel: {
-            label: "Cancel",
-          },
-        })
-        return
-      case "request_information":
-        open({
-          variant: "info",
-          title: "Request information",
-          description:
-            "Rejecting this application will send a notification email to the operator.",
-          action: {
-            label: "Yes, reject",
           },
           cancel: {
             label: "Cancel",

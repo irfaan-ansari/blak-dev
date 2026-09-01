@@ -7,6 +7,7 @@ import { slugify } from "@blak/utils/string"
 import { withPermission } from "@/lib/safe-action"
 import { OperatorApplication } from "./operator.type"
 import { processOperatorApplicationschema } from "./operator.schema"
+import { AppError } from "@blak/utils/error"
 
 export const processOperatorApplication = withPermission({
   application: ["update"],
@@ -15,7 +16,8 @@ export const processOperatorApplication = withPermission({
   .action(async ({ parsedInput, ctx }) => {
     const { id, action } = parsedInput
     const { session } = ctx
-    const application = await prisma.application.findUnique({
+
+    const application = await prisma.application.findFirst({
       where: { id },
       include: { operatorApplication: true },
     })
@@ -37,6 +39,7 @@ export const processOperatorApplication = withPermission({
       )
       const url = new URL(process.env.NEXT_PUBLIC_AUTH_URL!)
       inviteUrl = `${url.origin}/auth/accept-invitation/${result.id}`
+      console.log(inviteUrl)
     }
 
     return { success: true, inviteUrl }
@@ -123,6 +126,23 @@ async function createOrgForApplication(
     country,
   } = application.application
 
+  const market = await prisma.market.findFirst({
+    where: {
+      country: {
+        name: {
+          contains: country,
+          mode: "insensitive",
+        },
+      },
+    },
+  })
+
+  if (!market) {
+    throw new AppError("NOT_FOUND", {
+      message: "Market not found",
+    })
+  }
+
   const org = await auth.api.createOrganization({
     body: {
       slug: slugify(legalBusinessName),
@@ -137,6 +157,7 @@ async function createOrgForApplication(
       contactTitle: application.contactTitle,
       contactPhone: application.contactPhone,
       contactEmail: application.contactEmail,
+      marketId: market.id,
     },
     headers: await headers(),
   })

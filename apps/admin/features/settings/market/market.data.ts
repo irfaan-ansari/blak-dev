@@ -1,40 +1,77 @@
+import { City, Currency } from "@blak/db"
 import { apiClient } from "@/lib/api-client"
-import { City, Country, State } from "@blak/db"
 import { useQuery } from "@tanstack/react-query"
 import { PaginatedResponse } from "@/features/shared/shared.type"
 import { type AppError } from "@blak/utils"
+import {
+  CountryWithStateCount,
+  MarketWithRelations,
+  StateWithCityCount,
+} from "./market.type"
 
-export const useCountries = () => {
-  return useQuery<PaginatedResponse<Country>, AppError>({
+export const useMarkets = () => {
+  return useQuery<PaginatedResponse<MarketWithRelations>, AppError>({
     queryKey: ["countries"],
     queryFn: async () => {
       const response =
-        await apiClient.get<PaginatedResponse<Country>>("/countries")
-
+        await apiClient.get<PaginatedResponse<MarketWithRelations>>("/markets")
+      console.log(response)
       return response
     },
     staleTime: 1000 * 60 * 60,
   })
 }
 
-export const useCountryStates = () => {
-  return useQuery<PaginatedResponse<State>, AppError>({
-    queryKey: ["states"],
+export const useCountries = () => {
+  return useQuery<PaginatedResponse<CountryWithStateCount>, AppError>({
+    queryKey: ["countries"],
     queryFn: async () => {
       const response =
-        await apiClient.get<PaginatedResponse<State>>("/countries")
+        await apiClient.get<PaginatedResponse<CountryWithStateCount>>(
+          "/countries"
+        )
 
       return response
     },
     staleTime: 1000 * 60 * 60,
   })
 }
-export const useStateCities = () => {
+
+export const useCurrencies = () => {
+  return useQuery<PaginatedResponse<Currency>, AppError>({
+    queryKey: ["currencies"],
+    queryFn: async () => {
+      const response = await apiClient.get<PaginatedResponse<Currency>>(
+        "/countries/currencies"
+      )
+
+      return response
+    },
+    staleTime: 1000 * 60 * 60,
+  })
+}
+
+export const useCountryStates = (countryId: string) => {
+  return useQuery<PaginatedResponse<StateWithCityCount>, AppError>({
+    queryKey: ["states", countryId],
+    queryFn: async () => {
+      const response = await apiClient.get<
+        PaginatedResponse<StateWithCityCount>
+      >(`/countries/${countryId}/states`)
+
+      return response
+    },
+    staleTime: 1000 * 60 * 60,
+  })
+}
+
+export const useStateCities = (stateId: string) => {
   return useQuery<PaginatedResponse<City>, AppError>({
-    queryKey: ["cities"],
+    queryKey: ["cities", stateId],
     queryFn: async () => {
-      const response =
-        await apiClient.get<PaginatedResponse<City>>("/countries")
+      const response = await apiClient.get<PaginatedResponse<City>>(
+        `/countries/states/${stateId}/cities`
+      )
 
       return response
     },

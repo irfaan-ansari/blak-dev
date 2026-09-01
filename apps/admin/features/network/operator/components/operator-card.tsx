@@ -10,8 +10,7 @@ import { Building2, Mail, MapPin, Smartphone } from "lucide-react"
 
 import { CopyButton } from "@blak/ui/components/blak/copy-button"
 import { Avatar, AvatarFallback, AvatarImage } from "@blak/ui/components/avatar"
-import { formatRelative } from "@blak/utils/format"
-import { pluralize } from "@blak/utils/string"
+
 import { StatusBadge } from "@/features/shared/components/status-badge"
 import { Operator } from "../operator.type"
 import { STATUS_MAP } from "../operator.const"

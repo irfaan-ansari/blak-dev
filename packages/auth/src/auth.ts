@@ -28,6 +28,7 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true,
   },
   session: {
     additionalFields: {
@@ -82,7 +83,7 @@ export const auth = betterAuth({
             status: {
               type: "string",
               required: true,
-              defaultValue: "PENDING_ONBOARDING",
+              defaultValue: "ONBOARDING",
               input: false,
             },
             legalName: {

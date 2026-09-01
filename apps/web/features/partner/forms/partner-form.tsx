@@ -29,7 +29,7 @@ export function PartnerForm() {
 
   const commonT = useTranslations("common")
   const t = useTranslations("partner.form")
-  const [active, setActive] = React.useState(3)
+  const [active, setActive] = React.useState(0)
   const [pending, setPending] = React.useState(false)
 
   const form = useForm<PartnerSchema>({

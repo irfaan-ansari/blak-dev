@@ -16,7 +16,7 @@ import {
 export const SIDEBAR_NAV = {
   dashboard: {
     label: "Dashboard",
-    href: "/dashboard",
+    href: "/",
     icon: LayoutDashboard,
     items: [],
   },
@@ -43,9 +43,9 @@ export const SIDEBAR_NAV = {
     href: "#",
     icon: Wallet,
     items: [
-      { label: "Payouts", href: "/finance/payouts" },
-      { label: "Earnings", href: "/finance/earnings" },
-      { label: "Transactions", href: "/finance/transactions" },
+      { label: "Payouts", href: "/" },
+      { label: "Earnings", href: "/" },
+      { label: "Transactions", href: "/" },
     ],
   },
   insights: {
@@ -53,8 +53,8 @@ export const SIDEBAR_NAV = {
     href: "#",
     icon: BarChart3,
     items: [
-      { label: "Reports", href: "/insights/reports" },
-      { label: "Performance", href: "/insights/performance" },
+      { label: "Reports", href: "/" },
+      { label: "Performance", href: "/" },
     ],
   },
   users: {
@@ -69,8 +69,7 @@ export const SIDEBAR_NAV = {
     icon: Settings,
     items: [
       { label: "General", href: "/settings/general" },
-      { label: "Documents", href: "/settings/documents" },
-      { label: "Payout Methods", href: "/settings/payout-methods" },
+      { label: "Compliance", href: "/settings/compliance" },
     ],
   },
 } as const

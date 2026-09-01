@@ -115,9 +115,7 @@ enum ReviewStatus {
 }
 
 enum DriverStatus {
-    PENDING
-    UNDER_REVIEW
-    INFO_REQUIRED
-    APPROVED
-    REJECTED
+  ACTIVE
+  INACTIVE
+  SUSPENDED
 }

@@ -1,7 +1,8 @@
 import { Hono } from "hono"
+import { prisma } from "@blak/db"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { prisma } from "@blak/db"
+import { getR2Url } from "@/lib/r2"
 
 const vehicles = new Hono<AppContext>().get("/", async (c) => {
   const organizationId = c.get("session").activeOrganizationId!
@@ -26,10 +27,39 @@ const vehicles = new Hono<AppContext>().get("/", async (c) => {
     }),
   ])
 
+  const objs = await prisma.document.findMany({
+    where: {
+      entity: "VEHICLE",
+      entityId: {
+        in: results.map((r) => r.id),
+      },
+    },
+  })
+
+  const documents = await Promise.all(
+    objs.map(async ({ size, ...obj }) => ({
+      ...obj,
+      url: await getR2Url(obj.storageKey),
+    }))
+  )
+
+  const imagesByVehicle = documents.reduce<Record<string, typeof documents>>(
+    (acc, image) => {
+      ;(acc[image.entityId] ??= []).push(image)
+      return acc
+    },
+    {}
+  )
+
+  const data = results.map((vehicle) => ({
+    ...vehicle,
+    images: imagesByVehicle[vehicle.id] ?? [],
+  }))
+
   const pageCount = Math.ceil(total / take)
 
   return c.json({
-    data: results,
+    data,
     pagination: {
       page,
       pageSize: take,

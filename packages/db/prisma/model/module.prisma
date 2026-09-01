@@ -159,7 +159,7 @@ model Driver {
     licenseNumber  String        @unique
     licenseExpiry  DateTime
     country        String
-    status         DriverStatus  @default(PENDING)
+    status         DriverStatus  @default(INACTIVE)
     createdAt      DateTime      @default(now())
     updatedAt      DateTime      @updatedAt
 

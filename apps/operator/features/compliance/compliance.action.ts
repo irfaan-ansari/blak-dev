@@ -1,25 +1,21 @@
 "use server"
 
-import { withPermission } from "@/lib/safe-action"
 import { prisma } from "@blak/db"
-import { documentActionSchema } from "./onboarding.schema"
-import { AppError } from "@blak/utils"
+import { withPermission } from "@/lib/safe-action"
+import { createComplianceRecordSchema } from "./compliance.schema"
 
-export const uploadDocuments = withPermission({ app: ["operator"] })
-  .inputSchema(documentActionSchema)
+export const createComplianceRecord = withPermission({ app: ["operator"] })
+  .inputSchema(createComplianceRecordSchema)
   .action(async ({ ctx, clientInput }) => {
-    const { session } = ctx
     const { data } = clientInput
-    const organizationId = session.activeOrganizationId
+    const { session } = ctx
 
-    if (!organizationId) {
-      throw new AppError("FORBIDDEN", {
-        message: "No active organization",
-      })
-    }
+    const organizationId = session.activeOrganizationId!
+    console.log("client input", clientInput)
+    console.log("INPUT", clientInput, organizationId)
 
-    await prisma.$transaction(async (tx) => {
-      await tx.document.createMany({
+    await Promise.all([
+      prisma.document.createMany({
         data: data.map((document) => ({
           entityId: organizationId,
           entity: "OPERATOR",
@@ -28,32 +24,30 @@ export const uploadDocuments = withPermission({ app: ["operator"] })
           size: document.size,
           storageKey: document.storageKey,
           category: document.category,
-          name: document.name,
+          name: document.fileName,
           url: document.url,
           type: "DOCUMENT",
           status: "PENDING",
         })),
-      })
-
-      await tx.review.create({
+      }),
+      prisma.review.create({
         data: {
           entityId: organizationId,
           entityType: "OPERATOR",
-          status: "UNDER_REVIEW",
+          status: "PENDING",
           reason: "Documents submitted.",
         },
-      })
-
-      await tx.organization.update({
+      }),
+      prisma.organization.update({
         where: {
           id: organizationId,
         },
         data: {
-          status: "UNDER_REVIEW",
+          status: "SUBMITTED",
           onboardingStartedAt: new Date(),
         },
-      })
-    })
-
-    return { id: organizationId }
+      }),
+    ])
+    console.log("success")
+    return { success: true }
   })

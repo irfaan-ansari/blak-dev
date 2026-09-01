@@ -16,7 +16,8 @@ export const processOperatorApplication = withPermission({
   .action(async ({ parsedInput, ctx }) => {
     const { id, action } = parsedInput
     const { session } = ctx
-    const application = await prisma.application.findUnique({
+
+    const application = await prisma.application.findFirst({
       where: { id },
       include: { operatorApplication: true },
     })
@@ -38,6 +39,7 @@ export const processOperatorApplication = withPermission({
       )
       const url = new URL(process.env.NEXT_PUBLIC_AUTH_URL!)
       inviteUrl = `${url.origin}/auth/accept-invitation/${result.id}`
+      console.log(inviteUrl)
     }
 
     return { success: true, inviteUrl }

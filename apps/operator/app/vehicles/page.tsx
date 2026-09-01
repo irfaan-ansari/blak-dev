@@ -1,8 +1,9 @@
 import React from "react"
 import { Button } from "@blak/ui/components/button"
-import { ChevronDown, ListFilter, Plus } from "lucide-react"
+import { ChevronDown, CloudUpload, ListFilter, Plus } from "lucide-react"
 import VehicleClient from "@/features/vehicle/components/vehicle-client"
 import { VehicleDialog } from "@/features/vehicle/components/vehicle-dialog"
+import { VehicleImportDialog } from "@/features/vehicle/components/vehicle-import-dialog"
 
 const VehiclesPage = () => {
   return (
@@ -25,6 +26,12 @@ const VehiclesPage = () => {
           Sort by
           <ListFilter />
         </Button>
+        <VehicleImportDialog>
+          <Button size="sm">
+            <CloudUpload />
+            Import
+          </Button>
+        </VehicleImportDialog>
         <VehicleDialog>
           <Button size="sm">
             <Plus />

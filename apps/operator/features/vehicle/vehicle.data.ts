@@ -1,18 +1,20 @@
 import { useQuery } from "@tanstack/react-query"
 import { ApiResponse, PaginatedResponse } from "../shared/shared.type"
-import { apiClient, AppError } from "@blak/utils"
-import { Vehicle } from "./vehicle.type"
+import { AppError } from "@blak/utils"
+
+import { apiClient } from "@/lib/api-client"
+import { VehicleWithImages } from "./vehicle.type"
 
 export const useVehicles = () => {
-  return useQuery<PaginatedResponse<Vehicle[]>, AppError>({
+  return useQuery<PaginatedResponse<VehicleWithImages>, AppError>({
     queryKey: ["vehicles"],
-    queryFn: () => apiClient.get("/v1/operator/vehicles"),
+    queryFn: () => apiClient.get("/vehicles"),
   })
 }
 
 export const useVehicle = (id: string) => {
-  return useQuery<ApiResponse<Vehicle>, AppError>({
+  return useQuery<ApiResponse<VehicleWithImages>, AppError>({
     queryKey: ["vehicle"],
-    queryFn: () => apiClient.get(`/v1/operator/vehicles/${id}`),
+    queryFn: () => apiClient.get(`/vehicles/${id}`),
   })
 }

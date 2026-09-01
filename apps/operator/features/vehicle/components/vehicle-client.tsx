@@ -29,8 +29,8 @@ const VehicleClient = () => {
 
   return (
     <div className="space-y-2">
-      {[...Array(10)].map((_, i) => (
-        <VehicleCard key={i} />
+      {data.data.map((data, i) => (
+        <VehicleCard key={i} data={data} />
       ))}
     </div>
   )

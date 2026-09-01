@@ -1,3 +1,5 @@
-import { Vehicle as DBVehicle } from "@blak/db"
+import { Vehicle as DBVehicle, Document } from "@blak/db"
 
-export type Vehicle = DBVehicle
+export type VehicleWithImages = DBVehicle & {
+  images: Document[]
+}

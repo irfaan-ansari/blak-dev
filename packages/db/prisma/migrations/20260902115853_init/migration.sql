@@ -1,41 +1,47 @@
 -- CreateEnum
-CREATE TYPE "DocumentType" AS ENUM ('IMAGE', 'VIDEO', 'AUDIO', 'DOCUMENT', 'OTHER');
+CREATE TYPE "SymbolPosition" AS ENUM ('PREFIX', 'SUFFIX');
 
 -- CreateEnum
-CREATE TYPE "DocumentStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'EXPIRED');
+CREATE TYPE "DistanceUnit" AS ENUM ('KM', 'MILES');
 
 -- CreateEnum
 CREATE TYPE "MarketStatus" AS ENUM ('DRAFT', 'PENDING_LICENSE', 'COMING_SOON', 'ACTIVE', 'LIMITED', 'SUSPENDED', 'INACTIVE', 'ARCHIVED');
 
 -- CreateEnum
-CREATE TYPE "MarketScope" AS ENUM ('COUNTRY', 'REGION', 'CITY');
+CREATE TYPE "MarketScope" AS ENUM ('COUNTRY', 'STATE', 'CITY');
 
 -- CreateEnum
-CREATE TYPE "OrganizationStatus" AS ENUM ('PENDING_ONBOARDING', 'UNDER_REVIEW', 'ACTIVE', 'SUSPENDED', 'INACTIVE');
+CREATE TYPE "OrganizationStatus" AS ENUM ('ONBOARDING', 'PENDING_APPROVAL', 'ACTIVE', 'INACTIVE', 'SUSPENDED', 'TERMINATED');
 
 -- CreateEnum
 CREATE TYPE "OrganizationType" AS ENUM ('OPERATOR', 'PARTNER');
 
 -- CreateEnum
-CREATE TYPE "ApplicationType" AS ENUM ('OPERATOR', 'PARTNER');
+CREATE TYPE "EntityType" AS ENUM ('OPERATOR', 'PARTNER', 'DRIVER', 'VEHICLE');
 
 -- CreateEnum
-CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'UNDER_REVIEW', 'INFO_REQUIRED', 'APPROVED', 'REJECTED');
+CREATE TYPE "ComplianceType" AS ENUM ('NUMBER', 'DOCUMENT');
 
 -- CreateEnum
-CREATE TYPE "VehicleCategory" AS ENUM ('LUXURY_SEDAN', 'LUXURY_SUV', 'LIMOUSINE', 'EXECUTIVE_VAN');
-
--- CreateEnum
-CREATE TYPE "VehicleStatus" AS ENUM ('PENDING_APPROVAL', 'ACTIVE', 'REJECTED', 'INACTIVE', 'MAINTENANCE');
+CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING_APPROVAL', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
 CREATE TYPE "ReviewEntity" AS ENUM ('VEHICLE', 'DRIVER', 'DOCUMENT', 'APPLICATION', 'OPERATOR', 'PARTNER');
 
 -- CreateEnum
-CREATE TYPE "ReviewStatus" AS ENUM ('PENDING', 'UNDER_REVIEW', 'INFO_REQUIRED', 'APPROVED', 'REJECTED');
+CREATE TYPE "ReviewStatus" AS ENUM ('SUBMITTED', 'PENDING_APPROVAL', 'UNDER_REVIEW', 'INFO_REQUIRED', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
-CREATE TYPE "DriverStatus" AS ENUM ('PENDING', 'UNDER_REVIEW', 'INFO_REQUIRED', 'APPROVED', 'REJECTED');
+CREATE TYPE "ComplianceStatus" AS ENUM ('PENDING_APPROVAL', 'VERIFIED', 'REJECTED', 'EXPIRED');
+
+-- CreateEnum
+CREATE TYPE "VehicleCategory" AS ENUM ('LUXURY_SEDAN', 'LUXURY_SUV', 'LIMOUSINE', 'EXECUTIVE_VAN');
+
+-- CreateEnum
+CREATE TYPE "VehicleStatus" AS ENUM ('PENDING_APPROVAL', 'ACTIVE', 'DRIVER_ASSIGNED', 'REJECTED', 'INACTIVE', 'MAINTENANCE');
+
+-- CreateEnum
+CREATE TYPE "DriverStatus" AS ENUM ('PENDING_APPROVAL', 'ACTIVE', 'INACTIVE', 'ASSIGNED', 'SUSPENDED');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -118,7 +124,7 @@ CREATE TABLE "organization" (
     "metadata" TEXT,
     "phoneNumber" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "status" "OrganizationStatus" NOT NULL DEFAULT 'PENDING_ONBOARDING',
+    "status" "OrganizationStatus" NOT NULL DEFAULT 'ONBOARDING',
     "website" TEXT,
     "registrationNo" TEXT,
     "taxId" TEXT,
@@ -128,7 +134,6 @@ CREATE TABLE "organization" (
     "contactPhone" TEXT NOT NULL,
     "onboardingStartedAt" TIMESTAMP(3),
     "activatedAt" TIMESTAMP(3),
-    "userId" TEXT,
 
     CONSTRAINT "organization_pkey" PRIMARY KEY ("id")
 );
@@ -188,50 +193,13 @@ CREATE TABLE "apikey" (
 );
 
 -- CreateTable
-CREATE TABLE "country" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
-    "dialCode" TEXT,
-    "currencyId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "country_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "region" (
-    "id" TEXT NOT NULL,
-    "countryId" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "region_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "city" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
-    "countryId" TEXT NOT NULL,
-    "regionId" TEXT,
-    "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "city_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "currency" (
     "id" TEXT NOT NULL,
     "code" TEXT NOT NULL,
+    "numericCode" TEXT,
     "name" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
+    "symbolPosition" "SymbolPosition" NOT NULL DEFAULT 'PREFIX',
     "decimals" INTEGER NOT NULL DEFAULT 2,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -240,13 +208,54 @@ CREATE TABLE "currency" (
 );
 
 -- CreateTable
+CREATE TABLE "country" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "iso2" TEXT NOT NULL,
+    "iso3" TEXT,
+    "phoneCode" TEXT,
+    "currencyId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "country_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "state" (
+    "id" TEXT NOT NULL,
+    "countryId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "type" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "state_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "city" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "timezone" TEXT NOT NULL,
+    "countryId" TEXT NOT NULL,
+    "stateId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "city_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "market" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
+    "iso2" TEXT NOT NULL,
     "countryId" TEXT NOT NULL,
     "scope" "MarketScope" NOT NULL DEFAULT 'COUNTRY',
-    "timezone" TEXT NOT NULL,
+    "distanceUnit" "DistanceUnit" NOT NULL DEFAULT 'KM',
+    "timezone" TEXT,
     "locale" TEXT,
     "status" "MarketStatus" NOT NULL DEFAULT 'DRAFT',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -257,12 +266,12 @@ CREATE TABLE "market" (
 );
 
 -- CreateTable
-CREATE TABLE "market_region" (
+CREATE TABLE "market_state" (
     "marketId" TEXT NOT NULL,
-    "regionId" TEXT NOT NULL,
+    "stateId" TEXT NOT NULL,
     "countryId" TEXT NOT NULL,
 
-    CONSTRAINT "market_region_pkey" PRIMARY KEY ("marketId","regionId")
+    CONSTRAINT "market_state_pkey" PRIMARY KEY ("marketId","stateId")
 );
 
 -- CreateTable
@@ -288,41 +297,41 @@ CREATE TABLE "service_area" (
 );
 
 -- CreateTable
-CREATE TABLE "tax_rule" (
+CREATE TABLE "compliance_requirement" (
     "id" TEXT NOT NULL,
     "marketId" TEXT NOT NULL,
-    "regionId" TEXT,
+    "entityType" "EntityType" NOT NULL,
     "name" TEXT NOT NULL,
-    "rate" DECIMAL(6,4) NOT NULL,
-    "effectiveFrom" TIMESTAMP(3) NOT NULL,
-    "effectiveTo" TIMESTAMP(3),
+    "label" TEXT NOT NULL,
+    "type" "ComplianceType" NOT NULL,
+    "isRequired" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "tax_rule_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "compliance_requirement_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "required_document" (
+CREATE TABLE "compliance_record" (
     "id" TEXT NOT NULL,
-    "marketId" TEXT NOT NULL,
-    "applicationType" "ApplicationType" NOT NULL,
-    "category" TEXT NOT NULL,
+    "requirementId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "label" TEXT NOT NULL,
-    "isRequired" BOOLEAN NOT NULL DEFAULT true,
-    "allowedMimeTypes" TEXT[],
-    "maxFileSizeBytes" BIGINT,
+    "value" TEXT,
+    "fileId" TEXT,
+    "status" "ComplianceStatus" NOT NULL DEFAULT 'PENDING_APPROVAL',
+    "expiresAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "required_document_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "compliance_record_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "application" (
     "id" TEXT NOT NULL,
-    "type" "ApplicationType" NOT NULL,
-    "currentStatus" "ApplicationStatus" NOT NULL DEFAULT 'UNDER_REVIEW',
+    "type" "EntityType" NOT NULL,
+    "currentStatus" "ApplicationStatus" NOT NULL DEFAULT 'PENDING_APPROVAL',
     "marketId" TEXT,
     "organizationId" TEXT,
     "contactName" TEXT NOT NULL,
@@ -399,11 +408,12 @@ CREATE TABLE "partner_application" (
 -- CreateTable
 CREATE TABLE "vehicles" (
     "id" TEXT NOT NULL,
+    "year" INTEGER NOT NULL,
     "make" TEXT NOT NULL,
     "model" TEXT NOT NULL,
-    "year" INTEGER NOT NULL,
+    "trim" TEXT NOT NULL,
     "color" TEXT NOT NULL,
-    "plateNumber" TEXT NOT NULL,
+    "licensePlate" TEXT NOT NULL,
     "registrationNumber" TEXT,
     "vin" TEXT,
     "registrationExpiry" TIMESTAMP(3),
@@ -422,7 +432,7 @@ CREATE TABLE "review" (
     "id" TEXT NOT NULL,
     "entityType" "ReviewEntity" NOT NULL,
     "entityId" TEXT NOT NULL,
-    "status" "ReviewStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "ReviewStatus" NOT NULL DEFAULT 'PENDING_APPROVAL',
     "reason" TEXT,
     "reviewerId" TEXT,
     "reviewedAt" TIMESTAMP(3),
@@ -433,42 +443,17 @@ CREATE TABLE "review" (
 );
 
 -- CreateTable
-CREATE TABLE "document" (
+CREATE TABLE "file" (
     "id" TEXT NOT NULL,
-    "entity" TEXT NOT NULL,
-    "entityId" TEXT NOT NULL,
-    "type" "DocumentType" NOT NULL,
-    "category" TEXT,
-    "name" TEXT,
-    "fileName" TEXT NOT NULL,
-    "mimeType" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "mime" TEXT NOT NULL,
     "size" BIGINT NOT NULL,
     "storageKey" TEXT NOT NULL,
     "url" TEXT,
-    "status" "DocumentStatus",
-    "documentNumber" TEXT,
-    "issuedAt" TIMESTAMP(3),
-    "expiresAt" TIMESTAMP(3),
-    "metadata" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "document_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "driver" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "organizationId" TEXT,
-    "licenseNumber" TEXT NOT NULL,
-    "licenseExpiry" TIMESTAMP(3) NOT NULL,
-    "country" TEXT NOT NULL,
-    "status" "DriverStatus" NOT NULL DEFAULT 'PENDING',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "driver_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "file_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -517,31 +502,31 @@ CREATE INDEX "apikey_referenceId_idx" ON "apikey"("referenceId");
 CREATE INDEX "apikey_key_idx" ON "apikey"("key");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "country_code_key" ON "country"("code");
+CREATE UNIQUE INDEX "currency_code_key" ON "currency"("code");
 
 -- CreateIndex
-CREATE INDEX "region_countryId_idx" ON "region"("countryId");
+CREATE UNIQUE INDEX "currency_numericCode_key" ON "currency"("numericCode");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "region_countryId_code_key" ON "region"("countryId", "code");
+CREATE UNIQUE INDEX "country_iso2_key" ON "country"("iso2");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "region_id_countryId_key" ON "region"("id", "countryId");
+CREATE UNIQUE INDEX "country_iso3_key" ON "country"("iso3");
 
 -- CreateIndex
-CREATE INDEX "city_regionId_code_idx" ON "city"("regionId", "code");
+CREATE INDEX "state_countryId_idx" ON "state"("countryId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "state_countryId_code_key" ON "state"("countryId", "code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "state_id_countryId_key" ON "state"("id", "countryId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "city_id_countryId_key" ON "city"("id", "countryId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "city_countryId_code_key" ON "city"("countryId", "code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "currency_code_key" ON "currency"("code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "market_code_key" ON "market"("code");
+CREATE UNIQUE INDEX "market_iso2_key" ON "market"("iso2");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "market_countryId_key" ON "market"("countryId");
@@ -553,13 +538,13 @@ CREATE INDEX "market_status_idx" ON "market"("status");
 CREATE UNIQUE INDEX "market_id_countryId_key" ON "market"("id", "countryId");
 
 -- CreateIndex
-CREATE INDEX "market_region_regionId_idx" ON "market_region"("regionId");
+CREATE INDEX "market_state_stateId_idx" ON "market_state"("stateId");
 
 -- CreateIndex
-CREATE INDEX "market_region_countryId_idx" ON "market_region"("countryId");
+CREATE INDEX "market_state_countryId_idx" ON "market_state"("countryId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "market_region_regionId_key" ON "market_region"("regionId");
+CREATE UNIQUE INDEX "market_state_stateId_key" ON "market_state"("stateId");
 
 -- CreateIndex
 CREATE INDEX "market_city_cityId_idx" ON "market_city"("cityId");
@@ -571,10 +556,13 @@ CREATE INDEX "market_city_countryId_idx" ON "market_city"("countryId");
 CREATE UNIQUE INDEX "market_city_cityId_key" ON "market_city"("cityId");
 
 -- CreateIndex
-CREATE INDEX "tax_rule_marketId_effectiveFrom_idx" ON "tax_rule"("marketId", "effectiveFrom");
+CREATE INDEX "compliance_requirement_marketId_entityType_idx" ON "compliance_requirement"("marketId", "entityType");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "required_document_marketId_applicationType_category_key" ON "required_document"("marketId", "applicationType", "category");
+CREATE UNIQUE INDEX "compliance_requirement_marketId_entityType_name_key" ON "compliance_requirement"("marketId", "entityType", "name");
+
+-- CreateIndex
+CREATE INDEX "compliance_record_requirementId_idx" ON "compliance_record"("requirementId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "application_organizationId_key" ON "application"("organizationId");
@@ -598,7 +586,7 @@ CREATE UNIQUE INDEX "operator_application_applicationId_key" ON "operator_applic
 CREATE UNIQUE INDEX "partner_application_applicationId_key" ON "partner_application"("applicationId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "vehicles_plateNumber_key" ON "vehicles"("plateNumber");
+CREATE UNIQUE INDEX "vehicles_licensePlate_key" ON "vehicles"("licensePlate");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "vehicles_registrationNumber_key" ON "vehicles"("registrationNumber");
@@ -622,28 +610,7 @@ CREATE INDEX "review_entityType_entityId_idx" ON "review"("entityType", "entityI
 CREATE INDEX "review_status_idx" ON "review"("status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "document_storageKey_key" ON "document"("storageKey");
-
--- CreateIndex
-CREATE INDEX "document_entity_entityId_idx" ON "document"("entity", "entityId");
-
--- CreateIndex
-CREATE INDEX "document_entity_entityId_category_idx" ON "document"("entity", "entityId", "category");
-
--- CreateIndex
-CREATE INDEX "document_expiresAt_idx" ON "document"("expiresAt");
-
--- CreateIndex
-CREATE UNIQUE INDEX "driver_userId_key" ON "driver"("userId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "driver_licenseNumber_key" ON "driver"("licenseNumber");
-
--- CreateIndex
-CREATE INDEX "driver_organizationId_idx" ON "driver"("organizationId");
-
--- CreateIndex
-CREATE INDEX "driver_status_idx" ON "driver"("status");
+CREATE UNIQUE INDEX "file_storageKey_key" ON "file"("storageKey");
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -653,9 +620,6 @@ ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "organization" ADD CONSTRAINT "organization_marketId_fkey" FOREIGN KEY ("marketId") REFERENCES "market"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "organization" ADD CONSTRAINT "organization_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "member" ADD CONSTRAINT "member_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -673,13 +637,13 @@ ALTER TABLE "invitation" ADD CONSTRAINT "invitation_inviterId_fkey" FOREIGN KEY 
 ALTER TABLE "country" ADD CONSTRAINT "country_currencyId_fkey" FOREIGN KEY ("currencyId") REFERENCES "currency"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "region" ADD CONSTRAINT "region_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "country"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "state" ADD CONSTRAINT "state_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "country"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "city" ADD CONSTRAINT "city_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "country"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "city" ADD CONSTRAINT "city_regionId_fkey" FOREIGN KEY ("regionId") REFERENCES "region"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "city" ADD CONSTRAINT "city_stateId_fkey" FOREIGN KEY ("stateId") REFERENCES "state"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "market" ADD CONSTRAINT "market_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "country"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -688,10 +652,10 @@ ALTER TABLE "market" ADD CONSTRAINT "market_countryId_fkey" FOREIGN KEY ("countr
 ALTER TABLE "market" ADD CONSTRAINT "market_currencyId_fkey" FOREIGN KEY ("currencyId") REFERENCES "currency"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "market_region" ADD CONSTRAINT "market_region_marketId_countryId_fkey" FOREIGN KEY ("marketId", "countryId") REFERENCES "market"("id", "countryId") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "market_state" ADD CONSTRAINT "market_state_marketId_countryId_fkey" FOREIGN KEY ("marketId", "countryId") REFERENCES "market"("id", "countryId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "market_region" ADD CONSTRAINT "market_region_regionId_countryId_fkey" FOREIGN KEY ("regionId", "countryId") REFERENCES "region"("id", "countryId") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "market_state" ADD CONSTRAINT "market_state_stateId_countryId_fkey" FOREIGN KEY ("stateId", "countryId") REFERENCES "state"("id", "countryId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "market_city" ADD CONSTRAINT "market_city_marketId_countryId_fkey" FOREIGN KEY ("marketId", "countryId") REFERENCES "market"("id", "countryId") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -703,13 +667,13 @@ ALTER TABLE "market_city" ADD CONSTRAINT "market_city_cityId_countryId_fkey" FOR
 ALTER TABLE "service_area" ADD CONSTRAINT "service_area_marketId_fkey" FOREIGN KEY ("marketId") REFERENCES "market"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tax_rule" ADD CONSTRAINT "tax_rule_marketId_fkey" FOREIGN KEY ("marketId") REFERENCES "market"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "compliance_requirement" ADD CONSTRAINT "compliance_requirement_marketId_fkey" FOREIGN KEY ("marketId") REFERENCES "market"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tax_rule" ADD CONSTRAINT "tax_rule_regionId_fkey" FOREIGN KEY ("regionId") REFERENCES "region"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "compliance_record" ADD CONSTRAINT "compliance_record_requirementId_fkey" FOREIGN KEY ("requirementId") REFERENCES "compliance_requirement"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "required_document" ADD CONSTRAINT "required_document_marketId_fkey" FOREIGN KEY ("marketId") REFERENCES "market"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "compliance_record" ADD CONSTRAINT "compliance_record_fileId_fkey" FOREIGN KEY ("fileId") REFERENCES "file"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "application" ADD CONSTRAINT "application_marketId_fkey" FOREIGN KEY ("marketId") REFERENCES "market"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -731,9 +695,3 @@ ALTER TABLE "vehicles" ADD CONSTRAINT "vehicles_driverId_fkey" FOREIGN KEY ("dri
 
 -- AddForeignKey
 ALTER TABLE "review" ADD CONSTRAINT "review_reviewerId_fkey" FOREIGN KEY ("reviewerId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "driver" ADD CONSTRAINT "driver_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "driver" ADD CONSTRAINT "driver_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;

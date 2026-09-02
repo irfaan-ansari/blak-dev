@@ -39,24 +39,6 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
                 queryClient.invalidateQueries({
                   queryKey: ["operator-applications"],
                 })
-                console.log(response)
-                if (response?.inviteUrl) {
-                  open({
-                    variant: "info",
-                    title: "Invitation Sent",
-                    description: (
-                      <div className="space-y-2">
-                        <p>
-                          Share the link below with the invitee to accept the
-                          invitation:
-                        </p>
-                        <p className="rounded-md bg-muted p-2 text-sm break-all">
-                          {response?.inviteUrl}
-                        </p>
-                      </div>
-                    ),
-                  })
-                }
               }
             },
           },
@@ -81,26 +63,12 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
               if (serverError) {
                 toast.error(serverError.message)
               } else {
-                toast.success("Approved and invitation sent.")
+                toast.success("Application rejected.")
                 queryClient.invalidateQueries({
                   queryKey: ["operator-applications"],
                 })
               }
             },
-          },
-          cancel: {
-            label: "Cancel",
-          },
-        })
-        return
-      case "request_information":
-        open({
-          variant: "info",
-          title: "Request information",
-          description:
-            "Rejecting this application will send a notification email to the operator.",
-          action: {
-            label: "Yes, reject",
           },
           cancel: {
             label: "Cancel",
@@ -115,10 +83,17 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
       open={isOpen}
       setOpen={setIsOpen}
       trigger={
-        <Button variant="outline" size="icon" disabled={!actions.length}>
+        <Button
+          variant="outline"
+          size="xs"
+          className="bg-foreground text-background hover:bg-foreground/80 hover:text-background"
+          disabled={!actions.length}
+        >
+          Action
           <EllipsisVertical />
         </Button>
       }
+      className="md:max-w-40"
     >
       {actions.map((ac) => (
         <Button

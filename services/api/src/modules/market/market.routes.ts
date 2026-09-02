@@ -7,15 +7,11 @@ const markets = new Hono<AppContext>().get("/", async (c) => {
   const { q, status, cat, ...rest } = c.req.query()
   const { page, take, skip } = parsePagination(rest)
 
-  const [markets, total] = await Promise.all([
+  const [data, total] = await Promise.all([
     prisma.market.findMany({
       include: {
-        country: {
-          include: {
-            _count: { select: { states: true, cities: true } },
-          },
-        },
         currency: true,
+        country: true,
         complianceRequirements: {
           orderBy: { entityType: "asc" },
         },
@@ -26,18 +22,6 @@ const markets = new Hono<AppContext>().get("/", async (c) => {
     }),
     prisma.market.count(),
   ])
-
-  const data = markets.map(({ country, ...rest }) => {
-    const { _count, ...countryRest } = country
-    return {
-      ...rest,
-      country: {
-        ...countryRest,
-      },
-      stateCount: _count.states,
-      cityCount: _count.cities,
-    }
-  })
 
   const pageCount = Math.ceil(total / take)
 

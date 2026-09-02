@@ -1,13 +1,9 @@
-import { City, Currency } from "@blak/db"
+import { City, Country, Currency, State } from "@blak/db"
 import { apiClient } from "@/lib/api-client"
 import { useQuery } from "@tanstack/react-query"
 import { PaginatedResponse } from "@/features/shared/shared.type"
 import { type AppError } from "@blak/utils"
-import {
-  CountryWithStateCount,
-  MarketWithRelations,
-  StateWithCityCount,
-} from "./market.type"
+import { MarketWithRelations } from "./market.type"
 
 export const useMarkets = () => {
   return useQuery<PaginatedResponse<MarketWithRelations>, AppError>({
@@ -23,13 +19,11 @@ export const useMarkets = () => {
 }
 
 export const useCountries = () => {
-  return useQuery<PaginatedResponse<CountryWithStateCount>, AppError>({
+  return useQuery<PaginatedResponse<Country>, AppError>({
     queryKey: ["countries"],
     queryFn: async () => {
       const response =
-        await apiClient.get<PaginatedResponse<CountryWithStateCount>>(
-          "/countries"
-        )
+        await apiClient.get<PaginatedResponse<Country>>("/countries")
 
       return response
     },
@@ -52,12 +46,12 @@ export const useCurrencies = () => {
 }
 
 export const useCountryStates = (countryId: string) => {
-  return useQuery<PaginatedResponse<StateWithCityCount>, AppError>({
+  return useQuery<PaginatedResponse<State>, AppError>({
     queryKey: ["states", countryId],
     queryFn: async () => {
-      const response = await apiClient.get<
-        PaginatedResponse<StateWithCityCount>
-      >(`/countries/${countryId}/states`)
+      const response = await apiClient.get<PaginatedResponse<State>>(
+        `/countries/${countryId}/states`
+      )
 
       return response
     },

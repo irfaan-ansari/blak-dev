@@ -1,18 +1,33 @@
-model Country {
+model Currency {
     id String @id @default(cuid())
 
-    name String
-    iso2 String  @unique // IN, AE, US
-    iso3 String? @unique // IND, ARE, USA
+    code        String  @unique // ISO 4217 alpha, e.g. "INR"
+    numericCode String? @unique // ISO 4217 numeric, e.g. "356" — some banking/compliance systems require this
+    name        String
+    symbol      String
 
-    phoneCode String? // +91, +971, +1
+    symbolPosition SymbolPosition @default(PREFIX)
+    decimals       Int            @default(2) // JPY=0, BHD=3, most others=2
 
+    markets   Market[]
+    countries Country[]
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    @@map("currency")
+}
+
+model Country {
+    id         String   @id @default(cuid())
+    name       String
+    iso2       String   @unique // IN, AE, US
+    iso3       String?  @unique // IND, ARE, USA
+    phoneCode  String? // +91, +971, +1
     currencyId String
     currency   Currency @relation(fields: [currencyId], references: [id])
 
-    states State[]
-    cities City[]
-
+    states  State[]
+    cities  City[]
     markets Market[]
 
     createdAt DateTime @default(now())
@@ -34,9 +49,8 @@ model State {
     cities  City[]
     markets MarketState[]
 
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    taxRules  TaxRule[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     @@unique([countryId, code])
     @@unique([id, countryId])
@@ -64,25 +78,6 @@ model City {
     @@map("city")
 }
 
-model Currency {
-    id String @id @default(cuid())
-
-    code        String  @unique // ISO 4217 alpha, e.g. "INR"
-    numericCode String? @unique // ISO 4217 numeric, e.g. "356" — some banking/compliance systems require this
-    name        String
-    symbol      String
-
-    symbolPosition SymbolPosition @default(PREFIX)
-    decimals       Int            @default(2) // JPY=0, BHD=3, most others=2
-
-    markets   Market[]
-    countries Country[]
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-
-    @@map("currency")
-}
-
 model Market {
     id   String @id @default(cuid())
     name String
@@ -108,7 +103,6 @@ model Market {
     organizations          Organization[]
     serviceAreas           ServiceArea[]
     applications           Application[]
-    taxRules               TaxRule[]
     complianceRequirements ComplianceRequirement[]
 
     @@unique([id, countryId])
@@ -161,26 +155,6 @@ model ServiceArea {
     @@map("service_area")
 }
 
-model TaxRule {
-    id       String @id @default(cuid())
-    marketId String
-    market   Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
-
-    stateId String? // null = applies market-wide
-    state   State?  @relation(fields: [stateId], references: [id])
-
-    name          String // "VAT", "GST", "Sales Tax"
-    rate          Decimal   @db.Decimal(6, 4)
-    effectiveFrom DateTime
-    effectiveTo   DateTime?
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@index([marketId, effectiveFrom])
-    @@map("tax_rule")
-}
-
 model ComplianceRequirement {
     id String @id @default(cuid())
 
@@ -214,19 +188,18 @@ model ComplianceRecord {
     entityType EntityType
     entityId   String
 
+    name  String
+    label String
     value String?
 
-    documentId String?
-    document   Document? @relation(fields: [documentId], references: [id])
+    fileId String?
+    file   File?   @relation(fields: [fileId], references: [id])
 
-    status String @default("PENDING")
-
+    status    ComplianceStatus @default(PENDING_APPROVAL)
     expiresAt DateTime?
+    createdAt DateTime         @default(now())
+    updatedAt DateTime         @updatedAt
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@index([entityType, entityId])
     @@index([requirementId])
     @@map("compliance_record")
 }

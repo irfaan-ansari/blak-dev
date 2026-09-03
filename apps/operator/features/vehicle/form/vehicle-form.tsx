@@ -139,7 +139,7 @@ export function VehicleForm({ onSuccess }: { onSuccess: () => void }) {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>Trim Level</FieldLabel>
+                <FieldLabel>Trim level</FieldLabel>
                 <Input {...field} placeholder="Trim level" />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>

@@ -4,7 +4,7 @@ import { auth } from "@blak/auth"
 import { headers } from "next/headers"
 import { withPermission } from "@/lib/safe-action"
 
-export const inviteDriver = withPermission({ app: ["operator"] })
+export const createDriver = withPermission({ app: ["operator"] })
   .inputSchema(
     z.object({
       data: z.object({

@@ -138,7 +138,7 @@ const DriversPage = () => {
         <DriverDialog>
           <Button size="sm">
             <Plus />
-            Invite
+            Add New
           </Button>
         </DriverDialog>
       </div>

@@ -27,36 +27,51 @@ const vehicles = new Hono<AppContext>().get("/", async (c) => {
     }),
   ])
 
-  const objs = await prisma.document.findMany({
+  const pageCount = Math.ceil(total / take)
+  const attachments = await prisma.entityAttachment.findMany({
     where: {
-      entity: "VEHICLE",
+      entityType: "VEHICLE",
       entityId: {
         in: results.map((r) => r.id),
       },
     },
+    include: {
+      file: true,
+    },
   })
 
-  const documents = await Promise.all(
-    objs.map(async ({ size, ...obj }) => ({
-      ...obj,
-      url: await getR2Url(obj.storageKey),
-    }))
+  const imagesByVehicle = attachments.reduce<
+    Record<string, (typeof attachments)[number][]>
+  >((acc, attachment) => {
+    ;(acc[attachment.entityId] ??= []).push(attachment)
+    return acc
+  }, {})
+
+  const data = await Promise.all(
+    results.map(async (vehicle) => {
+      const attachments = imagesByVehicle[vehicle.id] ?? []
+
+      const images = await Promise.all(
+        attachments.map(async (attachment) => {
+          const { file } = attachment
+          const { storageKey, ...rest } = file
+
+          const url = await getR2Url(storageKey)
+
+          return {
+            ...rest,
+            size: Number(rest.size),
+            url,
+          }
+        })
+      )
+
+      return {
+        ...vehicle,
+        images,
+      }
+    })
   )
-
-  const imagesByVehicle = documents.reduce<Record<string, typeof documents>>(
-    (acc, image) => {
-      ;(acc[image.entityId] ??= []).push(image)
-      return acc
-    },
-    {}
-  )
-
-  const data = results.map((vehicle) => ({
-    ...vehicle,
-    images: imagesByVehicle[vehicle.id] ?? [],
-  }))
-
-  const pageCount = Math.ceil(total / take)
 
   return c.json({
     data,

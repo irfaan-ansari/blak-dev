@@ -88,7 +88,9 @@ model Vehicle {
     make               String
     model              String
     trim               String
-    color              String
+    interiorColor              String
+    exteriorColor              String
+    engine String
     licensePlate       String          @unique
     registrationNumber String?         @unique
     vin                String?         @unique
@@ -131,9 +133,33 @@ model File {
     size              BigInt
     storageKey        String             @unique
     url               String?
+
     createdAt         DateTime           @default(now())
     updatedAt         DateTime           @updatedAt
+
     complianceRecords ComplianceRecord[]
+    attachments       EntityAttachment[]
 
     @@map("file")
+}
+
+model EntityAttachment {
+    id         String   @id @default(cuid())
+
+    fileId     String
+    file       File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+    entityType EntityType
+    entityId   String
+
+    name String
+    label String
+
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@index([entityType, entityId])
+    @@index([fileId])
+
+    @@map("entity_attachment")
 }

@@ -2,7 +2,7 @@ import React from "react"
 import { NavUser } from "./nav-user"
 import { Button } from "@blak/ui/components/button"
 import { Bell, Search, X } from "lucide-react"
-import { Badge } from "@blak/ui/components/badge"
+
 import {
   InputGroup,
   InputGroupAddon,
@@ -44,11 +44,12 @@ const AppHeader = () => {
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
-        <Button variant="ghost" size="lg" className="relative rounded-full">
-          <Bell className="size-5" />
-          <Badge variant="warning" className="rounded-full">
-            10
-          </Badge>
+        <Button
+          variant="secondary"
+          size="icon"
+          className="relative rounded-full border border-border bg-secondary/50"
+        >
+          <Bell />
         </Button>
         <NavUser />
       </div>

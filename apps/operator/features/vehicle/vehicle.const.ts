@@ -47,35 +47,43 @@ export const STATUS_MAP: Record<VehicleStatus, StatusConfig> = {
 
 export const REQUIRED_IMAGES = [
   {
-    label: "Front View",
+    label: "Front",
     name: "FRONT",
   },
   {
-    label: "Rear View",
+    label: "Drivers Side Exterior",
+    name: "DRIVERS_SIDE_EXTERIOR",
+  },
+  {
+    label: "Rear",
     name: "REAR",
   },
   {
-    label: "Left Side",
-    name: "LEFT_SIDE",
+    label: "Passenger Side Exterior",
+    name: "PASSENGER_SIDE_EXTERIOR",
   },
   {
-    label: "Right Side",
-    name: "RIGHT_SIDE",
+    label: "Driver Side Interior Front",
+    name: "DRIVER_SIDE_INTERIOR_FRONT",
   },
   {
-    label: "Front Three-Quarter View",
-    name: "FRONT_THREE_QUARTER",
+    label: "Driver Side Interior Rear",
+    name: "DRIVER_SIDE_INTERIOR_REAR",
   },
   {
-    label: "Front Interior",
-    name: "FRONT_INTERIOR",
+    label: "Third Row Interior",
+    name: "THIRD_ROW_INTERIOR",
   },
   {
-    label: "Rear Interior",
-    name: "REAR_INTERIOR",
+    label: "Trunk/Cargo Interior",
+    name: "TRUNK_CARGO_INTERIOR",
   },
   {
-    label: "Trunk / Boot",
-    name: "TRUNK",
+    label: "Passenger Side Interior Rear",
+    name: "PASSENGER_SIDE_INTERIOR_REAR",
+  },
+  {
+    label: "Passenger Side Interior Front",
+    name: "PASSENGER_SIDE_INTERIOR_FRONT",
   },
 ] as const

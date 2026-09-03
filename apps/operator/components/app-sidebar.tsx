@@ -60,12 +60,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarMenu className="group-data-[collapsible=icon]:items-center">
             {Object.entries(SIDEBAR_NAV).map(
-              ([key, { label, href, icon, items: subItems }]) => {
+              ([key, { label, href, icon, items: subItems, disabled }]) => {
                 const Icon = icon
                 if (!subItems.length)
                   return (
                     <SidebarMenuItem key={key}>
-                      <SidebarMenuButton asChild>
+                      <SidebarMenuButton
+                        asChild
+                        disabled={disabled}
+                        className={disabled ? "cursor-default opacity-60" : ""}
+                        onClick={(e) => {
+                          if (disabled) {
+                            e.preventDefault()
+                          }
+                        }}
+                      >
                         <Link href={href}>
                           <Icon />
                           {label}
@@ -77,7 +86,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Collapsible key={key} asChild className="group/collapsible">
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
-                        <SidebarMenuButton tooltip={label}>
+                        <SidebarMenuButton
+                          tooltip={label}
+
+                          disabled={disabled}
+                          className={disabled ? "opacity-60" : ""}
+                          onClick={(e) => {
+                            if (disabled) {
+                              e.preventDefault()
+                            }
+                          }}
+                        >
                           <Icon />
                           {label}
                           <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />

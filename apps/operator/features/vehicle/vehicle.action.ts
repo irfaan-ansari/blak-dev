@@ -12,7 +12,7 @@ export const createVehicle = withPermission({ app: ["operator"] })
     const organizationId = ctx.session.activeOrganizationId!
 
     const files = await prisma.file.createManyAndReturn({
-      data: images,
+      data: images.map(({ label, ...rest }) => ({ ...rest })),
     })
 
     const vehicle = await prisma.vehicle.create({
@@ -31,7 +31,9 @@ export const createVehicle = withPermission({ app: ["operator"] })
       data: files.map((file) => ({
         entityId: vehicle.id,
         entityType: "VEHICLE",
-        label: "Vehicle Image",
+        label:
+          images.find((img) => img.storageKey === file.storageKey)?.label ??
+          "Vehicle Image",
         name: "Vehicle Image",
         fileId: file.id,
       })),

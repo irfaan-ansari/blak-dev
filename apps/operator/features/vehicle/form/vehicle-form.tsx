@@ -68,8 +68,18 @@ export function VehicleForm({ onSuccess }: { onSuccess: () => void }) {
    * Submit
    */
   const onSubmit = async (values: VehicleFormValues) => {
-    const images = Object.values(files).map((f) => f.file as File)
-    const uploadedImages = await Promise.all(images.map(uploadFile))
+    const uploadedImages = await Promise.all(
+      Object.entries(files).map(async ([name, value]) => {
+        const uploaded = await uploadFile(value.file as File)
+
+        return {
+          label:
+            REQUIRED_IMAGES.find((img) => img.name === name)?.label ??
+            "vehicle image",
+          ...uploaded,
+        }
+      })
+    )
 
     const { serverError } = await createVehicle({
       data: {
@@ -252,14 +262,9 @@ export function VehicleForm({ onSuccess }: { onSuccess: () => void }) {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>Engine Number</FieldLabel>
+                <FieldLabel>Engine</FieldLabel>
 
-                <Input
-                  {...field}
-                  placeholder="Enter engine number"
-                  maxLength={17}
-                  className="uppercase"
-                />
+                <Input {...field} placeholder="Engine" maxLength={17} />
 
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>

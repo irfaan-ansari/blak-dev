@@ -14,10 +14,10 @@ import {
 
 const CompliancePage = () => {
   const { data: account } = useAccount()
-  const { data, isPending } = useCompliance(true)
+  const { data, isPending } = useCompliance("OPERATOR")
   if (isPending) return <PageSkeleton />
-
-  if (account?.data.status === "SUBMITTED")
+  console.log(data)
+  if (account?.data.status === "PENDING_APPROVAL")
     return (
       <Card size="sm" className="mx-auto max-w-xl">
         <CardHeader>

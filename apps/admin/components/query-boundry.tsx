@@ -8,8 +8,6 @@ import {
   PageSkeleton,
 } from "@blak/ui/components/blak/empty-state"
 import type { AppError } from "@blak/utils"
-import { Pagination } from "@blak/ui/components/blak/pagination"
-import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
 type QueryBoundaryProps<T> = {
   query: UseQueryResult<T>
@@ -31,8 +29,6 @@ export function QueryBoundary<T>({
   loadingOnFetching = false,
   pagination = false,
 }: QueryBoundaryProps<T>) {
-  const { queryParams } = useRouterStuff()
-
   const fetchingComponent = fetchingFallback ?? <PageSkeleton />
 
   if (query.isPending || (loadingOnFetching && query.isFetching)) {

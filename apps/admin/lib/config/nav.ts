@@ -33,7 +33,7 @@ export const SIDEBAR_NAV = {
     items: [
       { label: "Operators", href: "/network/operators" },
       { label: "Partners", href: "/network/partners" },
-      { label: "Chauffeurs", href: "/network/chauffeurs" },
+      { label: "Drivers", href: "/network/drivers" },
       { label: "Passengers", href: "/network/passengers" },
     ],
   },

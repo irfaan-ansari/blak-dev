@@ -38,8 +38,26 @@ const drivers = new Hono<OrgContext>().get("/", async (c) => {
 
   const pageCount = Math.ceil(total / take)
 
+  const complianceRecords = await prisma.complianceRecord.findMany({
+    where: {
+      entityType: "DRIVER",
+      entityId: {
+        in: results.map((user) => user.id),
+      },
+    },
+  })
+
+  const complianceMap = new Map(
+    complianceRecords.map((record) => [record.entityId, record])
+  )
+
+  const records = results.map((user) => ({
+    ...user,
+    compliance: complianceMap.get(user.id) ?? null,
+  }))
+
   return c.json({
-    data: results,
+    data: records,
     pagination: {
       page,
       pageSize: take,

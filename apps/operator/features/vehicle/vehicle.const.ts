@@ -14,11 +14,16 @@ export const STATUS_MAP: Record<VehicleStatus, StatusConfig> = {
     icon: ClockFading,
     className: "text-primary-foreground! bg-amber-200! border-amber-300!",
   },
+  DRIVER_ASSIGNED: {
+    label: "Pending Approval",
+    icon: ClockFading,
+    className: "text-primary-foreground! bg-amber-200! border-amber-300!",
+  },
 
   ACTIVE: {
     label: "Active",
     icon: CircleCheck,
-    className: "text-primary-foreground! bg-green-500! border-green-600!",
+    className: "text-primary-foreground! bg-lime-300! border-lime-400!",
   },
 
   REJECTED: {
@@ -39,3 +44,38 @@ export const STATUS_MAP: Record<VehicleStatus, StatusConfig> = {
     className: "text-primary-foreground! bg-orange-500! border-orange-600!",
   },
 }
+
+export const REQUIRED_IMAGES = [
+  {
+    label: "Front View",
+    name: "FRONT",
+  },
+  {
+    label: "Rear View",
+    name: "REAR",
+  },
+  {
+    label: "Left Side",
+    name: "LEFT_SIDE",
+  },
+  {
+    label: "Right Side",
+    name: "RIGHT_SIDE",
+  },
+  {
+    label: "Front Three-Quarter View",
+    name: "FRONT_THREE_QUARTER",
+  },
+  {
+    label: "Front Interior",
+    name: "FRONT_INTERIOR",
+  },
+  {
+    label: "Rear Interior",
+    name: "REAR_INTERIOR",
+  },
+  {
+    label: "Trunk / Boot",
+    name: "TRUNK",
+  },
+] as const

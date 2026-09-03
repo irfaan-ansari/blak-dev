@@ -7,8 +7,8 @@ type PresignResponse = {
 }
 
 type UploadedFile = {
-  fileName: string
-  mimeType: string
+  name: string
+  mime: string
   size: number
   storageKey: string
   url: string
@@ -53,8 +53,8 @@ export const uploadFile = async (file: File): Promise<UploadedFile> => {
   }
 
   return {
-    fileName: file.name,
-    mimeType: file.type,
+    name: file.name,
+    mime: file.type,
     size: file.size,
     storageKey: key,
     url: key,

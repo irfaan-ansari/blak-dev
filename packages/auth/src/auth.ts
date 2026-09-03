@@ -1,16 +1,17 @@
 import { prisma } from "@blak/db"
-import { betterAuth } from "better-auth"
 import {
   bearer,
   emailOTP,
   admin as adminPlugin,
-  organization as organizationPlugin,
   phoneNumber as phoneNumberPlugin,
+  organization as organizationPlugin,
 } from "better-auth/plugins"
+import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 import { userAc, userRoles } from "./permission"
-import { getUserOrganization } from "./resolve-org"
 import { prismaAdapter } from "better-auth/adapters/prisma"
+import { getRootDomain, getUserOrganization } from "./utils"
+import { orgAc, orgUserRoles } from "./org-permissions"
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -29,6 +30,14 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      // void sendEmail({
+      //   to: user.email,
+      //   subject: "Reset your password",
+      //   text: `Click the link to reset your password: ${url}`,
+      // })
+      console.log(user, url, token)
+    },
   },
   session: {
     additionalFields: {
@@ -52,11 +61,8 @@ export const auth = betterAuth({
     }),
     phoneNumberPlugin(),
     organizationPlugin({
-      // allowUserToCreateOrganization: async (user) => {
-      //   return true
-      // },
-      //   ac: orgAc,
-      //   roles: orgRoles,
+      ac: orgAc,
+      roles: orgUserRoles,
       schema: {
         organization: {
           additionalFields: {
@@ -170,9 +176,3 @@ export const auth = betterAuth({
     .map((origin) => origin.trim())
     .filter(Boolean),
 })
-
-function getRootDomain(url: string): string {
-  const hostname = new URL(url).hostname
-  const parts = hostname.split(".")
-  return parts.slice(-2).join(".")
-}

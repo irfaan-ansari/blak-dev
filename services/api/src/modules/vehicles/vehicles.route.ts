@@ -2,6 +2,7 @@ import { Hono } from "hono"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
 import { prisma } from "@blak/db"
+import { getR2Url } from "@/lib/r2"
 
 const vehicles = new Hono<AppContext>().get("/", async (c) => {
   const { q, status, cat, ...rest } = c.req.query()
@@ -18,10 +19,55 @@ const vehicles = new Hono<AppContext>().get("/", async (c) => {
     prisma.vehicle.count(),
   ])
 
+  const attachments = await prisma.entityAttachment.findMany({
+    where: {
+      entityType: "VEHICLE",
+      entityId: {
+        in: results.map((r) => r.id),
+      },
+    },
+    include: {
+      file: true,
+    },
+  })
+
+  const imagesByVehicle = attachments.reduce<
+    Record<string, (typeof attachments)[number][]>
+  >((acc, attachment) => {
+    ;(acc[attachment.entityId] ??= []).push(attachment)
+    return acc
+  }, {})
+
+  const data = await Promise.all(
+    results.map(async (vehicle) => {
+      const attachments = imagesByVehicle[vehicle.id] ?? []
+
+      const images = await Promise.all(
+        attachments.map(async (attachment) => {
+          const { file } = attachment
+          const { storageKey, ...rest } = file
+
+          const url = await getR2Url(storageKey)
+
+          return {
+            ...rest,
+            size: Number(rest.size),
+            url,
+          }
+        })
+      )
+
+      return {
+        ...vehicle,
+        images,
+      }
+    })
+  )
+
   const pageCount = Math.ceil(total / take)
 
   return c.json({
-    data: results,
+    data: data,
     pagination: {
       page,
       pageSize: take,

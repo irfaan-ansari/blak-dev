@@ -24,7 +24,6 @@ export const processOperatorApplication = withPermission({
 
     if (!application) throw new Error("Application not found")
 
-    let inviteUrl = null
     if (action === "reject") {
       await rejectApplication(id, session.userId)
     }
@@ -37,12 +36,9 @@ export const processOperatorApplication = withPermission({
         },
         session.userId
       )
-      const url = new URL(process.env.NEXT_PUBLIC_AUTH_URL!)
-      inviteUrl = `${url.origin}/auth/accept-invitation/${result.id}`
-      console.log(inviteUrl)
     }
 
-    return { success: true, inviteUrl }
+    return { success: true }
   })
 
 /** reject application */
@@ -72,24 +68,12 @@ export async function approveApplication(
   application: Omit<OperatorApplication, "reviews">,
   userId: string
 ) {
-  const org = await createOrgForApplication(application)
+  const org = await createOrgUser(application)
 
-  const invitation = await auth.api.createInvitation({
-    body: {
-      email: application.contactEmail,
-      role: "owner",
-      organizationId: org.id,
-      resend: true,
-      userRole: "operator",
-    },
-    headers: await headers(),
-  })
-
-  await prisma.$transaction([
+  await Promise.all([
     prisma.application.update({
       where: { id: application.id },
       data: {
-        invitationId: invitation.id,
         currentStatus: "APPROVED",
         organizationId: org.id,
         decidedAt: new Date(),
@@ -105,12 +89,10 @@ export async function approveApplication(
       },
     }),
   ])
-
-  return invitation
 }
 
 /** create organization */
-async function createOrgForApplication(
+async function createOrgUser(
   application: Omit<OperatorApplication, "reviews">
 ) {
   const {
@@ -126,6 +108,36 @@ async function createOrgForApplication(
     country,
   } = application.application
 
+  // create user
+  const user = await auth.api.signUpEmail({
+    body: {
+      name: application.contactName,
+      email: application.contactEmail,
+      password: application.id,
+      phoneNumber: application.contactPhone,
+    },
+  })
+
+  // update user role
+  const url = new URL(process.env.NEXT_PUBLIC_AUTH_URL!)
+  await Promise.all([
+    auth.api.requestPasswordReset({
+      body: {
+        email: application.contactEmail,
+        redirectTo: `${url.origin}/auth/set-password`,
+      },
+    }),
+    prisma.user.update({
+      where: {
+        id: user.user.id,
+      },
+      data: {
+        role: "operator",
+      },
+    }),
+  ])
+
+  // find and map market
   const market = await prisma.market.findFirst({
     where: {
       country: {
@@ -143,6 +155,7 @@ async function createOrgForApplication(
     })
   }
 
+  // create organization
   const org = await auth.api.createOrganization({
     body: {
       slug: slugify(legalBusinessName),
@@ -163,6 +176,14 @@ async function createOrgForApplication(
   })
 
   if (!org) throw new Error("Failed to create organization")
+
+  await auth.api.addMember({
+    body: {
+      userId: user.user.id,
+      role: "owner",
+      organizationId: org.id,
+    },
+  })
 
   return org
 }

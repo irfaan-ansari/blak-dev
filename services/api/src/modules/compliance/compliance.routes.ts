@@ -1,10 +1,19 @@
 import { Hono } from "hono"
-import { prisma } from "@blak/db"
-import type { AppContext } from "@/middlewares"
 import { AppError } from "@blak/utils"
+import { EntityType, prisma } from "@blak/db"
+import type { AppContext } from "@/middlewares"
 
 const compliance = new Hono<AppContext>().get("/", async (c) => {
   const session = c.get("session")
+  const { entity } = c.req.query()
+
+  if (!entity || !Object.values(EntityType).includes(entity as EntityType)) {
+    throw new AppError("INVALID_REQUEST", {
+      message: "Invalid resource type",
+    })
+  }
+
+  const entityType = entity as EntityType
 
   const org = await prisma.organization.findFirst({
     where: { id: session.activeOrganizationId! },
@@ -15,7 +24,7 @@ const compliance = new Hono<AppContext>().get("/", async (c) => {
     where: {
       AND: [
         {
-          entityType: "OPERATOR",
+          entityType,
         },
         {
           marketId: org?.marketId!,
@@ -26,11 +35,8 @@ const compliance = new Hono<AppContext>().get("/", async (c) => {
       records: {
         where: {
           entityId: org.id,
+          entityType,
         },
-        include: {
-          document: true,
-        },
-        take: 1,
       },
     },
   })

@@ -47,7 +47,10 @@ export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
       const documents = await Promise.all(
         values.documents
           .filter(({ file }) => file instanceof File)
-          .map((f) => uploadFile(f.file as File))
+          .map(async ({ file, requirementId }) => ({
+            requirementId,
+            ...(await uploadFile(file!)),
+          }))
       )
 
       const result = await createComplianceRecord({
@@ -58,7 +61,7 @@ export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
         toast.error(result.serverError.message)
         return
       }
-      queryClient.infiniteQuery({ queryKey: ["account"] })
+      queryClient.invalidateQueries({ queryKey: ["account"] })
       toast.success("Documents submitted successfully.")
     } catch (error) {
       console.error(error)

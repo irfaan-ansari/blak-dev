@@ -6,19 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
-import {
-  Car,
-  EllipsisVertical,
-  Smartphone,
-  SquarePen,
-  UserCircle,
-} from "lucide-react"
-import { Badge } from "@blak/ui/components/badge"
+import { Car, SquarePen } from "lucide-react"
 import { VehicleWithImages } from "../vehicle.type"
 import { Avatar, AvatarFallback, AvatarImage } from "@blak/ui/components/avatar"
 import { StatusBadge } from "@/features/shared/components/status-badge"
 import { STATUS_MAP } from "../vehicle.const"
-import { CopyButton } from "@blak/ui/components/blak/copy-button"
+
 import { Button } from "@blak/ui/components/button"
 import { VehicleDialog } from "./vehicle-dialog"
 
@@ -36,17 +29,23 @@ const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
           <div className="grid min-w-2xs gap-0.5">
             <CardTitle>
               {data.make}{" "}
-              <span className="text-muted-ground text-xs">({data.color})</span>
+              <span className="text-xs text-muted-foreground">
+                ({data.exteriorColor})
+              </span>
             </CardTitle>
-            <CardDescription>Plate number: {data.plateNumber}</CardDescription>
+            <CardDescription>
+              License Plate: {data.licensePlate}
+            </CardDescription>
+            <CardDescription>
+              Reg. No.: {data.registrationNumber}
+            </CardDescription>
           </div>
           <div className="grid min-w-2xs">
-            <span className="text-muted-foreground">Driver</span>
-            <span>Daniel Carter</span>
-            <CopyButton
-              value="+1 1234123123"
-              prefix={<Smartphone className="size-3" />}
-            />
+            <span className="text-muted-foreground">Year: {data.year}</span>
+
+            <span className="text-muted-foreground">
+              Trim Level: {data.trim}
+            </span>
           </div>
         </div>
 
@@ -54,7 +53,7 @@ const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
           <StatusBadge statusMap={STATUS_MAP} status={data.status} />
           <VehicleDialog>
             <Button variant="outline" size="icon">
-              <SquarePen size="3" />
+              <SquarePen size="2.5!" />
             </Button>
           </VehicleDialog>
         </CardAction>

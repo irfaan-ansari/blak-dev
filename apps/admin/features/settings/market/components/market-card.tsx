@@ -26,16 +26,16 @@ export const MarketCard = ({ data }: { data: MarketWithRelations }) => {
             <CardTitle>
               {data.name}{" "}
               <span className="text-xs text-muted-foreground">
-                ({data?.country?.name})
+                ({data.iso2})
               </span>
             </CardTitle>
             <div className="flex items-start gap-1">
               <CornerDownRight className="size-3 text-muted-foreground opacity-80" />
               <span className="text-xs text-muted-foreground">
-                {data.stateCount} States
+                Currency: {data.currency.code}
               </span>
               <span className="text-xs text-muted-foreground">
-                {data.cityCount} Cities
+                Phone Code: {data.country.phoneCode}
               </span>
             </div>
           </div>
@@ -52,8 +52,13 @@ export const MarketCard = ({ data }: { data: MarketWithRelations }) => {
               status: data.status as "ACTIVE" | "INACTIVE",
             }}
           >
-            <Button variant="outline" size="icon">
-              <PenSquare className="size-3.5" />
+            <Button
+              variant="outline"
+              size="xs"
+              className="bg-foreground text-background hover:bg-foreground/80 hover:text-background"
+            >
+              Edit
+              <PenSquare className="size-3" />
             </Button>
           </MarketDialog>
         </CardAction>

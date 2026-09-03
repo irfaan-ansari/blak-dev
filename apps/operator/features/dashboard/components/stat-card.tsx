@@ -1,4 +1,5 @@
 import { Card, CardContent, CardTitle } from "@blak/ui/components/card"
+import { Skeleton } from "@blak/ui/components/skeleton"
 import { cn } from "@blak/ui/lib/utils"
 import React from "react"
 
@@ -19,7 +20,9 @@ const StatCard = ({
         {icon}
         <div className="flex h-full flex-col justify-between gap-4">
           <CardTitle>{title}</CardTitle>
-          <div className="text-right text-3xl font-black">{value}</div>
+          <div className="text-right text-3xl font-black">
+            {value ? value : <Skeleton className="ml-auto h-5 w-20" />}
+          </div>
         </div>
       </CardContent>
     </Card>

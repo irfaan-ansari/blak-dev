@@ -19,12 +19,12 @@ export const createComplianceRecordSchema = z.object({
   data: z
     .array(
       z.object({
-        mimeType: z.string().min(1),
+        mime: z.string().min(1),
         size: z.number().positive(),
         storageKey: z.string().min(1),
         url: z.string(),
-        fileName: z.string(),
-        category: z.string().optional(),
+        name: z.string(),
+        requirementId: z.string(),
       })
     )
     .min(1),

@@ -11,12 +11,12 @@ import { OperatorStatus } from "./operator.type"
 
 export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
   ONBOARDING: {
-    label: "Pending Onboarding",
+    label: "New",
     icon: CircleDashed,
     className: "text-primary-foreground! bg-amber-200! border-amber-300!",
   },
 
-  SUBMITTED: {
+  PENDING_APPROVAL: {
     label: "Submitted",
     icon: ClockFading,
     className: "text-primary-foreground bg-lime-300 border-lime-400",
@@ -47,7 +47,7 @@ export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
 export const AVAILABLE_ACTIONS: Partial<
   Record<OperatorStatus, StatusActionConfig[]>
 > = {
-  SUBMITTED: [
+  PENDING_APPROVAL: [
     {
       label: "Activate",
       variant: "ghost",

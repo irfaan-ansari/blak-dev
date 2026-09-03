@@ -1,6 +1,6 @@
 "use server"
 
-import { prisma } from "@blak/db"
+import { EntityType, prisma } from "@blak/db"
 import { withPermission } from "@/lib/safe-action"
 import { createComplianceRecordSchema } from "./compliance.schema"
 
@@ -11,30 +11,35 @@ export const createComplianceRecord = withPermission({ app: ["operator"] })
     const { session } = ctx
 
     const organizationId = session.activeOrganizationId!
-    console.log("client input", clientInput)
-    console.log("INPUT", clientInput, organizationId)
+
+    const files = await prisma.file.createManyAndReturn({
+      data: data.map((document) => ({
+        name: document.name,
+        mime: document.mime,
+        size: document.size,
+        storageKey: document.storageKey,
+        url: document.url,
+      })),
+    })
+    const fileByKey = new Map(files.map((file) => [file.storageKey, file]))
 
     await Promise.all([
-      prisma.document.createMany({
-        data: data.map((document) => ({
+      prisma.complianceRecord.createMany({
+        data: data.map((document, index) => ({
+          requirementId: document.requirementId,
+          entityType: EntityType.OPERATOR,
           entityId: organizationId,
-          entity: "OPERATOR",
-          fileName: document.fileName,
-          mimeType: document.mimeType,
-          size: document.size,
-          storageKey: document.storageKey,
-          category: document.category,
-          name: document.fileName,
-          url: document.url,
-          type: "DOCUMENT",
-          status: "PENDING",
+          fileId: fileByKey.get(document.storageKey)!.id,
+          name: document.name,
+          label: "label",
         })),
       }),
+
       prisma.review.create({
         data: {
           entityId: organizationId,
           entityType: "OPERATOR",
-          status: "PENDING",
+          status: "PENDING_APPROVAL",
           reason: "Documents submitted.",
         },
       }),
@@ -43,11 +48,11 @@ export const createComplianceRecord = withPermission({ app: ["operator"] })
           id: organizationId,
         },
         data: {
-          status: "SUBMITTED",
+          status: "PENDING_APPROVAL",
           onboardingStartedAt: new Date(),
         },
       }),
     ])
-    console.log("success")
+
     return { success: true }
   })

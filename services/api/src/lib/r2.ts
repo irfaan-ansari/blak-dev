@@ -18,7 +18,7 @@ export async function getR2Url(key: string, expiresIn = 24 * 60 * 60) {
     Key: key,
   })
 
-  return getSignedUrl(r2, command, {
+  return await getSignedUrl(r2, command, {
     expiresIn,
   })
 }

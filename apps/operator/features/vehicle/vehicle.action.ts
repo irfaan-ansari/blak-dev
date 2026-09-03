@@ -1,18 +1,25 @@
 "use server"
+
 import { withPermission } from "@/lib/safe-action"
-import { createVehicleSchema } from "./vehicle.schema"
+import { vehicleCreateSchema } from "./vehicle.schema"
 import { prisma } from "@blak/db"
 
 export const createVehicle = withPermission({ app: ["operator"] })
-  .inputSchema(createVehicleSchema)
+  .inputSchema(vehicleCreateSchema)
   .action(async ({ ctx, clientInput }) => {
     const { images, ...rest } = clientInput.data
 
     const organizationId = ctx.session.activeOrganizationId!
 
+    const files = await prisma.file.createManyAndReturn({
+      data: images,
+    })
+
     const vehicle = await prisma.vehicle.create({
       data: {
         ...rest,
+        year: Number(rest.year),
+        status: "PENDING_APPROVAL",
         registrationExpiry: new Date(
           `${rest.registrationExpiry}T00:00:00.000Z`
         ),
@@ -20,12 +27,13 @@ export const createVehicle = withPermission({ app: ["operator"] })
       },
     })
 
-    await prisma.document.createMany({
-      data: images.map((img) => ({
-        ...img,
-        entity: "VEHICLE",
+    await prisma.entityAttachment.createMany({
+      data: files.map((file) => ({
         entityId: vehicle.id,
-        type: "IMAGE",
+        entityType: "VEHICLE",
+        label: "Vehicle Image",
+        name: "Vehicle Image",
+        fileId: file.id,
       })),
     })
 

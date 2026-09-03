@@ -1,7 +1,7 @@
 model Application {
     id                  String               @id @default(cuid())
     type                EntityType
-    currentStatus       ApplicationStatus    @default(UNDER_REVIEW)
+    currentStatus       ApplicationStatus    @default(PENDING_APPROVAL)
     marketId            String?
     market              Market?              @relation(fields: [marketId], references: [id], onDelete: Restrict)
     organizationId      String?              @unique
@@ -84,11 +84,14 @@ model PartnerApplication {
 
 model Vehicle {
     id                 String          @id @default(cuid())
+    year               Int
     make               String
     model              String
-    year               Int
-    color              String
-    plateNumber        String          @unique
+    trim               String
+    interiorColor              String
+    exteriorColor              String
+    engine String
+    licensePlate       String          @unique
     registrationNumber String?         @unique
     vin                String?         @unique
     registrationExpiry DateTime?
@@ -110,7 +113,7 @@ model Review {
     id         String       @id @default(cuid())
     entityType ReviewEntity
     entityId   String
-    status     ReviewStatus @default(PENDING)
+    status     ReviewStatus @default(PENDING_APPROVAL)
     reason     String?
     reviewerId String?
     reviewer   User?        @relation(fields: [reviewerId], references: [id], onDelete: SetNull)
@@ -123,47 +126,40 @@ model Review {
     @@map("review")
 }
 
-model Document {
+model File {
     id                String             @id @default(cuid())
-    entity            String
-    entityId          String
-    type              DocumentType
-    category          String?
-    name              String?
-    fileName          String
-    mimeType          String
+    name              String
+    mime              String
     size              BigInt
     storageKey        String             @unique
     url               String?
-    status            DocumentStatus?
-    documentNumber    String?
-    issuedAt          DateTime?
-    expiresAt         DateTime?
-    metadata          Json?
+
     createdAt         DateTime           @default(now())
     updatedAt         DateTime           @updatedAt
-    complianceRecords ComplianceRecord[]
 
-    @@index([entity, entityId])
-    @@index([entity, entityId, category])
-    @@index([expiresAt])
-    @@map("document")
+    complianceRecords ComplianceRecord[]
+    attachments       EntityAttachment[]
+
+    @@map("file")
 }
 
-model Driver {
-    id             String        @id @default(cuid())
-    userId         String        @unique
-    user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    organizationId String?
-    organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-    licenseNumber  String        @unique
-    licenseExpiry  DateTime
-    country        String
-    status         DriverStatus  @default(INACTIVE)
-    createdAt      DateTime      @default(now())
-    updatedAt      DateTime      @updatedAt
+model EntityAttachment {
+    id         String   @id @default(cuid())
 
-    @@index([organizationId])
-    @@index([status])
-    @@map("driver")
+    fileId     String
+    file       File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+    entityType EntityType
+    entityId   String
+
+    name String
+    label String
+
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@index([entityType, entityId])
+    @@index([fileId])
+
+    @@map("entity_attachment")
 }

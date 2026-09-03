@@ -5,12 +5,14 @@ import compliance from "@/modules/compliance/compliance.routes"
 import drivers from "@/modules/org-operator/drivers/drivers.routes"
 import accounts from "@/modules/org-operator/accounts/accounts.routes"
 import vehicles from "@/modules/org-operator/vehicles/vehicles.routes"
+import { analytics } from "@/modules/org-operator/analytics/analytics.routes"
 
 const router = new Hono<OrgContext>()
   .route("/compliance", compliance)
   .route("/accounts", accounts)
   .route("/vehicles", vehicles)
   .route("/drivers", drivers)
+  .route("/analytics", analytics)
   .route("/users", users)
 
 export default router

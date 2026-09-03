@@ -18,7 +18,6 @@ model User {
     invitations         Invitation[]
     reviews             Review[]
     vehicle             Vehicle?
-    driver              Driver?
 
     @@unique([email])
     @@unique([phoneNumber])
@@ -109,7 +108,6 @@ model Organization {
     invitations         Invitation[]
     application         Application?
     vehicles            Vehicle[]
-    drivers             Driver[]
 
     @@unique([slug])
     @@map("organization")

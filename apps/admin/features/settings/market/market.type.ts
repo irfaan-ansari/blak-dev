@@ -1,24 +1,7 @@
-import type {
-  ComplianceRequirement,
-  Country,
-  Currency,
-  Market,
-  State,
-} from "@blak/db"
+import type { ComplianceRequirement, Country, Currency, Market } from "@blak/db"
 
 export interface MarketWithRelations extends Market {
-  country: Currency
+  country: Country
   currency: Currency
-  stateCount: number
-  cityCount: number
   complianceRequirements: ComplianceRequirement[]
-}
-
-export interface CountryWithStateCount extends Country {
-  stateCount: number
-  currency: Currency
-}
-
-export interface StateWithCityCount extends State {
-  cityCount: number
 }

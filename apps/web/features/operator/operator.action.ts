@@ -20,7 +20,7 @@ export const createOperator = async (data: OperatorFormValues) => {
         contactTitle,
         contactPhone,
         contactEmail,
-        currentStatus: "SUBMITTED",
+        currentStatus: "PENDING_APPROVAL",
         operatorApplication: {
           create: {
             ...application,
@@ -37,7 +37,7 @@ export const createOperator = async (data: OperatorFormValues) => {
       data: {
         entityId: result.id,
         entityType: "APPLICATION",
-        status: "PENDING",
+        status: "PENDING_APPROVAL",
         reason: "Application submitted",
       },
     })

@@ -76,8 +76,9 @@ export const RegisterForm = () => {
       })
       toast.error(serverError.message ?? "Login failed. Please try again")
     } else {
-      if(callbackURL){
-    router.replace(callbackURL)}
+      if (callbackURL) {
+        router.replace(callbackURL)
+      }
     }
   }
   return (

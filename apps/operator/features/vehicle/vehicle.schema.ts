@@ -29,6 +29,7 @@ export const vehicleImageSchema = z.object({
   size: z.number(),
   storageKey: z.string(),
   url: z.string(),
+  label: z.string(),
 })
 
 export const vehicleCreateSchema = z.object({

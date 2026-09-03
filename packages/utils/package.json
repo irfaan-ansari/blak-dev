@@ -28,7 +28,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit"
   },
-  "peerDependencies": {
+  "dependencies": {
     "date-fns": "^4.0.0",
     "drizzle-orm": "^0.45.2",
     "zod": "^4.4.3"

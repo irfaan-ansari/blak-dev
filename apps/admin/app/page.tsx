@@ -1,4 +1,5 @@
 "use client"
+
 import StatCard from "@/features/dashboard/components/stat-card"
 import { useAnalytics } from "@/features/dashboard/dashboard.data"
 import { authClient } from "@blak/auth/client"

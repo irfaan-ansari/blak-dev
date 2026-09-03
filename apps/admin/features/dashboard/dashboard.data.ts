@@ -1,3 +1,5 @@
+"use client"
+
 import { useQuery } from "@tanstack/react-query"
 import { ApiResponse } from "../shared/shared.type"
 import { apiClient } from "@/lib/api-client"

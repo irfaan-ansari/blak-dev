@@ -86,8 +86,9 @@ export const DriverForm = ({
         toast.error(result.serverError.message)
         return
       }
-      queryClient.invalidateQueries({ queryKey: ["account"] })
+      queryClient.invalidateQueries({ queryKey: ["drivers"] })
       toast.success("Driver added successfully.")
+      onSuccess?.()
     } catch (error) {
       console.error(error)
 

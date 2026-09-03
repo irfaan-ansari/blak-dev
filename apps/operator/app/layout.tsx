@@ -47,7 +47,7 @@ export default function RootLayout({
             }
           >
             <AppSidebar variant="sidebar" />
-            <SidebarInset>
+            <SidebarInset className="bg-neutral-50">
               <AppLayout>{children}</AppLayout>
             </SidebarInset>
           </SidebarProvider>

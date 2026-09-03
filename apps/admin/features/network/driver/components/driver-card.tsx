@@ -10,10 +10,15 @@ import {
 import { CircleCheck, Mail, Smartphone, UserCircle } from "lucide-react"
 import React from "react"
 import { DriverWithDocs } from "../driver.type"
+import Link from "next/link"
 
 export const DriverCard = ({ data }: { data: DriverWithDocs }) => {
   return (
     <Card size="sm">
+      <Link
+        href={`/network/drivers/${data?.id}`}
+        className="absolute inset-0"
+      />
       <CardHeader>
         <div className="flex items-start gap-3">
           <Avatar>
@@ -33,7 +38,7 @@ export const DriverCard = ({ data }: { data: DriverWithDocs }) => {
             />
           </div>
         </div>
-        <CardAction className="space-x-2">
+        <CardAction className="relative space-x-2">
           <Badge className="h-7 px-2" variant="outline">
             <CircleCheck className="text-green-500" /> Active
           </Badge>

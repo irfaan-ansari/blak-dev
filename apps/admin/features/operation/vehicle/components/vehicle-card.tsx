@@ -13,11 +13,15 @@ import { StatusBadge } from "@/features/shared/components/status-badge"
 
 import { Button } from "@blak/ui/components/button"
 import { STATUS_MAP } from "../vehicle.const"
+import Link from "next/link"
 
 export const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
-  console.log(data)
   return (
-    <Card className="ring-ring/10" size="sm">
+    <Card className="relative" size="sm">
+      <Link
+        href={`/operation/vehicles/${data.id}`}
+        className="absolute inset-0"
+      />
       <CardHeader className="gap-x-10">
         <div className="flex h-full items-start gap-3">
           <Avatar size="lg">
@@ -49,9 +53,8 @@ export const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
           </div>
         </div>
 
-        <CardAction className="space-x-2">
+        <CardAction className="relative space-x-2">
           <StatusBadge statusMap={STATUS_MAP} status={data.status} />
-
           <Button variant="outline" size="icon">
             <EllipsisVertical />
           </Button>

@@ -3,78 +3,119 @@ import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
 import { prisma } from "@blak/db"
 import { getR2Url } from "@/lib/r2"
+import { AppError } from "@blak/utils"
 
-const vehicles = new Hono<AppContext>().get("/", async (c) => {
-  const { q, status, cat, ...rest } = c.req.query()
-  const { page, take, skip } = parsePagination(rest)
+const vehicles = new Hono<AppContext>()
+  .get("/", async (c) => {
+    const { q, status, cat, ...rest } = c.req.query()
+    const { page, take, skip } = parsePagination(rest)
 
-  const [results, total] = await Promise.all([
-    prisma.vehicle.findMany({
-      take,
-      skip,
-      orderBy: {
-        createdAt: "desc",
+    const [results, total] = await Promise.all([
+      prisma.vehicle.findMany({
+        take,
+        skip,
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.vehicle.count(),
+    ])
+
+    const attachments = await prisma.entityAttachment.findMany({
+      where: {
+        entityType: "VEHICLE",
+        entityId: {
+          in: results.map((r) => r.id),
+        },
       },
-    }),
-    prisma.vehicle.count(),
-  ])
-
-  const attachments = await prisma.entityAttachment.findMany({
-    where: {
-      entityType: "VEHICLE",
-      entityId: {
-        in: results.map((r) => r.id),
+      include: {
+        file: true,
       },
-    },
-    include: {
-      file: true,
-    },
-  })
-
-  const imagesByVehicle = attachments.reduce<
-    Record<string, (typeof attachments)[number][]>
-  >((acc, attachment) => {
-    ;(acc[attachment.entityId] ??= []).push(attachment)
-    return acc
-  }, {})
-
-  const data = await Promise.all(
-    results.map(async (vehicle) => {
-      const attachments = imagesByVehicle[vehicle.id] ?? []
-
-      const images = await Promise.all(
-        attachments.map(async (attachment) => {
-          const { file } = attachment
-          const { storageKey, ...rest } = file
-
-          const url = await getR2Url(storageKey)
-
-          return {
-            ...rest,
-            size: Number(rest.size),
-            url,
-          }
-        })
-      )
-
-      return {
-        ...vehicle,
-        images,
-      }
     })
-  )
 
-  const pageCount = Math.ceil(total / take)
+    const imagesByVehicle = attachments.reduce<
+      Record<string, (typeof attachments)[number][]>
+    >((acc, attachment) => {
+      ;(acc[attachment.entityId] ??= []).push(attachment)
+      return acc
+    }, {})
 
-  return c.json({
-    data: data,
-    pagination: {
-      page,
-      pageSize: take,
-      pageCount,
-      total,
-    },
+    const data = await Promise.all(
+      results.map(async (vehicle) => {
+        const attachments = imagesByVehicle[vehicle.id] ?? []
+
+        const images = await Promise.all(
+          attachments.map(async (attachment) => {
+            const { file } = attachment
+            const { storageKey, ...rest } = file
+
+            const url = await getR2Url(storageKey)
+
+            return {
+              ...rest,
+              size: Number(rest.size),
+              url,
+            }
+          })
+        )
+
+        return {
+          ...vehicle,
+          images,
+        }
+      })
+    )
+
+    const pageCount = Math.ceil(total / take)
+
+    return c.json({
+      data: data,
+      pagination: {
+        page,
+        pageSize: take,
+        pageCount,
+        total,
+      },
+    })
   })
-})
+  .get("/:id", async (c) => {
+    const id = c.req.param("id")
+
+    const result = await prisma.vehicle.findFirst({
+      where: { id },
+    })
+
+    if (!result) throw new AppError("NOT_FOUND")
+
+    const attachments = await prisma.entityAttachment.findMany({
+      where: {
+        entityType: "VEHICLE",
+        entityId: result.id,
+      },
+      include: {
+        file: true,
+      },
+    })
+
+    const images = await Promise.all(
+      attachments.map(async (attachment) => {
+        const { file } = attachment
+        const { storageKey, ...rest } = file
+
+        const url = await getR2Url(storageKey)
+
+        return {
+          ...rest,
+          size: Number(rest.size),
+          url,
+        }
+      })
+    )
+
+    return c.json({
+      success: true,
+      data: { ...result, images },
+    })
+  })
 
 export default vehicles

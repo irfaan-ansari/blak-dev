@@ -19,11 +19,16 @@ export const useMarkets = () => {
 }
 
 export const useCountries = () => {
-  return useQuery<PaginatedResponse<Country>, AppError>({
+  return useQuery<
+    PaginatedResponse<Country & { currency: Currency }>,
+    AppError
+  >({
     queryKey: ["countries"],
     queryFn: async () => {
       const response =
-        await apiClient.get<PaginatedResponse<Country>>("/countries")
+        await apiClient.get<
+          PaginatedResponse<Country & { currency: Currency }>
+        >("/countries")
 
       return response
     },

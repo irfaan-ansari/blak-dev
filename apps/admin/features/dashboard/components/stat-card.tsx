@@ -21,7 +21,7 @@ const StatCard = ({
         <div className="flex h-full flex-col justify-between gap-4">
           <CardTitle>{title}</CardTitle>
           <div className="text-right text-3xl font-black">
-            {value ? value : <Skeleton className="ml-auto h-5 w-20" />}
+            {value ?? <Skeleton className="ml-auto h-5 w-20" />}
           </div>
         </div>
       </CardContent>

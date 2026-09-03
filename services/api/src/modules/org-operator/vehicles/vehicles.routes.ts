@@ -28,6 +28,7 @@ const vehicles = new Hono<AppContext>().get("/", async (c) => {
   ])
 
   const pageCount = Math.ceil(total / take)
+
   const attachments = await prisma.entityAttachment.findMany({
     where: {
       entityType: "VEHICLE",

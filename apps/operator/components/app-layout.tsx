@@ -11,12 +11,16 @@ import {
 } from "@blak/ui/components/input-group"
 import Image from "next/image"
 import Link from "next/link"
+import { OnboardingStatus } from "@/features/shared/components/onboarding-status"
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <React.Fragment>
       <AppHeader />
-      <div className="h-full px-4 py-6 lg:px-6">{children}</div>
+      <OnboardingStatus />
+      <div className="h-full px-4 py-6 lg:px-6">
+        <div className="@container mx-auto max-w-7xl">{children}</div>
+      </div>
     </React.Fragment>
   )
 }

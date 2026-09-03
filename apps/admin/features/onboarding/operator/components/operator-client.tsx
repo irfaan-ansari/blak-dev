@@ -1,5 +1,4 @@
 "use client"
-
 import React from "react"
 import { OperatorCard } from "./operator-card"
 import { useOperatorApplications } from "../operator.data"

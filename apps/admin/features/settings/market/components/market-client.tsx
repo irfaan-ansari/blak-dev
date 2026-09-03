@@ -1,4 +1,5 @@
 "use client"
+
 import React from "react"
 import { MarketCard } from "./market-card"
 import { useMarkets } from "../market.data"

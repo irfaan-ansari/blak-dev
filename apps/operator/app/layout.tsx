@@ -37,7 +37,6 @@ export default function RootLayout({
     >
       <body>
         <AppProvider>
-          {" "}
           <SidebarProvider
             style={
               {

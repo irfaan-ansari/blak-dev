@@ -4,7 +4,6 @@ import { parsePagination } from "@/lib/parse-pagination"
 import { prisma } from "@blak/db"
 
 const drivers = new Hono<OrgContext>().get("/", async (c) => {
-  const organizationId = c.get("organizationId")
   const { q, status, cat, ...rest } = c.req.query()
   const { page, take, skip } = parsePagination(rest)
 
@@ -13,7 +12,6 @@ const drivers = new Hono<OrgContext>().get("/", async (c) => {
       where: {
         members: {
           some: {
-            organizationId,
             role: "driver",
           },
         },
@@ -28,7 +26,6 @@ const drivers = new Hono<OrgContext>().get("/", async (c) => {
       where: {
         members: {
           some: {
-            organizationId,
             role: "driver",
           },
         },

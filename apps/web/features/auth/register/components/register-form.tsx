@@ -43,6 +43,7 @@ import { toast } from "sonner"
 
 import { Alert, AlertTitle } from "@blak/ui/components/alert"
 import { registerUser } from "../register.action"
+import { AuthCardWrapper } from "@/features/shared/components/auth-card-wrapper"
 
 export const RegisterForm = () => {
   const { searchParamsObj, getQueryString, router } = useRouterStuff()
@@ -86,16 +87,7 @@ export const RegisterForm = () => {
       className="w-full max-w-xl"
       onSubmit={form.handleSubmit(handleSubmit)}
     >
-      <Card className="py-12">
-        <CardHeader className="flex justify-center">
-          <Image src="/logo/logo.png" alt="BLAK" width={120} height={40} />
-        </CardHeader>
-        <CardHeader className="px-12 text-center">
-          <CardDescription>
-            Create your BLAK {accountType} account
-          </CardDescription>
-        </CardHeader>
-
+      <AuthCardWrapper title={`Create your BLAK ${accountType} account`}>
         {formError && (
           <CardContent className="px-12">
             <Alert variant="destructive">
@@ -272,7 +264,7 @@ export const RegisterForm = () => {
             </Link>
           </Button>
         </CardFooter>
-      </Card>
+      </AuthCardWrapper>
     </form>
   )
 }

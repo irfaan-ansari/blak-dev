@@ -32,19 +32,20 @@ export const OperatorForm = () => {
 
   async function onSubmit(values: OperatorFormValues) {
     setPending(true)
+
     try {
       const [_, operatorResult] = await Promise.all([
         fetch(API_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ...values, formType: "operator-v2" }),
+          body: JSON.stringify({
+            formType: "operator-v2",
+            ...values,
+          }),
         }),
         createOperator(values),
       ])
 
-      if (!operatorResult.success) {
+      if (!operatorResult?.success) {
         throw new Error("Failed")
       }
 

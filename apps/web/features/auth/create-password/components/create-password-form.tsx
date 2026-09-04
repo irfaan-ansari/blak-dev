@@ -44,6 +44,7 @@ import {
   type CreatePasswordValues,
 } from "../create-password.schema"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
+import { AuthCardWrapper } from "@/features/shared/components/auth-card-wrapper"
 
 export const CreatePasswordForm = () => {
   const { open } = useAppDialog()
@@ -86,17 +87,7 @@ export const CreatePasswordForm = () => {
       className="w-full max-w-lg"
       onSubmit={form.handleSubmit(handleSubmit)}
     >
-      <Card className="py-12">
-        <CardHeader className="flex justify-center">
-          <Image src="/logo/logo.png" alt="BLAK" width={120} height={40} />
-        </CardHeader>
-
-        <CardHeader className="px-12 text-center">
-          <CardDescription>
-            Create a new password for your account
-          </CardDescription>
-        </CardHeader>
-
+      <AuthCardWrapper title="Create a new password for your account">
         <CardContent className="px-12">
           <FieldGroup>
             <Controller
@@ -207,7 +198,7 @@ export const CreatePasswordForm = () => {
             </Link>
           </Button>
         </CardFooter>
-      </Card>
+      </AuthCardWrapper>
     </form>
   )
 }

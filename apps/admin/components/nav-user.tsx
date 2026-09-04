@@ -19,28 +19,44 @@ import {
   BellIcon,
   LogOutIcon,
   UserCircle,
+  CircleUser,
 } from "lucide-react"
 
 import { authClient } from "@blak/auth/client"
+import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
 
 export function NavUser() {
-  const { data, isPending } = authClient.useSession()
+  const { open } = useAppDialog()
+  const { data: session } = authClient.useSession()
+  const user = session?.user
+
+  const handleLogout = async () => {
+    await authClient.signOut()
+    open({
+      title: "Logout",
+      description: "You have been logged out successfully.",
+      variant: "success",
+      action: {
+        label: "OK",
+        onClick: () => {
+          const authUrl = process.env.NEXT_PUBLIC_AUTH_URL!
+          window.location.href = authUrl
+        },
+      },
+    })
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          size="icon-lg"
-          variant="ghost"
-          className="rounded-full shadow-none"
-          disabled={isPending}
+          size="icon"
+          variant="secondary"
+          className="relative rounded-full border border-border bg-secondary/50"
         >
           <Avatar className="size-9 rounded-full **:rounded-full after:hidden">
-            <AvatarImage
-              src={data?.user?.image ?? ""}
-              alt={data?.user?.name ?? ""}
-            />
+            <AvatarImage src={user?.image ?? ""} alt={user?.name} />
             <AvatarFallback>
-              <UserCircle className="size-4" />
+              <CircleUser />
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -54,27 +70,19 @@ export function NavUser() {
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage
-                src={data?.user?.image ?? ""}
-                alt={data?.user?.name ?? ""}
-              />
+              <AvatarImage src={user?.image ?? ""} alt={user?.name} />
               <AvatarFallback>
-                <UserCircle className="size-4" />
+                <CircleUser className="size-4" />
               </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{data?.user?.name}</span>
-              <span className="truncate text-xs">{data?.user?.email}</span>
+              <span className="truncate font-medium">{user?.name}</span>
+              <span className="truncate text-xs">{user?.email}</span>
             </div>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <SparklesIcon />
-            Upgrade to Pro
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
@@ -91,7 +99,7 @@ export function NavUser() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOutIcon />
           Log out
         </DropdownMenuItem>

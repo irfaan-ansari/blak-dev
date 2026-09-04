@@ -15,10 +15,15 @@ import { StatusBadge } from "@/features/shared/components/status-badge"
 import { Operator } from "../operator.type"
 import { STATUS_MAP } from "../operator.const"
 import { OperatorAction } from "./operator-action"
+import Link from "next/link"
 
 export const OperatorCard = ({ data }: { data: Operator }) => {
   return (
     <Card size="sm">
+      <Link
+        href={`/network/operators/${data.id}`}
+        className="absolute inset-0"
+      />
       <CardHeader>
         <div className="flex items-start gap-3">
           <Avatar size="lg">
@@ -48,7 +53,7 @@ export const OperatorCard = ({ data }: { data: Operator }) => {
             </div>
           </div>
         </div>
-        <CardAction className="flex items-center gap-3">
+        <CardAction className="relative flex items-center gap-3">
           <StatusBadge status={data.status} statusMap={STATUS_MAP} />
           <OperatorAction data={data} />
         </CardAction>

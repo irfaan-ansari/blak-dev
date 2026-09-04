@@ -28,12 +28,12 @@ const AppHeader = () => {
           <Image src="/logo/logo-blak.png" width={120} height={40} alt="Blak" />
         </Link>
         <span className="flex-1"></span>
-        {/* <SearchQueryParam className="bg-secondary/50" /> */}
-        <Button variant="ghost" size="lg" className="relative rounded-full">
-          <Bell className="size-5" />
-          <Badge variant="warning" className="rounded-full">
-            10
-          </Badge>
+        <Button
+          variant="secondary"
+          size="icon"
+          className="relative rounded-full border border-border bg-secondary/50"
+        >
+          <Bell />
         </Button>
         <NavUser />
       </div>

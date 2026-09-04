@@ -29,6 +29,7 @@
     "@better-auth/api-key": "^1.7.1",
     "@blak/db": "workspace:*",
     "@blak/utils": "workspace:*",
+    "@blak/email": "workspace:*",
     "better-auth": "^1.6.20",
     "zod": "^4.4.3"
   },

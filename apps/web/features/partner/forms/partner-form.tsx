@@ -46,10 +46,10 @@ export function PartnerForm() {
       const [, partnerResult] = await Promise.all([
         fetch(API_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ...values, formType: "partner-v2" }),
+          body: JSON.stringify({
+            formType: "partner-v2",
+            ...values,
+          }),
         }),
         createPartner(payload),
       ])

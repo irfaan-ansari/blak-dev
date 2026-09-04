@@ -5,10 +5,10 @@ import { MarketCard } from "./market-card"
 import { useMarkets } from "../market.data"
 import { QueryBoundary } from "@/components/query-boundry"
 import { Pagination } from "@blak/ui/components/blak/pagination"
-// import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
+import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
 export const MarketClient = () => {
-  // const { queryParams } = useRouterStuff()
+  const { queryParams } = useRouterStuff()
   const query = useMarkets()
 
   return (
@@ -26,7 +26,7 @@ export const MarketClient = () => {
             pageCount={data?.pagination.pageCount}
             total={data?.pagination.total}
             onPageChange={(page) => {
-              // queryParams({ set: { page: page.toString() } })
+              queryParams({ set: { page: page.toString() } })
             }}
           />
         </>

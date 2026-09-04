@@ -6,10 +6,10 @@ import { PartnerCard } from "./partner-card"
 import { usePartners } from "../partner.data"
 import { QueryBoundary } from "@/components/query-boundry"
 import { Pagination } from "@blak/ui/components/blak/pagination"
-// import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
+import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
 export const PartnerClient = () => {
-  // const { queryParams } = useRouterStuff()
+  const { queryParams } = useRouterStuff()
   const query = usePartners()
 
   return (
@@ -27,7 +27,7 @@ export const PartnerClient = () => {
             pageCount={data?.pagination.pageCount}
             total={data?.pagination.total}
             onPageChange={(page) => {
-              // queryParams({ set: { page: page.toString() } })
+              queryParams({ set: { page: page.toString() } })
             }}
           />
         </>

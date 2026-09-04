@@ -62,7 +62,7 @@ export const OperatorCard = ({ data }: { data: OperatorApplication }) => {
             </div>
           </div>
         </div>
-        <CardAction className="flex items-center gap-3">
+        <CardAction className="relative flex items-center gap-3">
           <StatusBadge status={data.currentStatus} statusMap={STATUS_MAP} />
           <OperatorAction data={data} />
         </CardAction>

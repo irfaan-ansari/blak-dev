@@ -1,13 +1,7 @@
 "use client"
 
 import React from "react"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "@blak/ui/components/card"
+import { CardContent, CardFooter } from "@blak/ui/components/card"
 import { Button } from "@blak/ui/components/button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
@@ -40,6 +34,7 @@ import { toast } from "sonner"
 import { Alert, AlertTitle } from "@blak/ui/components/alert"
 import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 import { REDIRECT_MAP } from "@blak/utils"
+import { AuthCardWrapper } from "@/features/shared/components/auth-card-wrapper"
 
 export const SigninForm = () => {
   const { searchParamsObj, getQueryString } = useRouterStuff()
@@ -87,15 +82,7 @@ export const SigninForm = () => {
       className="w-full max-w-lg"
       onSubmit={form.handleSubmit(handleSubmit)}
     >
-      <Card className="py-12">
-        <CardHeader className="flex justify-center">
-          <Image src="/logo/logo.png" alt="BLAK" width={120} height={40} />
-        </CardHeader>
-
-        <CardHeader className="px-12 text-center">
-          <CardDescription>Continue to your BLAK account</CardDescription>
-        </CardHeader>
-
+      <AuthCardWrapper title="Continue to your BLAK account">
         {formError && (
           <CardContent className="px-12">
             <Alert variant="destructive">
@@ -211,7 +198,7 @@ export const SigninForm = () => {
             </Link>
           </Button>
         </CardFooter>
-      </Card>
+      </AuthCardWrapper>
     </form>
   )
 }

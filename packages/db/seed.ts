@@ -1,21 +1,6 @@
-import { ComplianceType, EntityType, prisma } from "./dist/index.js"
-import comp from "./comp.json"
-async function main() {
-  const mar = await prisma.market.findMany()
-  console.log("running loop...")
+import { prisma } from "./dist/index.js"
 
-  await prisma.complianceRequirement.createMany({
-    data: mar.flatMap((market) =>
-      comp.map((c) => ({
-        marketId: market.id,
-        entityType: c.entityType as EntityType,
-        name: c.name,
-        label: c.label,
-        isRequired: c.isRequired ?? true,
-        type: c.type as ComplianceType,
-      }))
-    ),
-  })
+async function main() {
   console.log("Finished...")
 }
 

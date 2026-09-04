@@ -8,6 +8,7 @@ import { AppProvider } from "@/components/provider"
 import { SidebarInset, SidebarProvider } from "@blak/ui/components/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppLayout } from "@/components/app-layout"
+import { Suspense } from "react"
 
 const varela = Manrope({
   variable: "--font-sans",
@@ -48,7 +49,9 @@ export default function RootLayout({
           >
             <AppSidebar variant="sidebar" />
             <SidebarInset className="bg-neutral-50">
-              <AppLayout>{children}</AppLayout>
+              <Suspense>
+                <AppLayout>{children}</AppLayout>
+              </Suspense>
             </SidebarInset>
           </SidebarProvider>
         </AppProvider>

@@ -5,9 +5,8 @@ import Image from "next/image"
 import { Bell } from "lucide-react"
 
 import { NavUser } from "./nav-user"
-import { Badge } from "@blak/ui/components/badge"
 import { Button } from "@blak/ui/components/button"
-// import { SearchQueryParam } from "@blak/ui/components/blak/search-input"
+import { SearchQueryParam } from "@blak/ui/components/blak/search-input"
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -28,6 +27,7 @@ const AppHeader = () => {
           <Image src="/logo/logo-blak.png" width={120} height={40} alt="Blak" />
         </Link>
         <span className="flex-1"></span>
+        <SearchQueryParam />
         <Button
           variant="secondary"
           size="icon"

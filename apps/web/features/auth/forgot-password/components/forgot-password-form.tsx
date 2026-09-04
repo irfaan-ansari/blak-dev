@@ -35,6 +35,7 @@ import {
   type ForgotPasswordFormValues,
 } from "../forgot-password-form.schema"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
+import { AuthCardWrapper } from "@/features/shared/components/auth-card-wrapper"
 
 export const ForgotPasswordForm = () => {
   const { open } = useAppDialog()
@@ -71,18 +72,7 @@ export const ForgotPasswordForm = () => {
       className="w-full max-w-lg"
       onSubmit={form.handleSubmit(handleSubmit)}
     >
-      <Card className="py-12">
-        <CardHeader className="flex justify-center">
-          <Image src="/logo/logo.png" alt="BLAK" width={120} height={40} />
-        </CardHeader>
-
-        <CardHeader className="px-12 text-center">
-          <CardDescription>
-            Enter your email address and we'll send you a link to reset your
-            password.
-          </CardDescription>
-        </CardHeader>
-
+      <AuthCardWrapper title="Enter your email address and we'll send you a link to reset your password.">
         <CardContent className="px-12">
           <FieldGroup>
             <Controller
@@ -153,7 +143,7 @@ export const ForgotPasswordForm = () => {
             </Link>
           </Button>
         </CardFooter>
-      </Card>
+      </AuthCardWrapper>
     </form>
   )
 }

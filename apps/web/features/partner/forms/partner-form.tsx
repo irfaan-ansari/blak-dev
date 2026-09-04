@@ -42,8 +42,22 @@ export function PartnerForm() {
     setPending(true)
     try {
       const { acknowledgment, ...payload } = values
-      const { success } = await createPartner(payload)
-      if (!success) throw new Error("Failed")
+
+      const [, partnerResult] = await Promise.all([
+        fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...values, formType: "partner-v2" }),
+        }),
+        createPartner(payload),
+      ])
+
+      if (!partnerResult.success) {
+        throw new Error("Failed")
+      }
+
       open({
         variant: "success",
         title: "Application received.",

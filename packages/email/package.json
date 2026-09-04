@@ -4,14 +4,17 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./src/index.ts",
-    "./client": "./src/client.ts",
-    "./types": "./src/types.ts"
+    ".": "./dist/index.js",
+    "./templates/*": "./dist/src/*.js"
   },
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.ts\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "email build ",
+    "dev": "email dev -p 3004",
+    "export": "email export",
+    "start": "email start -p 3001"
   },
   "dependencies": {
     "react": "19.2.4",
@@ -23,6 +26,8 @@
     "@react-email/ui": "6.9.2",
     "@types/node": "^20.19.43",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4"
+    "@types/react-dom": "^19.2.4",
+    "tailwindcss": "^4.3.3",
+    "tsup": "^8.5.1"
   }
 }

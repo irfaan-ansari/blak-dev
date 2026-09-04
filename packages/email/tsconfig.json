@@ -3,11 +3,13 @@
   "compilerOptions": {
     "module": "ESNext",
     "types": ["node"],
+    "strict": true,
+    "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "paths": {
       "@blak/email/*": ["./src/*"]
     }
   },
   "include": ["."],
-  "exclude": ["node_modules"]
+  "exclude": ["dist", "build", "node_modules"]
 }

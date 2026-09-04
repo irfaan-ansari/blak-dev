@@ -5,6 +5,7 @@ import {
   phoneNumberClient,
   emailOTPClient,
   inferAdditionalFields,
+  inferOrgAdditionalFields,
 } from "better-auth/client/plugins"
 import { apiKeyClient } from "@better-auth/api-key/client"
 import type { AuthQueryAtom } from "better-auth/client"
@@ -22,7 +23,9 @@ export const authClient = createAuthClient({
       ac: userAc,
       roles: userRoles,
     }),
-    organizationClient({}),
+    organizationClient({
+      schema: inferOrgAdditionalFields<typeof auth>(),
+    }),
     phoneNumberClient(),
     apiKeyClient(),
     emailOTPClient(),

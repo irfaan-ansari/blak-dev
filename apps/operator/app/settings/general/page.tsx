@@ -1,7 +1,8 @@
+import { AccountClient } from "@/features/account/components/account-client"
 import React from "react"
 
 const GeneralPage = () => {
-  return <div>Coming Soon</div>
+  return <AccountClient />
 }
 
 export default GeneralPage

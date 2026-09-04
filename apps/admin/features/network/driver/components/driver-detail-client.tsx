@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 
 import {
@@ -9,16 +10,18 @@ import {
 } from "@blak/ui/components/card"
 import { useParams } from "next/navigation"
 
-import { PageSkeleton } from "@blak/ui/components/blak/empty-state"
-import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
-import { ArrowUpRight, Building2, CircleUser, FileTextIcon } from "lucide-react"
 import { useDriver } from "@/features/network/driver/driver.data"
+import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
+import { PageSkeleton } from "@blak/ui/components/blak/empty-state"
+import { ArrowUpRight, Building2, CircleUser, FileTextIcon } from "lucide-react"
 
 export const DriverDetailClient = () => {
   const id = useParams()?.id
 
   const { data, isPending } = useDriver(id as string)
+
   if (isPending) return <PageSkeleton />
+
   const driver = data?.data
 
   return (

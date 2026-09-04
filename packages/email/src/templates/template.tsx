@@ -48,8 +48,8 @@ export const Footer = () => {
           </Text>
           <Text className="font-11 text-muted-fg m-0 text-center font-sans">
             Need help?{" "}
-            <Link href="https://example.com/" className="text-brand">
-              Contact the BLAK support team.
+            <Link href="mailto:inquiry@rideblak.com" className="text-brand">
+              Contact our Support Team.
             </Link>
           </Text>
         </Column>

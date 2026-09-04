@@ -14,7 +14,7 @@ import Link from "next/link"
 
 export const DriverCard = ({ data }: { data: DriverWithDocs }) => {
   return (
-    <Card size="sm">
+    <Card size="sm" className="relative">
       <Link
         href={`/network/drivers/${data?.id}`}
         className="absolute inset-0"

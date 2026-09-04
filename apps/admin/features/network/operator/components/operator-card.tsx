@@ -1,25 +1,23 @@
 import React from "react"
-
+import Link from "next/link"
 import {
   Card,
   CardAction,
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
-import { Building2, Mail, MapPin, Smartphone } from "lucide-react"
 
 import { CopyButton } from "@blak/ui/components/blak/copy-button"
 import { Avatar, AvatarFallback, AvatarImage } from "@blak/ui/components/avatar"
-
+import { Building2, Mail, MapPin, Smartphone } from "lucide-react"
 import { StatusBadge } from "@/features/shared/components/status-badge"
+import { OperatorAction } from "./operator-action"
 import { Operator } from "../operator.type"
 import { STATUS_MAP } from "../operator.const"
-import { OperatorAction } from "./operator-action"
-import Link from "next/link"
 
 export const OperatorCard = ({ data }: { data: Operator }) => {
   return (
-    <Card size="sm">
+    <Card size="sm" className="relative">
       <Link
         href={`/network/operators/${data.id}`}
         className="absolute inset-0"

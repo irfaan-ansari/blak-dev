@@ -21,7 +21,7 @@ import {
 import Image from "next/image"
 import { PageSkeleton } from "@blak/ui/components/blak/empty-state"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
-import { CircleUser } from "lucide-react"
+import { Building2, CircleUser } from "lucide-react"
 
 const VehiclePage = () => {
   const id = useParams()?.id
@@ -57,8 +57,8 @@ const VehiclePage = () => {
           </div>
 
           <Card size="sm">
-            <CardHeader className="border-b">
-              <div className="flex items-center gap-4">
+            <CardHeader className="grid grid-cols-2 gap-0 divide-x border-b">
+              <div className="flex items-center gap-4 pr-4">
                 <Avatar size="lg" className="rounded-md *:rounded-md">
                   <AvatarFallback>
                     <CircleUser className="size-4 text-sky-500" />
@@ -68,7 +68,20 @@ const VehiclePage = () => {
                   <CardTitle className="font-semibold">
                     Lorem ipsum dolor sit.
                   </CardTitle>
-                  <CardDescription>Driver</CardDescription>
+                  <CardDescription>Vehicle</CardDescription>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 pl-4">
+                <Avatar size="lg" className="rounded-md *:rounded-md">
+                  <AvatarFallback>
+                    <Building2 className="size-4 text-pink-500" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid">
+                  <CardTitle className="font-semibold">
+                    Lorem ipsum dolor sit.
+                  </CardTitle>
+                  <CardDescription>Operator</CardDescription>
                 </div>
               </div>
             </CardHeader>

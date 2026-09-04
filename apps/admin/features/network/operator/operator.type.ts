@@ -1,4 +1,4 @@
-import { Organization } from "@blak/db"
+import { Organization, File } from "@blak/db"
 
 type Metadata = {
   address: string
@@ -10,4 +10,9 @@ type Metadata = {
 export type Operator = Omit<Organization, "metadata"> & {
   metadata: Metadata
 }
+
+export type OperatorWithDocuments = Operator & {
+  documents: File[]
+}
+
 export type OperatorStatus = Organization["status"]

@@ -4,22 +4,29 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./dist/index.js",
-    "./templates/*": "./dist/src/*.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./templates/*": {
+      "types": "./dist/templates/*.d.ts",
+      "import": "./dist/templates/*.js"
+    }
   },
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.ts\"",
     "typecheck": "tsc --noEmit",
-    "build": "email build ",
-    "dev": "email dev -p 3004",
+    "build": "tsup",
+    "preview": "email dev -p 3004 --dir ./src",
     "export": "email export",
-    "start": "email start -p 3001"
+    "start": "email start -p 3004 --dir ./src"
   },
   "dependencies": {
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-email": "6.9.2"
+    "react-email": "6.9.2",
+    "resend": "^6.26.0"
   },
   "devDependencies": {
     "@blak/ts-config": "workspace:*",

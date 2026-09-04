@@ -39,10 +39,15 @@ const router = new Hono<OrgContext>()
       }),
     ])
 
-    const transformed = results.map((res) => ({
-      ...res,
-      active: res.id === (activeOrganizationId as string),
-    }))
+    const transformed = results.map((res) => {
+      const metadata = JSON.parse(res?.metadata || "{}")
+
+      return {
+        ...res,
+        metadata,
+        active: res.id === (activeOrganizationId as string),
+      }
+    })
 
     const pageCount = Math.ceil(total / take)
 
@@ -64,9 +69,11 @@ const router = new Hono<OrgContext>()
       where: { id: activeOrganizationId as string },
     })
 
+    const metadata = JSON.parse(result?.metadata || "{}")
+
     return c.json({
       success: true,
-      data: result,
+      data: { ...result, metadata },
     })
   })
 

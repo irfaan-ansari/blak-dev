@@ -33,10 +33,19 @@ export const OperatorForm = () => {
   async function onSubmit(values: OperatorFormValues) {
     setPending(true)
     try {
-      const { success } = await createOperator(values)
+      const [_, operatorResult] = await Promise.all([
+        fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...values, formType: "operator-v2" }),
+        }),
+        createOperator(values),
+      ])
 
-      if (!success) {
-        return
+      if (!operatorResult.success) {
+        throw new Error("Failed")
       }
 
       open({
@@ -50,6 +59,7 @@ export const OperatorForm = () => {
         },
       })
       form.reset()
+      setActive(0)
     } catch (error) {
       console.log("submit failed - operator-form:", error)
       open({

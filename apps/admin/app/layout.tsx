@@ -15,10 +15,10 @@ const varela = Manrope({
 
 export const metadata: Metadata = {
   title: {
-    default: "Blak",
-    template: `%s | Blak`,
+    default: "BLAK | A First Class Experience",
+    template: `%s | BLAK`,
   },
-  description: "Blak",
+  description: "BLAK A First Class Experience",
 }
 
 export default function RootLayout({

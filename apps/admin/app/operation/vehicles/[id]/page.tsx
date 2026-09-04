@@ -116,7 +116,7 @@ const VehiclePage = () => {
               <div>Registration #</div>
               <div>:</div>
               <div className="pl-10">{vehicle?.registrationNumber}</div>
-              <div>Registration expire</div>
+              <div>Registration expiry</div>
               <div>:</div>
               <div className="pl-10">
                 {/* {vehicle?.registrationExpiry &&

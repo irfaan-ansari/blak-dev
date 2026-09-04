@@ -3,34 +3,29 @@ import React from "react"
 import {
   Card,
   CardAction,
-  CardContent,
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
-import {
-  ArrowRight,
-  Calendar,
-  CircleUser,
-  Mail,
-  MapPin,
-  Smartphone,
-  Truck,
-} from "lucide-react"
+import { CircleUser, Mail, MapPin, Smartphone, Truck } from "lucide-react"
 
 import { OperatorApplication } from "../operator.type"
 import { CopyButton } from "@blak/ui/components/blak/copy-button"
-import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
-import { formatRelative } from "@blak/utils/format"
+
 import { pluralize } from "@blak/utils/string"
 import { StatusBadge } from "@/features/shared/components/status-badge"
 import { STATUS_MAP } from "../operator.const"
 import { OperatorAction } from "./operator-action"
+import Link from "next/link"
 
 export const OperatorCard = ({ data }: { data: OperatorApplication }) => {
   const { legalBusinessName, state, country, vehicleCount } =
     data.application || {}
   return (
-    <Card size="sm">
+    <Card size="sm" className="relative">
+      <Link
+        href={`/onboarding/operators/${data.id}`}
+        className="absolute inset-0"
+      />
       <CardHeader>
         <div className="flex items-start gap-3">
           <div className="grid min-w-0 flex-1 gap-2">

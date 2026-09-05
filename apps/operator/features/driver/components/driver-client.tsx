@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
 import { CircleCheck, Mail, Smartphone, UserCircle } from "lucide-react"
 import { CopyButton } from "@blak/ui/components/blak/copy-button"
 import { Badge } from "@blak/ui/components/badge"
+import Link from "next/link"
 
 export const DriverClient = () => {
   const { data, isPending, isError, error } = useDrivers()
@@ -38,7 +39,8 @@ export const DriverClient = () => {
   return (
     <div className="space-y-2">
       {data.data?.map((drv) => (
-        <Card key={drv.id} size="sm">
+        <Card key={drv.id} size="sm" className="relative">
+          <Link href={`/drivers/${drv.id}`} className="absolute inset-0" />
           <CardHeader>
             <div className="flex items-start gap-3">
               <Avatar>
@@ -58,7 +60,7 @@ export const DriverClient = () => {
                 />
               </div>
             </div>
-            <CardAction className="space-x-2">
+            <CardAction className="relative space-x-2">
               <Badge className="h-7 px-2" variant="outline">
                 <CircleCheck className="text-green-500" /> Active
               </Badge>

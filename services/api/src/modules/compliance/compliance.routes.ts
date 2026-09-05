@@ -31,24 +31,11 @@ const compliance = new Hono<AppContext>().get("/", async (c) => {
         },
       ],
     },
-    include: {
-      records: {
-        where: {
-          entityId: org.id,
-          entityType,
-        },
-      },
-    },
   })
-
-  const data = response.map(({ records, ...requirement }) => ({
-    ...requirement,
-    record: records[0] ?? null,
-  }))
 
   return c.json({
     success: true,
-    data: data,
+    data: response,
   })
 })
 

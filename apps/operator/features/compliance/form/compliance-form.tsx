@@ -22,8 +22,9 @@ import { UploadField } from "./upload-field"
 import { ComplianceFormSchema, complianceSchema } from "../compliance.schema"
 import { Compliance } from "../compliance.type"
 import { createComplianceRecord } from "../compliance.action"
-import { uploadFile } from "@/lib/api-client/upload-file"
 import { useQueryClient } from "@tanstack/react-query"
+import { authClient } from "@blak/auth/client"
+import { uploadFiles } from "@/lib/api-client/upload-file"
 
 type ComplianceFormProps = {
   requirements: Compliance[]
@@ -31,6 +32,7 @@ type ComplianceFormProps = {
 
 export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
   const queryClient = useQueryClient()
+  const { data: session } = authClient.useSession()
   const form = useForm<ComplianceFormSchema>({
     resolver: zodResolver(complianceSchema),
 
@@ -44,23 +46,50 @@ export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
 
   const handleSubmit = async (values: ComplianceFormSchema) => {
     try {
-      const documents = await Promise.all(
-        values.documents
-          .filter(({ file }) => file instanceof File)
-          .map(async ({ file, requirementId }) => ({
+      const organizationId = session?.session.activeOrganizationId!
+
+      const uploadItems = values.documents
+        .filter(
+          (document): document is typeof document & { file: File } =>
+            document.file instanceof File
+        )
+        .map(({ file, requirementId }) => {
+          const requirement = requirements.find(
+            (item) => item.id === requirementId
+          )
+
+          if (!requirement) {
+            throw new Error(`Requirement not found: ${requirementId}`)
+          }
+
+          return {
             requirementId,
-            ...(await uploadFile(file!)),
-          }))
+            file,
+            meta: {
+              ref: "OPERATOR",
+              refId: organizationId,
+              field: requirement.label,
+            },
+          }
+        })
+
+      const response = await uploadFiles(
+        uploadItems.map(({ file, meta }) => ({
+          file,
+          meta,
+        }))
       )
 
-      const result = await createComplianceRecord({
-        data: documents,
-      })
+      const uploadedFiles = response.data
 
-      if (result?.serverError) {
-        toast.error(result.serverError.message)
-        return
-      }
+      const records = uploadItems.map((item, index) => ({
+        requirementId: item.requirementId,
+        // @ts-expect-error - uploadedFiles is unknown
+        fileId: uploadedFiles[index].id,
+      }))
+
+      await createComplianceRecord({ data: records })
+
       queryClient.invalidateQueries({ queryKey: ["account"] })
       toast.success("Documents submitted successfully.")
     } catch (error) {

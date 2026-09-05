@@ -92,28 +92,31 @@ export const DriverDetailClient = () => {
             </CardContent>
 
             <CardContent className="space-y-2">
-              {driver?.documents?.map((doc) => (
-                <a
-                  href={doc.url!}
-                  key={doc.id}
-                  target="_blank"
-                  className="md group flex gap-4 rounded-md border bg-muted/50 p-4"
-                >
-                  <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-md border bg-muted text-muted-foreground">
-                    <FileTextIcon className="size-4" />
-                  </span>
-                  <div className="grid flex-1">
-                    <span className="font-medium">
-                      {/* @ts-ignore */}
-                      {doc?.label}
+              {(driver?.documents?.length || 0) > 0 ? (
+                driver?.documents?.map((doc) => (
+                  <a
+                    href={doc.url!}
+                    key={doc.id}
+                    target="_blank"
+                    className="md group flex gap-4 rounded-md border bg-muted/50 p-4"
+                  >
+                    <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-md border bg-muted text-muted-foreground">
+                      <FileTextIcon className="size-4" />
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      {doc.name}
-                    </span>
-                  </div>
-                  <ArrowUpRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                </a>
-              ))}
+                    <div className="grid flex-1">
+                      <span className="font-medium">{doc?.field}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {doc.name}
+                      </span>
+                    </div>
+                    <ArrowUpRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  </a>
+                ))
+              ) : (
+                <span className="text-muted-foreground">
+                  No documents found
+                </span>
+              )}
             </CardContent>
           </Card>
         </div>

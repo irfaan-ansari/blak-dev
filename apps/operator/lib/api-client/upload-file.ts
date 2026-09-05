@@ -1,62 +1,73 @@
-type PresignResponse = {
-  data: {
-    uploadUrl: string
-    key: string
-    url: string
+type UploadMeta = {
+  ref?: string
+  refId?: string
+  field?: string
+}
+
+type UploadInput = {
+  file: File
+  meta?: UploadMeta
+}
+
+type UploadResponse<T = unknown> = {
+  success: boolean
+  data: T
+}
+
+/**
+ * Upload multiple files with optional metadata
+ * @param uploads Array of files with optional metadata
+ * @returns The upload response
+ */
+
+export async function uploadFiles<T = unknown>(
+  uploads: UploadInput[]
+): Promise<UploadResponse<T>> {
+  if (!uploads.length) {
+    throw new Error("At least one file is required")
   }
-}
 
-type UploadedFile = {
-  name: string
-  mime: string
-  size: number
-  storageKey: string
-  url: string
-}
+  const formData = new FormData()
 
-export const uploadFile = async (file: File): Promise<UploadedFile> => {
-  // 1. Get presigned URL
-  const presignResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/v1/uploads/presign`,
+  const meta = uploads.map(({ file, meta }) => {
+    formData.append("files", file)
+    return meta ?? {}
+  })
+
+  formData.append("meta", JSON.stringify(meta))
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/v1/uploads`,
     {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        filename: file.name,
-        contentType: file.type,
-      }),
+      body: formData,
     }
   )
 
-  if (!presignResponse.ok) {
-    throw new Error(`Failed to presign ${file.name}`)
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result?.message ?? "Failed to upload files")
   }
 
-  const {
-    data: { uploadUrl, key, url },
-  }: PresignResponse = await presignResponse.json()
+  return result
+}
 
-  // 2. Upload directly to R2
-  const uploadResponse = await fetch(uploadUrl, {
-    method: "PUT",
-    headers: {
-      "Content-Type": file.type,
+/**
+ * Upload a single file with optional metadata
+ * @param file The file to upload
+ * @param meta Optional metadata for the file
+ * @returns The upload response
+ */
+export async function uploadFile<T = unknown>(
+  file: File,
+  meta?: UploadMeta
+): Promise<UploadResponse<T>> {
+  return uploadFiles<T>([
+    {
+      file,
+      meta,
     },
-    body: file,
-  })
-
-  if (!uploadResponse.ok) {
-    throw new Error(`Failed to upload ${file.name}`)
-  }
-
-  return {
-    name: file.name,
-    mime: file.type,
-    size: file.size,
-    storageKey: key,
-    url: key,
-  }
+  ])
 }

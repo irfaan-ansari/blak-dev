@@ -81,9 +81,9 @@ model City {
 model Market {
     id   String @id @default(cuid())
     name String
-    iso2 String @unique
+    iso2 String
 
-    countryId String  @unique
+    countryId String
     country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
 
     scope        MarketScope  @default(COUNTRY)
@@ -184,13 +184,6 @@ model ComplianceRecord {
 
     requirementId String
     requirement   ComplianceRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
-
-    entityType EntityType
-    entityId   String
-
-    name  String
-    label String
-    value String?
 
     fileId String?
     file   File?   @relation(fields: [fileId], references: [id])

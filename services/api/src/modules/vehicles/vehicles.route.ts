@@ -21,55 +21,42 @@ const vehicles = new Hono<AppContext>()
       prisma.vehicle.count(),
     ])
 
-    const attachments = await prisma.entityAttachment.findMany({
+    const files = await prisma.file.findMany({
       where: {
-        entityType: "VEHICLE",
-        entityId: {
+        ref: "VEHICLE",
+        refId: {
           in: results.map((r) => r.id),
         },
       },
-      include: {
-        file: true,
-      },
     })
 
-    const imagesByVehicle = attachments.reduce<
-      Record<string, (typeof attachments)[number][]>
-    >((acc, attachment) => {
-      ;(acc[attachment.entityId] ??= []).push(attachment)
+    const docsWithUrl = await Promise.all(
+      files.map(async ({ storageKey, ...file }) => ({
+        ...file,
+        size: Number(file.size),
+        url: await getR2Url(storageKey),
+      }))
+    )
+
+    const vehicleImages = docsWithUrl.reduce<
+      Record<string, (typeof docsWithUrl)[number][]>
+    >((acc, file) => {
+      if (!file.refId) return acc
+
+      ;(acc[file.refId] ??= []).push(file)
+
       return acc
     }, {})
 
-    const data = await Promise.all(
-      results.map(async (vehicle) => {
-        const attachments = imagesByVehicle[vehicle.id] ?? []
-
-        const images = await Promise.all(
-          attachments.map(async (attachment) => {
-            const { file } = attachment
-            const { storageKey, ...rest } = file
-
-            const url = await getR2Url(storageKey)
-
-            return {
-              ...rest,
-              size: Number(rest.size),
-              url,
-            }
-          })
-        )
-
-        return {
-          ...vehicle,
-          images,
-        }
-      })
-    )
+    const records = results.map((user) => ({
+      ...user,
+      images: vehicleImages[user.id] ?? [],
+    }))
 
     const pageCount = Math.ceil(total / take)
 
     return c.json({
-      data: data,
+      data: records,
       pagination: {
         page,
         pageSize: take,
@@ -87,29 +74,19 @@ const vehicles = new Hono<AppContext>()
 
     if (!result) throw new AppError("NOT_FOUND")
 
-    const attachments = await prisma.entityAttachment.findMany({
+    const docs = await prisma.file.findMany({
       where: {
-        entityType: "VEHICLE",
-        entityId: result.id,
-      },
-      include: {
-        file: true,
+        ref: "VEHICLE",
+        refId: result.id,
       },
     })
 
     const images = await Promise.all(
-      attachments.map(async (attachment) => {
-        const { file } = attachment
-        const { storageKey, ...rest } = file
-
-        const url = await getR2Url(storageKey)
-
-        return {
-          ...rest,
-          size: Number(rest.size),
-          url,
-        }
-      })
+      docs.map(async ({ storageKey, ...file }) => ({
+        ...file,
+        size: Number(file.size),
+        url: await getR2Url(storageKey),
+      }))
     )
 
     return c.json({

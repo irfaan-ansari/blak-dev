@@ -14,10 +14,12 @@ import { STATUS_MAP } from "../vehicle.const"
 
 import { Button } from "@blak/ui/components/button"
 import { VehicleDialog } from "./vehicle-dialog"
+import Link from "next/link"
 
 const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
   return (
-    <Card className="ring-ring/10" size="sm">
+    <Card className="relative" size="sm">
+      <Link href={`/vehicles/${data.id}`} className="absolute inset-0" />
       <CardHeader className="gap-x-10">
         <div className="flex h-full items-start gap-3">
           <Avatar size="lg">
@@ -49,7 +51,7 @@ const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
           </div>
         </div>
 
-        <CardAction className="space-x-2">
+        <CardAction className="relative space-x-2">
           <StatusBadge statusMap={STATUS_MAP} status={data.status} />
           <VehicleDialog>
             <Button variant="outline" size="icon">

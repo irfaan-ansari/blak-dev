@@ -33,8 +33,5 @@ export const vehicleImageSchema = z.object({
 })
 
 export const vehicleCreateSchema = z.object({
-  data: z.object({
-    ...vehicleSchema.shape,
-    images: z.array(vehicleImageSchema),
-  }),
+  data: vehicleSchema,
 })

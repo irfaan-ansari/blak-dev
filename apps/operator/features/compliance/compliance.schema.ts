@@ -19,12 +19,9 @@ export const createComplianceRecordSchema = z.object({
   data: z
     .array(
       z.object({
-        mime: z.string().min(1),
-        size: z.number().positive(),
-        storageKey: z.string().min(1),
-        url: z.string(),
-        name: z.string(),
-        requirementId: z.string(),
+        requirementId: z.string().min(1),
+        fileId: z.string().min(1),
+        expiresAt: z.coerce.date().optional(),
       })
     )
     .min(1),

@@ -38,22 +38,36 @@ const drivers = new Hono<OrgContext>()
 
     const pageCount = Math.ceil(total / take)
 
-    const complianceRecords = await prisma.complianceRecord.findMany({
+    const docs = await prisma.file.findMany({
       where: {
-        entityType: "DRIVER",
-        entityId: {
+        ref: "DRIVER",
+        refId: {
           in: results.map((user) => user.id),
         },
       },
     })
 
-    const complianceMap = new Map(
-      complianceRecords.map((record) => [record.entityId, record])
+    const docsWithUrl = await Promise.all(
+      docs.map(async ({ storageKey, ...file }) => ({
+        ...file,
+        size: Number(file.size),
+        url: await getR2Url(storageKey),
+      }))
     )
+
+    const docsByDriver = docsWithUrl.reduce<
+      Record<string, (typeof docsWithUrl)[number][]>
+    >((acc, file) => {
+      if (!file.refId) return acc
+
+      ;(acc[file.refId] ??= []).push(file)
+
+      return acc
+    }, {})
 
     const records = results.map((user) => ({
       ...user,
-      compliance: complianceMap.get(user.id) ?? null,
+      documents: docsByDriver[user.id] ?? [],
     }))
 
     return c.json({
@@ -74,36 +88,24 @@ const drivers = new Hono<OrgContext>()
     })
     if (!result) throw new AppError("NOT_FOUND")
 
-    const complianceRecords = await prisma.complianceRecord.findMany({
+    const docs = await prisma.file.findMany({
       where: {
-        entityType: "DRIVER",
-        entityId: result.id,
-      },
-      include: {
-        file: true,
+        ref: "DRIVER",
+        refId: result.id,
       },
     })
 
-    const records = await Promise.all(
-      complianceRecords.map(async (attachment) => {
-        const { file, label, value, status } = attachment
-        if (!file) return { label, value, status }
-        const { storageKey, ...rest } = file
-        const url = await getR2Url(storageKey)
-        return {
-          ...rest,
-          label,
-          value,
-          status,
-          size: Number(rest.size),
-          url,
-        }
-      })
+    const docsWithUrl = await Promise.all(
+      docs.map(async ({ storageKey, ...file }) => ({
+        ...file,
+        size: Number(file.size),
+        url: await getR2Url(storageKey),
+      }))
     )
 
     return c.json({
       success: true,
-      data: { ...result, documents: records },
+      data: { ...result, documents: docsWithUrl },
     })
   })
 

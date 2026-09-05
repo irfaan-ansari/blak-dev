@@ -1,5 +1,4 @@
 "use client"
-
 import React from "react"
 
 import {
@@ -11,17 +10,18 @@ import {
 } from "@blak/ui/components/card"
 import { useParams } from "next/navigation"
 
-import { PageSkeleton } from "@blak/ui/components/blak/empty-state"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
-import { ArrowUpRight, CircleUser, FileTextIcon } from "lucide-react"
+import { PageSkeleton } from "@blak/ui/components/blak/empty-state"
+import { ArrowUpRight, Building2, CircleUser, FileTextIcon } from "lucide-react"
+import { useDriver } from "../driver.data"
 
-import { useOperator } from "@/features/network/operator/operator.data"
-
-export const OperatorDetailClient = () => {
+export const DriverDetailClient = () => {
   const id = useParams()?.id
 
-  const { data, isPending } = useOperator(id as string)
+  const { data, isPending } = useDriver(id as string)
+
   if (isPending) return <PageSkeleton />
+
   const driver = data?.data
 
   return (
@@ -29,29 +29,29 @@ export const OperatorDetailClient = () => {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="space-y-6 lg:col-span-3">
           {/* stats */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <Card size="sm">
               <CardContent>
-                <CardTitle className="font-semibold">Vehicles</CardTitle>
+                <CardTitle className="font-semibold">Total Trips</CardTitle>
                 <CardDescription>10</CardDescription>
               </CardContent>
             </Card>
             <Card size="sm">
               <CardContent>
-                <CardTitle className="font-semibold">Drivers</CardTitle>
+                <CardTitle className="font-semibold">Completed</CardTitle>
                 <CardDescription>10</CardDescription>
               </CardContent>
             </Card>
             <Card size="sm">
               <CardContent>
-                <CardTitle className="font-semibold">Rides</CardTitle>
+                <CardTitle className="font-semibold">Cancelled</CardTitle>
                 <CardDescription>10</CardDescription>
               </CardContent>
             </Card>
           </div>
 
           <Card size="sm">
-            <CardHeader className="border-b">
+            <CardHeader className="grid grid-cols-2 gap-0 divide-x border-b">
               <div className="flex items-center gap-4 pr-4">
                 <Avatar size="lg" className="rounded-md *:rounded-md">
                   <AvatarFallback>
@@ -63,6 +63,19 @@ export const OperatorDetailClient = () => {
                     Lorem ipsum dolor sit.
                   </CardTitle>
                   <CardDescription>Vehicle</CardDescription>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 pl-4">
+                <Avatar size="lg" className="rounded-md *:rounded-md">
+                  <AvatarFallback>
+                    <Building2 className="size-4 text-pink-500" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid">
+                  <CardTitle className="font-semibold">
+                    Lorem ipsum dolor sit.
+                  </CardTitle>
+                  <CardDescription>Operator</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -90,10 +103,7 @@ export const OperatorDetailClient = () => {
                     <FileTextIcon className="size-4" />
                   </span>
                   <div className="grid flex-1">
-                    <span className="font-medium">
-                      {/* @ts-ignore */}
-                      {doc?.field}
-                    </span>
+                    <span className="font-medium">{doc?.field}</span>
                     <span className="text-xs text-muted-foreground">
                       {doc.name}
                     </span>
@@ -107,6 +117,29 @@ export const OperatorDetailClient = () => {
 
         <Card size="sm" className="lg:col-span-2">
           <CardHeader className="border-b">
+            <CardTitle className="font-semibold">Earnings</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-4 border-b pb-4 lg:grid-cols-3">
+            <Card size="sm">
+              <CardContent>
+                <CardTitle className="font-semibold">Total Trips</CardTitle>
+                <CardDescription>10</CardDescription>
+              </CardContent>
+            </Card>
+            <Card size="sm">
+              <CardContent>
+                <CardTitle className="font-semibold">Completed</CardTitle>
+                <CardDescription>10</CardDescription>
+              </CardContent>
+            </Card>
+            <Card size="sm">
+              <CardContent>
+                <CardTitle className="font-semibold">Cancelled</CardTitle>
+                <CardDescription>10</CardDescription>
+              </CardContent>
+            </Card>
+          </CardContent>
+          <CardHeader>
             <CardTitle className="font-semibold">Recent transactions</CardTitle>
           </CardHeader>
           <CardContent>

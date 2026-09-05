@@ -23,7 +23,7 @@ export function StatusBadge<K extends string>({
 
   if (!config) {
     return (
-      <Badge variant="outline" className={cn("h-7 px-3", className)}>
+      <Badge variant="outline" className={cn("h-7 px-2", className)}>
         {status}
       </Badge>
     )
@@ -32,7 +32,10 @@ export function StatusBadge<K extends string>({
   const { label, icon: Icon, className: configClass } = config
 
   return (
-    <Badge variant="outline" className={cn("h-7 px-3", configClass, className)}>
+    <Badge
+      variant="outline"
+      className={cn("h-7 px-2.5", configClass, className)}
+    >
       {showIcon && Icon && <Icon className="size-3.5" />}
       {label}
     </Badge>

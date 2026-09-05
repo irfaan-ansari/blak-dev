@@ -20,7 +20,7 @@ export function SearchQueryParam({
   ...props
 }: React.ComponentProps<"div"> & { placeholder?: string }) {
   const { searchParamsObj, queryParams } = useRouterStuff()
-  const [search, setSearch] = React.useState(searchParamsObj.q)
+  const [search, setSearch] = React.useState(searchParamsObj.q ?? "")
 
   const debounced = useDebounce(search)
 
@@ -35,7 +35,12 @@ export function SearchQueryParam({
       </InputGroupAddon>
       {search && (
         <InputGroupAddon align="inline-end">
-          <InputGroupButton onClick={() => setSearch("")}>
+          <InputGroupButton
+            onClick={() => {
+              setSearch("")
+              queryParams({ del: ["q"] })
+            }}
+          >
             <X />
           </InputGroupButton>
         </InputGroupAddon>

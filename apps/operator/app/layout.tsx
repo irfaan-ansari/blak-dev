@@ -4,10 +4,10 @@ import { cn } from "@blak/ui/lib/utils"
 import { Metadata } from "next"
 import { Manrope } from "next/font/google"
 
-import { AppProvider } from "@/components/provider"
-import { SidebarInset, SidebarProvider } from "@blak/ui/components/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
 import { AppLayout } from "@/components/app-layout"
+import { AppProvider } from "@/components/provider"
+import { AppSidebar } from "@/components/app-sidebar"
+import { SidebarInset, SidebarProvider } from "@blak/ui/components/sidebar"
 
 const varela = Manrope({
   variable: "--font-sans",

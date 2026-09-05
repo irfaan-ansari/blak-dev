@@ -16,7 +16,7 @@ export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
     className: "text-primary-foreground! bg-amber-200! border-amber-300!",
   },
   PENDING_APPROVAL: {
-    label: "Document Submitted",
+    label: "Documents Submitted",
     icon: ClockFading,
     className: "text-primary-foreground bg-lime-300 border-lime-400",
   },
@@ -47,10 +47,10 @@ export const AVAILABLE_ACTIONS: Partial<
 > = {
   PENDING_APPROVAL: [
     {
-      label: "Activate",
+      label: "Approve",
       variant: "ghost",
       icon: BadgeCheck,
-      action: "activate",
+      action: "approve",
     },
     {
       label: "Decline",

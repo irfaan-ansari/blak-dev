@@ -13,6 +13,8 @@ export type Operator = Omit<Organization, "metadata"> & {
 
 export type OperatorWithDocuments = Operator & {
   documents: File[]
+  vehicleCount: number
+  driverCount: number
 }
 
 export type OperatorStatus = Organization["status"]

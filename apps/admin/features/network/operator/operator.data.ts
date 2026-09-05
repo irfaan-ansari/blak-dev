@@ -5,10 +5,13 @@ import { ApiResponse, PaginatedResponse } from "@/features/shared/shared.type"
 import { apiClient } from "@/lib/api-client"
 import { AppError } from "@blak/utils"
 
-export const useOperators = () => {
+export const useOperators = (params?: Record<string, any>) => {
   return useQuery<PaginatedResponse<Operator>, AppError>({
-    queryKey: ["operators"],
-    queryFn: () => apiClient.get("/operators"),
+    queryKey: ["operators", params],
+    queryFn: () =>
+      apiClient.get("/operators", {
+        params,
+      }),
   })
 }
 export const useOperator = (id: string) => {

@@ -10,7 +10,7 @@ const countries = new Hono<AppContext>()
 
     const [countries, total] = await Promise.all([
       prisma.country.findMany({
-        take,
+        take: 300,
         skip,
         include: {
           currency: true,

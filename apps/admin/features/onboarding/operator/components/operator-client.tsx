@@ -7,8 +7,8 @@ import { Pagination } from "@blak/ui/components/blak/pagination"
 import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
 export const OperatorClient = () => {
-  const { queryParams } = useRouterStuff()
-  const query = useOperatorApplications()
+  const { queryParams, searchParamsObj } = useRouterStuff()
+  const query = useOperatorApplications(searchParamsObj)
 
   return (
     <QueryBoundary query={query} isEmpty={query.data?.data.length === 0}>

@@ -7,7 +7,7 @@ interface PasswordResetEmailProps {
 }
 
 export const PasswordResetEmail = ({ url }: PasswordResetEmailProps) => (
-  <Template title="Create you password">
+  <Template title="Create your password">
     <Text className="font-14 text-card-fg mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
       Use the link below to create a new password and securely access your BLAK
       account.

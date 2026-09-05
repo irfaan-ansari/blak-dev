@@ -16,13 +16,15 @@ import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
 import { ArrowUpRight, CircleUser, FileTextIcon } from "lucide-react"
 
 import { useOperator } from "@/features/network/operator/operator.data"
+import Link from "next/link"
 
 export const OperatorDetailClient = () => {
   const id = useParams()?.id
 
   const { data, isPending } = useOperator(id as string)
   if (isPending) return <PageSkeleton />
-  const driver = data?.data
+
+  const operator = data?.data
 
   return (
     <div className="space-y-6">
@@ -30,22 +32,32 @@ export const OperatorDetailClient = () => {
         <div className="space-y-6 lg:col-span-3">
           {/* stats */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <Card size="sm">
+            <Card size="sm" className="relative">
+              <Link
+                href={`/operation/vehicles?organization=${operator?.id}`}
+                className="absolute inset-0"
+              />
               <CardContent>
                 <CardTitle className="font-semibold">Vehicles</CardTitle>
-                <CardDescription>10</CardDescription>
+                <CardDescription>{operator?.vehicleCount}</CardDescription>
+                <ArrowUpRight className="absolute top-4 right-4 size-4" />
               </CardContent>
             </Card>
-            <Card size="sm">
+            <Card size="sm" className="relative">
+              <Link
+                href={`/network/drivers?organization=${operator?.id}`}
+                className="absolute inset-0"
+              />
               <CardContent>
                 <CardTitle className="font-semibold">Drivers</CardTitle>
-                <CardDescription>10</CardDescription>
+                <CardDescription>{operator?.driverCount}</CardDescription>
+                <ArrowUpRight className="absolute top-4 right-4 size-4" />
               </CardContent>
             </Card>
             <Card size="sm">
               <CardContent>
                 <CardTitle className="font-semibold">Rides</CardTitle>
-                <CardDescription>10</CardDescription>
+                <CardDescription>10 - placeholder</CardDescription>
               </CardContent>
             </Card>
           </div>
@@ -69,17 +81,17 @@ export const OperatorDetailClient = () => {
             <CardContent className="grid grid-cols-[1fr_1rem_1fr] border-b pb-6">
               <div>Name</div>
               <div>:</div>
-              <div className="pl-10">{driver?.name}</div>
+              <div className="pl-10">{operator?.name}</div>
               <div>Phone number</div>
               <div>:</div>
-              <div className="pl-10">{driver?.phoneNumber}</div>
+              <div className="pl-10">{operator?.phoneNumber}</div>
               <div>Email</div>
               <div>:</div>
-              <div className="pl-10">{driver?.email}</div>
+              <div className="pl-10">{operator?.email}</div>
             </CardContent>
 
             <CardContent className="space-y-2">
-              {driver?.documents?.map((doc) => (
+              {operator?.documents?.map((doc) => (
                 <a
                   href={doc.url!}
                   key={doc.id}

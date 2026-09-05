@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { prisma } from "@blak/db"
+import { ApplicationStatus, Prisma, prisma } from "@blak/db"
 import { AppError } from "@blak/utils/error"
 
 const operators = new Hono<AppContext>()
@@ -9,11 +9,54 @@ const operators = new Hono<AppContext>()
     const { q, status, cat, ...rest } = c.req.query()
     const { page, take, skip } = parsePagination(rest)
 
+    const where: Prisma.ApplicationWhereInput = {
+      type: "OPERATOR",
+    }
+
+    if (q) {
+      where.OR = [
+        {
+          contactName: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          contactEmail: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          contactPhone: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          operatorApplication: {
+            legalBusinessName: {
+              contains: q,
+              mode: "insensitive",
+            },
+          },
+        },
+        {
+          contactEmail: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+      ]
+    }
+
+    if (status) {
+      where.currentStatus = status as ApplicationStatus
+    }
+
     const [applications, total] = await Promise.all([
       prisma.application.findMany({
-        where: {
-          type: "OPERATOR",
-        },
+        where,
         take,
         skip,
         orderBy: {

@@ -4,10 +4,10 @@ import { OperatorApplication } from "./operator.type"
 import { apiClient } from "@/lib/api-client"
 import { AppError } from "@blak/utils/error"
 
-export const useOperatorApplications = () => {
+export const useOperatorApplications = (params?: Record<string, any>) => {
   return useQuery<PaginatedResponse<OperatorApplication>, AppError>({
-    queryKey: ["operator-applications"],
-    queryFn: () => apiClient.get("/application/operators"),
+    queryKey: ["operator-applications", params],
+    queryFn: () => apiClient.get("/application/operators", { params }),
   })
 }
 export const useOperatorApplication = (id: string) => {

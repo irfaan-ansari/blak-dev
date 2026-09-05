@@ -1,20 +1,61 @@
 import { Hono } from "hono"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { prisma } from "@blak/db"
+import { OrganizationStatus, Prisma, prisma } from "@blak/db"
 import { AppError } from "@blak/utils"
 import { getR2Url } from "@/lib/r2"
 
 const operators = new Hono<AppContext>()
   .get("/", async (c) => {
-    const { q, status, cat, ...rest } = c.req.query()
+    const { q, status, ...rest } = c.req.query()
     const { page, take, skip } = parsePagination(rest)
+
+    const where: Prisma.OrganizationWhereInput = {
+      type: "OPERATOR",
+    }
+
+    if (q) {
+      where.OR = [
+        {
+          name: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          email: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          phoneNumber: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          contactName: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          contactEmail: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+      ]
+    }
+
+    if (status) {
+      where.status = status as OrganizationStatus
+    }
 
     const [partners, total] = await Promise.all([
       prisma.organization.findMany({
-        where: {
-          type: "OPERATOR",
-        },
+        where,
         take,
         skip,
         orderBy: {
@@ -57,11 +98,24 @@ const operators = new Hono<AppContext>()
       where: {
         id,
       },
+      include: {
+        _count: {
+          select: {
+            vehicles: true,
+            members: {
+              where: {
+                role: "driver",
+              },
+            },
+          },
+        },
+      },
     })
 
     if (!result) {
       throw new AppError("NOT_FOUND")
     }
+    const { _count, ...operator } = result
 
     const docs = await prisma.file.findMany({
       where: {
@@ -80,7 +134,12 @@ const operators = new Hono<AppContext>()
 
     return c.json({
       success: true,
-      data: { ...result, documents },
+      data: {
+        ...result,
+        vehicleCount: _count.vehicles,
+        driverCount: _count.members,
+        documents,
+      },
     })
   })
 

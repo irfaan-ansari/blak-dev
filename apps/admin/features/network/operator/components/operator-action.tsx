@@ -18,14 +18,14 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
 
   const handleAction = (action: string) => {
     switch (action) {
-      case "activate":
+      case "approve":
         open({
           variant: "success",
-          title: "Activate account",
+          title: "Approve operator",
           description:
-            "This will activate the account and send an invitation email with instructions to access the platform.",
+            "This will approve the operator and mark them as active on the BLAK network.",
           action: {
-            label: "Activate Account",
+            label: "Approve Operator",
             onClick: async () => {
               const { serverError } = await updateOperatorStatus({
                 id: data.id,

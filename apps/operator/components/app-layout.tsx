@@ -1,16 +1,16 @@
 import React from "react"
+import Link from "next/link"
+import Image from "next/image"
 import { NavUser } from "./nav-user"
-import { Button } from "@blak/ui/components/button"
 import { Bell, Search, X } from "lucide-react"
-
+import { Button } from "@blak/ui/components/button"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from "@blak/ui/components/input-group"
-import Image from "next/image"
-import Link from "next/link"
+import { SidebarTrigger } from "@blak/ui/components/sidebar"
 import { OnboardingStatus } from "@/features/shared/components/onboarding-status"
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
@@ -29,6 +29,7 @@ const AppHeader = () => {
   return (
     <header className="@container border-b bg-card px-4 lg:px-6">
       <div className="flex h-20 w-full items-center gap-4">
+        <SidebarTrigger />
         <Link className="inline-flex items-center" href="/dashboard">
           <Image src="/logo/logo-blak.png" width={140} height={40} alt="Blak" />
         </Link>

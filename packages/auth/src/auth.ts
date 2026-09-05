@@ -6,13 +6,13 @@ import {
   phoneNumber as phoneNumberPlugin,
   organization as organizationPlugin,
 } from "better-auth/plugins"
+import { sendEmail } from "@blak/email"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 import { userAc, userRoles } from "./permission"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { getRootDomain, getUserOrganization } from "./utils"
 import { orgAc, orgUserRoles } from "./org-permissions"
-import { sendEmail } from "@blak/email"
 import PasswordResetEmail from "@blak/email/templates/reset-password"
 
 export const auth = betterAuth({

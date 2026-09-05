@@ -30,8 +30,8 @@ export const DriverClient = () => {
   if (data?.data?.length === 0) {
     return (
       <EmptyState
-        title="No vehicles found"
-        description="You don't have any vehicles yet."
+        title="No drivers found"
+        description="You don't have any drivers yet."
       />
     )
   }

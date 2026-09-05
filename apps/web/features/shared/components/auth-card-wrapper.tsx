@@ -15,7 +15,13 @@ export const AuthCardWrapper = ({
   return (
     <Card className={cn("py-12", className)}>
       <CardHeader className="flex justify-center">
-        <Image src="/logo/logo2.png" alt="BLAK" width={120} height={40} />
+        <Image
+          src="/logo/logo-2.png"
+          alt="BLAK"
+          loading="eager"
+          width={180}
+          height={90}
+        />
       </CardHeader>
 
       <CardHeader className="px-12 text-center">

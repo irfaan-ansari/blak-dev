@@ -182,7 +182,7 @@ export const SigninForm = () => {
             className="w-full justify-between"
             suffix={<ArrowRight />}
           >
-            Signin with OTP
+            Sign in with OTP
           </Button>
           <Button
             className="w-full shadow-none hover:no-underline"

@@ -19,7 +19,7 @@ const StatCard = ({
       <CardContent className="flex h-full items-start justify-between gap-4">
         {icon}
         <div className="flex h-full flex-col justify-between gap-4">
-          <CardTitle>{title}</CardTitle>
+          <CardTitle className="text-base font-semibold">{title}</CardTitle>
           <div className="text-right text-3xl font-black">
             {value ?? <Skeleton className="ml-auto h-5 w-20" />}
           </div>

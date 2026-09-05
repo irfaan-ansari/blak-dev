@@ -7,36 +7,24 @@ import { prisma } from "@blak/db"
 export const createVehicle = withPermission({ app: ["operator"] })
   .inputSchema(vehicleCreateSchema)
   .action(async ({ ctx, clientInput }) => {
-    const { images, ...rest } = clientInput.data
+    const { data } = clientInput
 
     const organizationId = ctx.session.activeOrganizationId!
 
-    const files = await prisma.file.createManyAndReturn({
-      data: images.map(({ label, ...rest }) => ({ ...rest })),
-    })
-
     const vehicle = await prisma.vehicle.create({
       data: {
-        ...rest,
-        year: Number(rest.year),
+        ...data,
+        year: Number(data.year ?? new Date().getFullYear()),
         status: "PENDING_APPROVAL",
         registrationExpiry: new Date(
-          `${rest.registrationExpiry}T00:00:00.000Z`
+          `${data.registrationExpiry}T00:00:00.000Z`
         ),
-        organizationId,
+        organization: {
+          connect: {
+            id: organizationId,
+          },
+        },
       },
-    })
-
-    await prisma.entityAttachment.createMany({
-      data: files.map((file) => ({
-        entityId: vehicle.id,
-        entityType: "VEHICLE",
-        label:
-          images.find((img) => img.storageKey === file.storageKey)?.label ??
-          "Vehicle Image",
-        name: "Vehicle Image",
-        fileId: file.id,
-      })),
     })
 
     return { success: true, id: vehicle.id }

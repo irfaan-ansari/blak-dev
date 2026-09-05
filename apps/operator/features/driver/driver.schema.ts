@@ -19,8 +19,5 @@ const driverDocSchema = z.object({
 })
 
 export const driverCreateSchema = z.object({
-  data: z.object({
-    ...driverSchema.shape,
-    documents: z.array(driverDocSchema),
-  }),
+  data: driverSchema,
 })

@@ -19,7 +19,7 @@ import { Button } from "@blak/ui/components/button"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
-import { uploadFile } from "@/lib/api-client/upload-file"
+import { uploadFiles } from "@/lib/api-client/upload-file"
 import { CloudUpload, Mail, Smartphone } from "lucide-react"
 import { type DriverFormValues, driverSchema } from "../driver.schema"
 
@@ -53,29 +53,8 @@ export const DriverForm = ({
 
   const handleSubmit = async (values: DriverFormValues) => {
     try {
-      const documents = await Promise.all(
-        Object.entries(files).map(async ([requirementId, { file }]) => {
-          if (!file) return null
-
-          const uploaded = await uploadFile(file)
-
-          const requirement = requirements.find(
-            (req) => req.id === requirementId
-          )
-
-          if (!requirement) return null
-
-          return {
-            requirementId,
-            label: requirement.label,
-            ...uploaded,
-          }
-        })
-      )
-
       const result = await createDriver({
         data: {
-          documents: documents.filter((doc) => doc !== null),
           name: values.name,
           email: values.email,
           phoneNumber: values.phoneNumber,
@@ -86,7 +65,36 @@ export const DriverForm = ({
         toast.error(result.serverError.message)
         return
       }
-      queryClient.invalidateQueries({ queryKey: ["drivers"] })
+
+      const uploads = Object.entries(files)
+        .filter(([, { file }]) => file instanceof File)
+        .map(([requirementId, { file }]) => {
+          const requirement = requirements.find(
+            (req) => req.id === requirementId
+          )
+
+          if (!requirement) {
+            throw new Error(`Requirement not found: ${requirementId}`)
+          }
+
+          return {
+            file: file as File,
+            meta: {
+              ref: "DRIVER",
+              refId: result.data?.id,
+              field: requirement.label,
+            },
+          }
+        })
+
+      if (uploads.length) {
+        await uploadFiles(uploads)
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["drivers"],
+      })
+
       toast.success("Driver added successfully.")
       onSuccess?.()
     } catch (error) {

@@ -63,35 +63,24 @@ const operators = new Hono<AppContext>()
       throw new AppError("NOT_FOUND")
     }
 
-    const complianceRecords = await prisma.complianceRecord.findMany({
+    const docs = await prisma.file.findMany({
       where: {
-        entityType: "OPERATOR",
-        entityId: result.id,
-      },
-      include: {
-        file: true,
+        ref: "OPERATOR",
+        refId: result.id,
       },
     })
 
-    const records = await Promise.all(
-      complianceRecords.map(async (attachment) => {
-        const { file, label, value, status } = attachment
-        if (!file) return { label, value, status }
-        const { storageKey, ...rest } = file
-        const url = await getR2Url(storageKey)
-        return {
-          ...rest,
-          label,
-          value,
-          status,
-          size: Number(rest.size),
-          url,
-        }
-      })
+    const documents = await Promise.all(
+      docs.map(async ({ storageKey, ...file }) => ({
+        ...file,
+        size: Number(file.size),
+        url: await getR2Url(storageKey),
+      }))
     )
+
     return c.json({
       success: true,
-      data: { ...result, documents: records },
+      data: { ...result, documents },
     })
   })
 

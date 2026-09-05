@@ -24,45 +24,89 @@ const HomePage = () => {
       </div>
       <div className="grid gap-4 lg:col-span-3 lg:gap-6">
         {/* stats */}
-        <div className="hap-4 grid grid-cols-1 lg:grid-cols-3 lg:gap-6">
+        <div className="hap-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
           <StatCard
             icon={
               <Image
-                src={"/icons/vehicles.png"}
-                alt="vehicle-icon"
+                src="/icons/ride.png"
+                alt="applications"
                 width={70}
                 height={70}
               />
             }
-            className="bg-linear-to-b from-blue-500 to-blue-300"
+            className="bg-linear-to-br from-orange-100 to-amber-50 ring-2 ring-orange-200"
+            title="New Applications"
+            value={data?.data?.applicationCount!}
+          />
+
+          <StatCard
+            icon={
+              <Image
+                src="/icons/driver.png"
+                alt="operators"
+                width={60}
+                height={60}
+              />
+            }
+            className="bg-linear-to-br from-blue-100 to-cyan-50 ring-2 ring-blue-200"
+            title="Total Operators"
+            value={data?.data?.operatorCount!}
+          />
+
+          <StatCard
+            icon={
+              <Image
+                src="/icons/ride.png"
+                alt="partners"
+                width={70}
+                height={70}
+              />
+            }
+            className="bg-linear-to-br from-emerald-100 to-teal-50 ring-2 ring-emerald-200"
+            title="Total Partners"
+            value={data?.data?.partnerCount!}
+          />
+
+          <StatCard
+            icon={
+              <Image
+                src="/icons/vehicles.png"
+                alt="vehicles"
+                width={70}
+                height={70}
+              />
+            }
+            className="bg-linear-to-br from-sky-600 to-blue-400"
             title="Total Vehicles"
-            value={data?.data?.vehicleCount}
+            value={data?.data?.vehicleCount!}
           />
+
           <StatCard
             icon={
               <Image
-                src={"/icons/operator.png"}
-                alt="vehicle-icon"
+                src="/icons/operator.png"
+                alt="drivers"
                 width={70}
                 height={70}
               />
             }
-            className="bg-linear-to-b from-yellow-500 to-yellow-600"
+            className="bg-linear-to-br from-rose-600 to-pink-400"
             title="Total Drivers"
-            value={data?.data?.driverCount}
+            value={data?.data?.driverCount!}
           />
+
           <StatCard
             icon={
               <Image
-                src={"/icons/passenger.png"}
-                alt="vehicle-icon"
+                src="/icons/passenger.png"
+                alt="passengers"
                 width={70}
                 height={70}
               />
             }
-            className="bg-linear-to-b from-violet-500 to-indigo-600"
+            className="bg-linear-to-br from-violet-600 to-indigo-400"
             title="Total Passengers"
-            value={data?.data?.passengerCount}
+            value={data?.data?.passengerCount!}
           />
         </div>
         {/*  */}

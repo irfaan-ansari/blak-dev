@@ -1,34 +1,81 @@
 import { Hono } from "hono"
+import { EntityType, prisma } from "@blak/db"
+import { AppError } from "@blak/utils"
+import { putObject, r2, R2_BUCKET } from "@/lib/r2"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { r2, R2_BUCKET } from "@/lib/r2"
 import type { AppContext } from "../../middlewares/context"
-import { prisma } from "@blak/db"
-import { AppError } from "@blak/utils"
+
+type FileMeta = {
+  ref?: EntityType
+  refId?: string
+  field?: string
+}
 
 const uploads = new Hono<AppContext>()
   .post("/", async (c) => {
-    const { entity, entityId, fileName, mimeType, size, storageKey, url } =
-      await c.req.json()
+    const body = await c.req.parseBody({ all: true })
+    const files = body["files"]
+    const meta = body["meta"]
 
-    const res = await prisma.document.create({
-      data: {
-        entity,
-        entityId,
-        fileName,
-        mimeType,
-        size,
-        storageKey,
-        url,
-        type: "DOCUMENT",
-        status: "PENDING",
+    const fileList = (
+      Array.isArray(files) ? files : files ? [files] : []
+    ).filter((f): f is File => f instanceof File)
+
+    if (fileList.length === 0) {
+      throw new AppError("INVALID_REQUEST", {
+        message: "At least one file is required under",
+      })
+    }
+
+    let metaList: FileMeta[] = []
+    if (typeof meta === "string") {
+      try {
+        metaList = JSON.parse(meta)
+      } catch {
+        return c.json({ error: "`meta` must be valid JSON" }, 400)
+      }
+    }
+
+    const uploaded = await Promise.all(
+      fileList.map(async (file, index) => {
+        const result = await putObject(file)
+        return {
+          file,
+          meta: metaList[index],
+          ...result,
+        }
+      })
+    )
+
+    const records = await prisma.$transaction(
+      uploaded.map(({ file, meta, key, hash, ext }) =>
+        prisma.file.create({
+          data: {
+            name: file.name,
+            size: file.size,
+            mime: file.type,
+            storageKey: key,
+            ext,
+            hash,
+            ref: meta?.ref,
+            refId: meta?.refId,
+            field: meta?.field,
+          },
+        })
+      )
+    )
+
+    return c.json(
+      {
+        success: true,
+        data: records.map((record) => ({
+          ...record,
+          size: Number(record.size),
+        })),
       },
-    })
-    if (!res) throw new AppError("INTERNAL_SERVER_ERROR")
-    return c.json({
-      success: true,
-      data: res,
-    })
+      201
+    )
   })
   .post("/presign", async (c) => {
     const session = c.get("session")

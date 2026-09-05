@@ -1,6 +1,6 @@
 "use server"
 
-import { EntityType, prisma } from "@blak/db"
+import { prisma } from "@blak/db"
 import { withPermission } from "@/lib/safe-action"
 import { createComplianceRecordSchema } from "./compliance.schema"
 
@@ -12,26 +12,11 @@ export const createComplianceRecord = withPermission({ app: ["operator"] })
 
     const organizationId = session.activeOrganizationId!
 
-    const files = await prisma.file.createManyAndReturn({
-      data: data.map((document) => ({
-        name: document.name,
-        mime: document.mime,
-        size: document.size,
-        storageKey: document.storageKey,
-        url: document.url,
-      })),
-    })
-    const fileByKey = new Map(files.map((file) => [file.storageKey, file]))
-
     await Promise.all([
       prisma.complianceRecord.createMany({
         data: data.map((document, index) => ({
           requirementId: document.requirementId,
-          entityType: EntityType.OPERATOR,
-          entityId: organizationId,
-          fileId: fileByKey.get(document.storageKey)!.id,
-          name: document.name,
-          label: "label",
+          fileId: document.fileId,
         })),
       }),
 

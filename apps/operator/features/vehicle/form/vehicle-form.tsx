@@ -27,13 +27,12 @@ import {
   FieldLegend,
 } from "@blak/ui/components/field"
 
-import { vehicleSchema, type VehicleFormValues } from "../vehicle.schema"
-
+import { toast } from "sonner"
 import { createVehicle } from "../vehicle.action"
-import { uploadFile } from "@/lib/api-client/upload-file"
 import { REQUIRED_IMAGES } from "../vehicle.const"
 import { useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { uploadFiles } from "@/lib/api-client/upload-file"
+import { vehicleSchema, type VehicleFormValues } from "../vehicle.schema"
 
 export function VehicleForm({ onSuccess }: { onSuccess: () => void }) {
   const queryClient = useQueryClient()
@@ -68,34 +67,40 @@ export function VehicleForm({ onSuccess }: { onSuccess: () => void }) {
    * Submit
    */
   const onSubmit = async (values: VehicleFormValues) => {
-    const uploadedImages = await Promise.all(
-      Object.entries(files).map(async ([name, value]) => {
-        const uploaded = await uploadFile(value.file as File)
-
-        return {
-          label:
-            REQUIRED_IMAGES.find((img) => img.name === name)?.label ??
-            "vehicle image",
-          ...uploaded,
-        }
-      })
-    )
-
-    const { serverError } = await createVehicle({
+    const { serverError, data } = await createVehicle({
       data: {
         ...values,
-        images: uploadedImages,
       },
     })
 
     if (serverError) {
       toast.error(serverError.message)
-    } else {
-      toast.success("Vehicle added.")
-      form.reset()
-      onSuccess()
-      queryClient.invalidateQueries({ queryKey: ["vehicles"] })
+      return
     }
+
+    const uploads = Object.entries(files)
+      .filter(([, value]) => value?.file instanceof File)
+      .map(([name, value]) => ({
+        file: value.file as File,
+        meta: {
+          ref: "VEHICLE",
+          refId: data?.id!,
+          field: name,
+        },
+      }))
+
+    if (uploads.length) {
+      await uploadFiles(uploads)
+    }
+
+    toast.success("Vehicle added.")
+
+    form.reset()
+    onSuccess()
+
+    queryClient.invalidateQueries({
+      queryKey: ["vehicles"],
+    })
   }
 
   return (

@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { prisma } from "@blak/db"
+import { Prisma, prisma } from "@blak/db"
 import { getR2Url } from "@/lib/r2"
 import { AppError } from "@blak/utils"
 
@@ -10,8 +10,13 @@ const vehicles = new Hono<AppContext>()
     const { q, status, cat, ...rest } = c.req.query()
     const { page, take, skip } = parsePagination(rest)
 
+    const where: Prisma.VehicleWhereInput = {}
+    if (rest.organization) {
+      where.organizationId = rest.organization
+    }
     const [results, total] = await Promise.all([
       prisma.vehicle.findMany({
+        where,
         take,
         skip,
         orderBy: {

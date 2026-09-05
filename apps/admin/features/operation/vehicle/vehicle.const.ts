@@ -10,18 +10,19 @@ import { StatusConfig } from "@/features/shared/shared.type"
 
 export const STATUS_MAP: Record<VehicleStatus, StatusConfig> = {
   PENDING_APPROVAL: {
-    label: "NEW",
+    label: "Under Review",
     icon: ClockFading,
     className: "text-primary-foreground! bg-amber-200! border-amber-300!",
   },
+
   DRIVER_ASSIGNED: {
-    label: "Pending Approval",
+    label: "Driver Assigned",
     icon: ClockFading,
     className: "text-primary-foreground! bg-amber-200! border-amber-300!",
   },
 
   ACTIVE: {
-    label: "Active",
+    label: "Available",
     icon: CircleCheck,
     className: "text-primary-foreground! bg-lime-300! border-lime-400!",
   },

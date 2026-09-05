@@ -33,16 +33,30 @@ export const OnboardingStatus = () => {
   if (status === "PENDING_APPROVAL") {
     return (
       <div className="border-b bg-yellow-500/10 px-4 py-3 lg:px-6">
-        <div className="flex items-center justify-between gap-6">
-          <div>
+        <div className="flex items-center gap-4">
+          <div className="flex-1">
             <p className="text-base font-bold">Your account is under review</p>
 
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 max-w-xl text-sm text-muted-foreground">
               We’re reviewing your submitted information. In the meantime, you
               can continue setting up your account by adding your drivers and
               vehicles.
             </p>
           </div>
+          <Button
+            size="sm"
+            className="bg-foreground text-muted hover:bg-foreground hover:text-muted"
+            asChild
+          >
+            <Link href="/drivers">Add Driver</Link>
+          </Button>
+          <Button
+            size="sm"
+            asChild
+            className="bg-foreground text-muted hover:bg-foreground hover:text-muted"
+          >
+            <Link href="/vehicles">Add Vehicle</Link>
+          </Button>
         </div>
       </div>
     )
@@ -71,8 +85,8 @@ export const OnboardingStatus = () => {
   if (status === "ACTIVE" && showActiveBanner) {
     return (
       <div className="border-b bg-green-500/10 px-4 py-3 lg:px-6">
-        <div className="flex items-center justify-between gap-6">
-          <div>
+        <div className="relative flex items-center gap-4 pr-6">
+          <div className="flex-1">
             <p className="text-base font-bold">
               Your account has been approved
             </p>
@@ -84,10 +98,25 @@ export const OnboardingStatus = () => {
           </div>
 
           <Button
-            variant="ghost"
+            size="sm"
+            asChild
+            className="bg-foreground text-muted hover:bg-foreground hover:text-muted"
+          >
+            <Link href="/drivers">Add Driver</Link>
+          </Button>
+          <Button
+            size="sm"
+            asChild
+            className="bg-foreground text-muted hover:bg-foreground hover:text-muted"
+          >
+            <Link href="/vehicles">Add Vehicle</Link>
+          </Button>
+          <Button
+            variant="outline"
             size="icon-sm"
             onClick={dismissActiveBanner}
             aria-label="Dismiss notification"
+            className="absolute top-1/2 -right-4 -translate-y-1/2"
           >
             <X className="size-4" />
           </Button>

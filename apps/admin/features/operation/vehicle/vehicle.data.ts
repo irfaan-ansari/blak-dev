@@ -7,10 +7,10 @@ import { apiClient } from "@/lib/api-client"
 import { ApiResponse, PaginatedResponse } from "@/features/shared/shared.type"
 import { VehicleWithImages } from "./vehicle.type"
 
-export const useVehicles = () => {
+export const useVehicles = (params?: Record<string, any>) => {
   return useQuery<PaginatedResponse<VehicleWithImages>, AppError>({
-    queryKey: ["vehicles"],
-    queryFn: () => apiClient.get("/vehicles"),
+    queryKey: ["vehicles", params],
+    queryFn: () => apiClient.get("/vehicles", { params }),
   })
 }
 

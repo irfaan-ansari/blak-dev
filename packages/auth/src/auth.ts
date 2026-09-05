@@ -36,7 +36,7 @@ export const auth = betterAuth({
       console.log("sendResetPassword:", user, url, token, request)
       sendEmail({
         to: user.email,
-        subject: "Reset your password",
+        subject: "Create your password",
         template: PasswordResetEmail({ url: `${url}?token=${token}` }),
       })
     },

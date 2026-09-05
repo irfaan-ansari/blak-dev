@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import type { OrgContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { prisma } from "@blak/db"
+import { Prisma, prisma } from "@blak/db"
 import { AppError } from "@blak/utils"
 import { getR2Url } from "@/lib/r2"
 
@@ -10,15 +10,19 @@ const drivers = new Hono<OrgContext>()
     const { q, status, cat, ...rest } = c.req.query()
     const { page, take, skip } = parsePagination(rest)
 
+    const where: Prisma.UserWhereInput = {
+      members: {
+        some: {
+          role: "driver",
+          ...(rest.organization && {
+            organizationId: rest.organization,
+          }),
+        },
+      },
+    }
     const [results, total] = await Promise.all([
       prisma.user.findMany({
-        where: {
-          members: {
-            some: {
-              role: "driver",
-            },
-          },
-        },
+        where,
         take,
         skip,
         orderBy: {

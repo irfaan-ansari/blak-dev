@@ -3,9 +3,11 @@ import React from "react"
 import { useVehicles } from "../vehicle.data"
 import { QueryBoundary } from "@/components/query-boundry"
 import { VehicleCard } from "./vehicle-card"
+import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
 export const VehicleClient = () => {
-  const query = useVehicles()
+  const { queryParams, searchParamsObj } = useRouterStuff()
+  const query = useVehicles(searchParamsObj)
   return (
     <QueryBoundary query={query}>
       {(data) => (

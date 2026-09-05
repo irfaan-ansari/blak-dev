@@ -7,10 +7,10 @@ import { apiClient } from "@/lib/api-client"
 import { ApiResponse, PaginatedResponse } from "@/features/shared/shared.type"
 import { DriverWithDocs } from "./driver.type"
 
-export const useDrivers = () => {
+export const useDrivers = (params?: Record<string, any>) => {
   return useQuery<PaginatedResponse<DriverWithDocs>, AppError>({
-    queryKey: ["drivers"],
-    queryFn: () => apiClient.get("/drivers"),
+    queryKey: ["drivers", params],
+    queryFn: () => apiClient.get("/drivers", { params }),
   })
 }
 

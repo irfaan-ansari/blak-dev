@@ -4,7 +4,8 @@ import type { OrgContext } from "@/middlewares"
 import { prisma } from "@blak/db"
 
 const analytics = new Hono<OrgContext>().get("/", async (c) => {
-  const organizationId = c.get("organizationId")
+  const session = c.get("session")
+  const organizationId = session.activeOrganizationId!
   const { q, status, cat, ...rest } = c.req.query()
 
   const [driverCount, vehicleCount] = await prisma.$transaction([

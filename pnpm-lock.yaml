@@ -114,6 +114,9 @@ importers:
       '@blak/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@blak/email':
+        specifier: workspace:*
+        version: link:../../packages/email
       '@blak/ui':
         specifier: workspace:*
         version: link:../../packages/ui

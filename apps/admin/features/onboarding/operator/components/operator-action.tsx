@@ -27,11 +27,10 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
           action: {
             label: "Yes, approve",
             onClick: async () => {
-              const { serverError, data: response } =
-                await processOperatorApplication({
-                  id: data.id,
-                  action,
-                })
+              const { serverError } = await processOperatorApplication({
+                id: data.id,
+                action,
+              })
               if (serverError) {
                 toast.error(serverError.message)
               } else {

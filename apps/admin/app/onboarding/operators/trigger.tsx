@@ -2,20 +2,18 @@
 
 import React from "react"
 import { Plus } from "lucide-react"
-
-import { processOperatorApplication } from "@/features/onboarding/operator/operator.action"
-import { Button } from "@blak/ui/components/button"
 import { toast } from "sonner"
 
-type TriggerProps = {
-  data: {
-    id: string
-  }[]
-}
+import { Button } from "@blak/ui/components/button"
+import { authClient } from "@blak/auth/client"
 
 const BATCH_SIZE = 5
 
-export const Trigger = ({ data }: TriggerProps) => {
+export const Trigger = ({ data }: any) => {
+  const filtered = data.filter(
+    (d: any) => d.user.email !== "admin@rideblak.com"
+  )
+
   const [loading, setLoading] = React.useState(false)
   const [progress, setProgress] = React.useState(0)
   const [failed, setFailed] = React.useState<string[]>([])
@@ -23,10 +21,11 @@ export const Trigger = ({ data }: TriggerProps) => {
   const onClick = async () => {
     if (loading) return
 
-    if (!data?.length) {
-      toast("No application found")
+    if (!filtered.length) {
+      toast("No applications found")
       return
     }
+
     setLoading(true)
     setProgress(0)
     setFailed([])
@@ -34,16 +33,23 @@ export const Trigger = ({ data }: TriggerProps) => {
     const failedIds: string[] = []
 
     try {
-      for (let i = 0; i < data.length; i += BATCH_SIZE) {
-        const batch = data.slice(i, i + BATCH_SIZE)
+      for (let i = 0; i < filtered.length; i += BATCH_SIZE) {
+        const batch = filtered.slice(i, i + BATCH_SIZE)
 
         const results = await Promise.allSettled(
-          batch.map((item) =>
-            processOperatorApplication({
-              id: item.id,
-              action: "approve",
+          batch.map(async (item: any) => {
+            console.log(item.user.email)
+
+            const result = await authClient.requestPasswordReset({
+              email: item.user.email,
             })
-          )
+
+            if (result.error) {
+              throw new Error(result.error.message)
+            }
+
+            return result
+          })
         )
 
         results.forEach((result, index) => {
@@ -54,10 +60,20 @@ export const Trigger = ({ data }: TriggerProps) => {
           }
         })
 
-        setProgress(Math.min(i + batch.length, data.length))
+        setProgress(Math.min(i + batch.length, filtered.length))
       }
 
       setFailed(failedIds)
+
+      if (failedIds.length) {
+        toast.error(
+          `${failedIds.length} email${failedIds.length > 1 ? "s" : ""} failed to send`
+        )
+      } else {
+        toast.success("Emails sent successfully")
+      }
+    } catch {
+      toast.error("Something went wrong")
     } finally {
       setLoading(false)
     }
@@ -68,11 +84,11 @@ export const Trigger = ({ data }: TriggerProps) => {
       <Button
         prefix={<Plus />}
         onClick={onClick}
-        disabled={loading || !data.length}
+        disabled={loading || !filtered.length}
       >
         {loading
-          ? `Processing ${progress}/${data.length}`
-          : "Start Bulk Invite"}
+          ? `Sending ${progress}/${filtered.length}`
+          : `Resend email ${filtered.length}`}
       </Button>
 
       {!loading && failed.length > 0 && (

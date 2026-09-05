@@ -5,21 +5,26 @@ import { Plus } from "lucide-react"
 import { prisma } from "@blak/db"
 import { Trigger } from "./trigger"
 
+const fiveHoursAgo = new Date(Date.now() - 5 * 60 * 60 * 1000)
+
 const OperatorsPage = async () => {
-  const applications = await prisma.application.findMany({
+  const users = await prisma.member.findMany({
     where: {
-      type: "OPERATOR",
-      currentStatus: "PENDING_APPROVAL",
+      role: "owner",
+      createdAt: {
+        gte: fiveHoursAgo,
+      },
     },
-    select: {
-      id: true,
+    include: {
+      user: true,
     },
   })
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <h1 className="flex-1 text-xl font-bold">Operator Applications</h1>
-        <Trigger data={applications} />
+        <Trigger data={users} />
         <Button prefix={<Plus />}>Invite</Button>
       </div>
       <OperatorClient />

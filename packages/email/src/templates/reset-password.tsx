@@ -18,7 +18,7 @@ export const PasswordResetEmail = ({ url }: PasswordResetEmailProps) => (
         href={url}
         className="bg-brand font-16 text-inverted-fg inline-block rounded-lg px-6 py-3 text-center font-sans leading-6"
       >
-        Change password
+        Create password
       </Button>
     </Section>
 

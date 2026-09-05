@@ -15,7 +15,7 @@ import {
 import { Fonts } from "../config/font"
 import { style } from "../config/style"
 
-const baseUrl = "https://web.rideblak.com"
+const baseUrl = "https://www.rideblak.com"
 
 export const Header = ({ title }: { title: string }) => {
   return (

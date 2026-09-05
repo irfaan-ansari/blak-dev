@@ -11,7 +11,7 @@ import { AppProvider } from "@/components/provider"
 const varela = Manrope({
   variable: "--font-sans",
 })
-
+console.log(process.env.NEXT_PUBLIC_APP_URL)
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
 

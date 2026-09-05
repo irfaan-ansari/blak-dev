@@ -19,12 +19,12 @@ const analytics = new Hono<OrgContext>().get("/", async (c) => {
         role: "driver",
       },
     }),
+    prisma.vehicle.count(),
     prisma.user.count({
       where: {
         role: "user",
       },
     }),
-    prisma.vehicle.count({}),
     prisma.application.count({
       where: {
         currentStatus: "PENDING_APPROVAL",

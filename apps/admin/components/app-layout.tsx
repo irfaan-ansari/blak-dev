@@ -27,7 +27,7 @@ const AppHeader = () => {
           <Image src="/logo/logo-blak.png" width={120} height={40} alt="Blak" />
         </Link>
         <span className="flex-1"></span>
-        {/* <SearchQueryParam /> */}
+        <SearchQueryParam />
         <Button
           variant="secondary"
           size="icon"

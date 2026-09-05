@@ -13,9 +13,42 @@ const varela = Manrope({
 })
 
 export const metadata: Metadata = {
-  title: "BLAK | A First Class Experience",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
+
+  title: {
+    default: "BLAK | A First Class Experience",
+    template: "%s | BLAK",
+  },
   description:
     "Experience first class transportation from curb to destination with BLAK's managed network of vetted chauffeurs, premium black vehicles, and hospitality-led service.",
+
+  keywords: [
+    "BLAK",
+    "premium ground transportation",
+    "luxury transportation",
+    "chauffeur service",
+    "private car service",
+    "executive transportation",
+    "airport transportation",
+  ],
+
+  openGraph: {
+    type: "website",
+    siteName: "BLAK",
+    title: "BLAK | A First Class Experience",
+    description:
+      "A trusted global network delivering a consistent premium ground transportation experience.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BLAK | A First Class Experience",
+    description:
+      "A trusted global network delivering a consistent premium ground transportation experience.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function RootLayout({

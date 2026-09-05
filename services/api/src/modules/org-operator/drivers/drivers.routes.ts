@@ -7,7 +7,7 @@ import { AppError } from "@blak/utils/error"
 
 const drivers = new Hono<OrgContext>()
   .get("/", async (c) => {
-    const organizationId = c.get("organizationId")
+    const session = c.get("session")
     const { q, status, cat, ...rest } = c.req.query()
     const { page, take, skip } = parsePagination(rest)
 
@@ -16,11 +16,12 @@ const drivers = new Hono<OrgContext>()
         where: {
           members: {
             some: {
-              organizationId,
+              organizationId: session?.activeOrganizationId!,
               role: "driver",
             },
           },
         },
+
         take,
         skip,
         orderBy: {
@@ -31,7 +32,7 @@ const drivers = new Hono<OrgContext>()
         where: {
           members: {
             some: {
-              organizationId,
+              organizationId: session?.activeOrganizationId!,
               role: "driver",
             },
           },

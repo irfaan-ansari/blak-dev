@@ -8,6 +8,10 @@ interface PasswordResetEmailProps {
 
 export const PasswordResetEmail = ({ url }: PasswordResetEmailProps) => (
   <Template title="Create your password">
+    <Text className="font-13 text-muted-fg mx-auto mt-0 mb-4 max-w-95 text-center font-sans">
+      This email has been resent to correct a minor typo. We apologize for the
+      oversight.
+    </Text>
     <Text className="font-14 text-card-fg mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
       Use the link below to create a new password and securely access your BLAK
       account.
@@ -23,8 +27,8 @@ export const PasswordResetEmail = ({ url }: PasswordResetEmailProps) => (
     </Section>
 
     <Text className="font-13 text-muted-fg mx-auto mt-8 mb-0 max-w-100 text-center font-sans">
-      If you didn&apos;t request this, please ignore this email. Your password
-      won&apos;t change until you access the link above and create a new one.
+      If you didn't expect this email, please ignore it. Your password won't be
+      created until you use the link above.
     </Text>
   </Template>
 )

@@ -6,18 +6,17 @@ import {
   ClockFading,
 } from "lucide-react"
 
-import { StatusActionConfig, StatusConfig } from "@/features/shared/shared.type"
 import { OperatorStatus } from "./operator.type"
+import { StatusActionConfig, StatusConfig } from "@/features/shared/shared.type"
 
 export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
   ONBOARDING: {
-    label: "New",
+    label: "Pending Onboarding",
     icon: CircleDashed,
     className: "text-primary-foreground! bg-amber-200! border-amber-300!",
   },
-
   PENDING_APPROVAL: {
-    label: "Submitted",
+    label: "Document Submitted",
     icon: ClockFading,
     className: "text-primary-foreground bg-lime-300 border-lime-400",
   },
@@ -26,14 +25,13 @@ export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
     icon: BadgeCheck,
     className: "text-primary-foreground bg-green-500 border-green-600",
   },
-
   SUSPENDED: {
     label: "Suspended",
     icon: CirclePause,
     className: "text-primary-foreground bg-red-500 border-red-600",
   },
   TERMINATED: {
-    label: "Suspended",
+    label: "Terminated",
     icon: CirclePause,
     className: "text-primary-foreground bg-red-500 border-red-600",
   },

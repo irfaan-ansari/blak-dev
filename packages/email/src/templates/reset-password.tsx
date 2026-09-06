@@ -7,9 +7,10 @@ interface PasswordResetEmailProps {
 
 export const PasswordResetEmail = ({ url }: PasswordResetEmailProps) => (
   <Template title="Create your password">
-    <Text className="font-14 text-card-fg mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
-      Use the link below to create a new password and securely access your BLAK
-      account.
+    <Text className="font-14 text-card-fg mx-auto mt-0 mb-6 max-w-95 text-center font-sans">
+      We apologize for the inconvenience. The password link in our previous
+      email may have expired. Please use the new link below to create your BLAK
+      account password.
     </Text>
 
     <Section className="mb-6 text-center">
@@ -22,14 +23,14 @@ export const PasswordResetEmail = ({ url }: PasswordResetEmailProps) => (
     </Section>
 
     <Text className="font-13 text-muted-fg mx-auto mt-8 mb-0 max-w-100 text-center font-sans">
-      If you didn't expect this email, please ignore it. Your password won't be
-      created until you use the link above.
+      If you have already created your password, no further action is required
+      and you can safely ignore this email.
     </Text>
   </Template>
 )
 
 PasswordResetEmail.PreviewProps = {
-  url: "https://example.com/",
+  url: "https://www.rideblak.com/auth/create-password?token=example",
 } satisfies PasswordResetEmailProps
 
 export default PasswordResetEmail

@@ -5,15 +5,13 @@ import { Plus } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@blak/ui/components/button"
-import { authClient } from "@blak/auth/client"
+import type { User } from "@blak/db"
+
+import { resendEmails } from "./action"
 
 const BATCH_SIZE = 5
 
-export const Trigger = ({ data }: any) => {
-  const filtered = data.filter(
-    (d: any) => d.user.email !== "admin@rideblak.com"
-  )
-
+export const Trigger = ({ users }: { users: User[] }) => {
   const [loading, setLoading] = React.useState(false)
   const [progress, setProgress] = React.useState(0)
   const [failed, setFailed] = React.useState<string[]>([])
@@ -21,8 +19,8 @@ export const Trigger = ({ data }: any) => {
   const onClick = async () => {
     if (loading) return
 
-    if (!filtered.length) {
-      toast("No applications found")
+    if (!users.length) {
+      toast.error("No users found")
       return
     }
 
@@ -33,47 +31,41 @@ export const Trigger = ({ data }: any) => {
     const failedIds: string[] = []
 
     try {
-      for (let i = 0; i < filtered.length; i += BATCH_SIZE) {
-        const batch = filtered.slice(i, i + BATCH_SIZE)
+      for (let i = 0; i < users.length; i += BATCH_SIZE) {
+        const batch = users.slice(i, i + BATCH_SIZE)
 
-        const results = await Promise.allSettled(
-          batch.map(async (item: any) => {
-            console.log(item.user.email)
+        try {
+          const result = await resendEmails(
+            batch.map((user) => ({
+              id: user.id,
+              email: user.email,
+            }))
+          )
 
-            const result = await authClient.requestPasswordReset({
-              email: item.user.email,
-            })
+          failedIds.push(...result.failed)
+        } catch (error) {
+          // The entire Server Action request failed
+          failedIds.push(...batch.map((user) => user.id))
 
-            if (result.error) {
-              throw new Error(result.error.message)
-            }
+          console.error("Batch failed:", error)
+        }
 
-            return result
-          })
-        )
-
-        results.forEach((result, index) => {
-          const item = batch[index]
-
-          if (result.status === "rejected" && item) {
-            failedIds.push(item.id)
-          }
-        })
-
-        setProgress(Math.min(i + batch.length, filtered.length))
+        setProgress(Math.min(i + batch.length, users.length))
       }
 
       setFailed(failedIds)
 
-      if (failedIds.length) {
-        toast.error(
-          `${failedIds.length} email${failedIds.length > 1 ? "s" : ""} failed to send`
-        )
+      const sentCount = users.length - failedIds.length
+
+      if (failedIds.length === 0) {
+        toast.success(`${sentCount} emails sent successfully`)
       } else {
-        toast.success("Emails sent successfully")
+        toast.warning(`${sentCount} sent, ${failedIds.length} failed`)
       }
-    } catch {
-      toast.error("Something went wrong")
+    } catch (error) {
+      console.error(error)
+
+      toast.error("Something went wrong while sending emails")
     } finally {
       setLoading(false)
     }
@@ -84,11 +76,11 @@ export const Trigger = ({ data }: any) => {
       <Button
         prefix={<Plus />}
         onClick={onClick}
-        disabled={loading || !filtered.length}
+        disabled={loading || !users.length}
       >
         {loading
-          ? `Sending ${progress}/${filtered.length}`
-          : `Resend email ${filtered.length}`}
+          ? `Sending ${progress}/${users.length}`
+          : `Resend email ${users.length}`}
       </Button>
 
       {!loading && failed.length > 0 && (

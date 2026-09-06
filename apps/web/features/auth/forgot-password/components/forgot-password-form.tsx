@@ -49,8 +49,11 @@ export const ForgotPasswordForm = () => {
   })
 
   const handleSubmit = async (values: ForgotPasswordFormValues) => {
-    const { data, error } = await authClient.requestPasswordReset({
+    const url = new URL(process.env.NEXT_PUBLIC_APP_URL!)
+
+    const { error } = await authClient.requestPasswordReset({
       email: values.email,
+      redirectTo: `${url.origin}/auth/create-password`,
     })
 
     if (error) {

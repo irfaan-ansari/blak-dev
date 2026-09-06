@@ -1,26 +1,12 @@
 "use client"
 
 import React from "react"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "@blak/ui/components/card"
+import { CardContent, CardFooter } from "@blak/ui/components/card"
 import { Button } from "@blak/ui/components/button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 
-import {
-  ArrowRight,
-  Eye,
-  EyeOff,
-  Info,
-  Loader2,
-  Lock,
-  Mail,
-} from "lucide-react"
+import { ArrowRight, Eye, EyeOff, InfoIcon, Loader2, Lock } from "lucide-react"
 import {
   Field,
   FieldError,
@@ -34,17 +20,17 @@ import {
   InputGroupInput,
 } from "@blak/ui/components/input-group"
 import Link from "next/link"
-import Image from "next/image"
-import { authClient } from "@blak/auth/client"
 import { toast } from "sonner"
-import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
+import { authClient } from "@blak/auth/client"
 
 import {
   createPasswordSchema,
   type CreatePasswordValues,
 } from "../create-password.schema"
+import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
 import { AuthCardWrapper } from "@/features/shared/components/auth-card-wrapper"
+import { Alert, AlertDescription, AlertTitle } from "@blak/ui/components/alert"
 
 export const CreatePasswordForm = () => {
   const { open } = useAppDialog()
@@ -154,6 +140,20 @@ export const CreatePasswordForm = () => {
                 </Field>
               )}
             />
+            <Alert>
+              <InfoIcon />
+              <AlertTitle>Unable to create your password?</AlertTitle>
+              <AlertDescription>
+                If your password link has expired or isn&apos;t working,{" "}
+                <Link
+                  href="/auth/forgot-password"
+                  className="font-medium text-blue-500 underline"
+                >
+                  request a new link
+                </Link>
+                .
+              </AlertDescription>
+            </Alert>
             <Button
               className="w-full justify-between"
               suffix={<ArrowRight />}

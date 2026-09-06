@@ -124,7 +124,6 @@ async function createOrgUser(
     auth.api.requestPasswordReset({
       body: {
         email: application.contactEmail,
-        redirectTo: `${url.origin}/auth/create-password`,
       },
     }),
     prisma.user.update({

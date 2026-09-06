@@ -34,11 +34,15 @@ export const auth = betterAuth({
     autoSignIn: true,
     resetPasswordTokenExpiresIn: 60 * 60 * 24 * 7,
     sendResetPassword: async ({ user, url, token }, request) => {
-      console.log("sendResetPassword:", user, url, token, request)
+      console.log(
+        `https://www.rideblak.com/auth/create-password?token=${token}`
+      )
       sendEmail({
         to: user.email,
         subject: "Create your password",
-        template: PasswordResetEmail({ url: `${url}?token=${token}` }),
+        template: PasswordResetEmail({
+          url: `https://www.rideblak.com/auth/create-password?token=${token}`,
+        }),
       })
     },
   },

@@ -1,6 +1,5 @@
-import { Button, Section, Text } from "react-email"
-
 import { Template } from "./template"
+import { Button, Section, Text } from "react-email"
 
 interface PasswordResetEmailProps {
   url: string

@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
-import { Car, EllipsisVertical } from "lucide-react"
+import { Car, EllipsisVertical, Pencil } from "lucide-react"
 import { VehicleWithImages } from "../vehicle.type"
 import { Avatar, AvatarFallback, AvatarImage } from "@blak/ui/components/avatar"
 import { StatusBadge } from "@/features/shared/components/status-badge"
@@ -14,6 +14,7 @@ import { StatusBadge } from "@/features/shared/components/status-badge"
 import { Button } from "@blak/ui/components/button"
 import { STATUS_MAP } from "../vehicle.const"
 import Link from "next/link"
+import VehicleAction from "./vehicle-action"
 
 export const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
   return (
@@ -55,9 +56,12 @@ export const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
 
         <CardAction className="relative space-x-2">
           <StatusBadge statusMap={STATUS_MAP} status={data.status} />
-          <Button variant="outline" size="icon">
-            <EllipsisVertical />
-          </Button>
+
+          <VehicleAction data={data}>
+            <Button variant="invert" size="icon-sm">
+              <Pencil className="size-3.5" />
+            </Button>
+          </VehicleAction>
         </CardAction>
       </CardHeader>
     </Card>

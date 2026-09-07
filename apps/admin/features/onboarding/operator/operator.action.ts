@@ -24,12 +24,32 @@ export const processOperatorApplication = withPermission({
 
     if (!application) throw new Error("Application not found")
 
-    if (action === "reject") {
+    if (action === "PENDING_APPROVAL") {
+      await Promise.all([
+        prisma.application.update({
+          where: { id },
+          data: {
+            currentStatus: "PENDING_APPROVAL",
+          },
+        }),
+        prisma.review.create({
+          data: {
+            entityId: id,
+            entityType: "APPLICATION",
+            status: "PENDING_APPROVAL",
+            reason: "Application under review",
+            reviewerId: session.userId,
+          },
+        }),
+      ])
+    }
+
+    if (action === "REJECTED") {
       await rejectApplication(id, session.userId)
     }
 
-    if (action === "approve") {
-      const result = await approveApplication(
+    if (action === "APPROVED") {
+      await approveApplication(
         {
           ...application,
           application: application.operatorApplication!,

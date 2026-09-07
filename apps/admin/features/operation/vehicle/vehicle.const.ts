@@ -22,7 +22,7 @@ export const STATUS_MAP: Record<VehicleStatus, StatusConfig> = {
   },
 
   ACTIVE: {
-    label: "Available",
+    label: "Active",
     icon: CircleCheck,
     className: "text-primary-foreground! bg-lime-300! border-lime-400!",
   },

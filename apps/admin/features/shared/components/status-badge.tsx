@@ -11,6 +11,7 @@ export interface StatusBadgeProps<K extends string> {
   statusMap: StatusBadgeMap<K>
   showIcon?: boolean
   className?: string
+  children?: React.ReactNode
 }
 
 export function StatusBadge<K extends string>({
@@ -18,6 +19,7 @@ export function StatusBadge<K extends string>({
   statusMap,
   showIcon = true,
   className,
+  children,
 }: StatusBadgeProps<K>) {
   const config = statusMap[status]
 
@@ -25,6 +27,7 @@ export function StatusBadge<K extends string>({
     return (
       <Badge variant="outline" className={cn("h-7 px-2", className)}>
         {status}
+        {children}
       </Badge>
     )
   }
@@ -38,6 +41,7 @@ export function StatusBadge<K extends string>({
     >
       {showIcon && Icon && <Icon className="size-3.5" />}
       {label}
+      {children}
     </Badge>
   )
 }

@@ -1,24 +1,24 @@
 import React from "react"
-import { EllipsisVertical } from "lucide-react"
+import { Pencil } from "lucide-react"
 import { Button } from "@blak/ui/components/button"
 import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { OperatorApplication } from "../operator.type"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
-import { AVAILABLE_ACTIONS } from "../operator.const"
+
 import { processOperatorApplication } from "../operator.action"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { STATUS_MAP } from "../operator.const"
+import { ApplicationStatus } from "@blak/db"
 
 export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
   const { open } = useAppDialog()
   const [isOpen, setIsOpen] = React.useState(false)
   const queryClient = useQueryClient()
 
-  const actions = AVAILABLE_ACTIONS[data.currentStatus] ?? []
-
-  const handleAction = (action: string) => {
+  const handleAction = (action: ApplicationStatus) => {
     switch (action) {
-      case "approve":
+      case "APPROVED":
         open({
           variant: "success",
           title: "Approve application",
@@ -46,7 +46,7 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
           },
         })
         return
-      case "reject":
+      case "REJECTED":
         open({
           variant: "warning",
           title: "Reject application",
@@ -74,6 +74,10 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
           },
         })
         return
+
+      case "PENDING_APPROVAL":
+        // Handle rejected status
+        break
     }
   }
 
@@ -82,28 +86,21 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
       open={isOpen}
       setOpen={setIsOpen}
       trigger={
-        <Button
-          variant="outline"
-          size="xs"
-          className="bg-foreground text-background hover:bg-foreground/80 hover:text-background"
-          disabled={!actions.length}
-        >
-          Action
-          <EllipsisVertical />
+        <Button variant="invert" size="icon-sm">
+          <Pencil className="size-3.5" />
         </Button>
       }
       className="md:max-w-40"
     >
-      {actions.map((ac) => (
+      {Object.entries(STATUS_MAP).map(([key, value]) => (
         <Button
-          onClick={() => handleAction(ac.action)}
-          variant={ac.variant}
-          className="justify-start shadow-none"
-          size="sm"
-          key={ac.action}
+          onClick={() => handleAction(key as ApplicationStatus)}
+          variant="ghost"
+          size="lg"
+          className="justify-start"
         >
-          {ac.icon && <ac.icon />}
-          {ac.label}
+          {value.icon && <value.icon />}
+          {value.label}
         </Button>
       ))}
     </DropDrawer>

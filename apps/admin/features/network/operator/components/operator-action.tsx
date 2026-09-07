@@ -1,40 +1,39 @@
 import React from "react"
 import { toast } from "sonner"
-import { Operator } from "../operator.type"
-import { EllipsisVertical } from "lucide-react"
+import { Operator, OperatorStatus } from "../operator.type"
+import { Pencil } from "lucide-react"
 import { Button } from "@blak/ui/components/button"
 import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
 import { useQueryClient } from "@tanstack/react-query"
-import { AVAILABLE_ACTIONS } from "../operator.const"
+import { STATUS_MAP } from "../operator.const"
 import { updateOperatorStatus } from "../operator.action"
+
+const actions = ["ACTIVE", "SUSPENDED"]
 
 export const OperatorAction = ({ data }: { data: Operator }) => {
   const { open } = useAppDialog()
   const [isOpen, setIsOpen] = React.useState(false)
   const queryClient = useQueryClient()
 
-  const actions = AVAILABLE_ACTIONS[data.status] ?? []
-
-  const handleAction = (action: string) => {
+  const handleAction = (action: OperatorStatus) => {
     switch (action) {
-      case "approve":
+      case "ACTIVE":
         open({
           variant: "success",
-          title: "Approve operator",
-          description:
-            "This will approve the operator and mark them as active on the BLAK network.",
+          title: "Approve Operator",
+          description: "This will change the operator status to Approved.",
           action: {
-            label: "Approve Operator",
+            label: "Approve",
             onClick: async () => {
               const { serverError } = await updateOperatorStatus({
                 id: data.id,
-                action,
+                data: { status: action },
               })
               if (serverError) {
                 toast.error(serverError.message)
               } else {
-                toast.success("Approved and invitation sent.")
+                toast.success("Approved successfully")
                 queryClient.invalidateQueries({
                   queryKey: ["operators"],
                 })
@@ -46,23 +45,22 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
           },
         })
         return
-      case "reject":
+      case "SUSPENDED":
         open({
           variant: "warning",
-          title: "Decline submitted documents",
-          description:
-            "The submitted documents do not meet the review requirements. The operator will be notified and asked to provide updated documentation.",
+          title: "Reject Operator",
+          description: "This will change the operator status to Rejected.",
           action: {
-            label: "Yes, Decline",
+            label: "Reject",
             onClick: async () => {
               const { serverError } = await updateOperatorStatus({
                 id: data.id,
-                action,
+                data: { status: action },
               })
               if (serverError) {
                 toast.error(serverError.message)
               } else {
-                toast.success("Documents declined and notification email sent.")
+                toast.success("Rejected successfully")
                 queryClient.invalidateQueries({
                   queryKey: ["operators"],
                 })
@@ -82,23 +80,26 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
       open={isOpen}
       setOpen={setIsOpen}
       trigger={
-        <Button variant="outline" size="icon" disabled={!actions.length}>
-          <EllipsisVertical />
+        <Button variant="invert" size="icon-sm">
+          <Pencil />
         </Button>
       }
     >
-      {actions.map((ac) => (
-        <Button
-          onClick={() => handleAction(ac.action)}
-          variant={ac.variant}
-          className="justify-start shadow-none"
-          size="sm"
-          key={ac.action}
-        >
-          {ac.icon && <ac.icon />}
-          {ac.label}
-        </Button>
-      ))}
+      {actions.map((action) => {
+        const statusConfig = STATUS_MAP[action as OperatorStatus]
+        return (
+          <Button
+            onClick={() => handleAction(action as OperatorStatus)}
+            variant="ghost"
+            className="justify-start shadow-none"
+            size="lg"
+            key={action}
+          >
+            {statusConfig.icon && <statusConfig.icon />}
+            {statusConfig.label}
+          </Button>
+        )
+      })}
     </DropDrawer>
   )
 }

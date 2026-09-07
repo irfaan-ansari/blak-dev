@@ -1,7 +1,7 @@
 "use server"
 
 import z from "zod"
-import { prisma } from "@blak/db"
+import { OrganizationStatus, prisma } from "@blak/db"
 import { AppError } from "@blak/utils"
 import { sendEmail } from "@blak/email"
 import { withPermission } from "@/lib/safe-action"
@@ -9,12 +9,14 @@ import AccountApprovedEmail from "@blak/email/templates/account-approved"
 
 const schema = z.object({
   id: z.string(),
-  action: z.enum(["approve", "reject", "suspend"]),
+  data: z.object({
+    status: z.enum(OrganizationStatus),
+  }),
 })
 export const updateOperatorStatus = withPermission({ app: ["admin"] })
   .inputSchema(schema)
   .action(async ({ ctx, clientInput }) => {
-    const { id, action } = clientInput
+    const { id, data } = clientInput
 
     const org = await prisma.organization.findFirst({
       where: {
@@ -29,7 +31,7 @@ export const updateOperatorStatus = withPermission({ app: ["admin"] })
           id,
         },
         data: {
-          status: action === "approve" ? "ACTIVE" : "SUSPENDED",
+          status: data.status,
         },
       }),
       sendEmail({

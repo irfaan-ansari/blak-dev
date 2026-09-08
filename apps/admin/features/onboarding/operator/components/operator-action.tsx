@@ -11,6 +11,11 @@ import { toast } from "sonner"
 import { STATUS_MAP } from "../operator.const"
 import { ApplicationStatus } from "@blak/db"
 
+const ACTION_OPTIONS = [
+  { value: "APPROVED", label: "Approve" },
+  { value: "REJECTED", label: "Reject" },
+] as const
+
 export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
   const { open } = useAppDialog()
   const [isOpen, setIsOpen] = React.useState(false)
@@ -86,23 +91,32 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
       open={isOpen}
       setOpen={setIsOpen}
       trigger={
-        <Button variant="invert" size="icon-sm">
+        <Button
+          variant="invert"
+          size="icon-sm"
+          disabled={data.currentStatus !== "PENDING_APPROVAL"}
+        >
           <Pencil className="size-3.5" />
         </Button>
       }
       className="md:max-w-40"
     >
-      {Object.entries(STATUS_MAP).map(([key, value]) => (
-        <Button
-          onClick={() => handleAction(key as ApplicationStatus)}
-          variant="ghost"
-          size="lg"
-          className="justify-start"
-        >
-          {value.icon && <value.icon />}
-          {value.label}
-        </Button>
-      ))}
+      {data.currentStatus === "PENDING_APPROVAL"
+        ? ACTION_OPTIONS.map(({ value, label }) => {
+            const map = STATUS_MAP[value as ApplicationStatus]
+            return (
+              <Button
+                onClick={() => handleAction(value as ApplicationStatus)}
+                variant="ghost"
+                size="lg"
+                className="justify-start"
+              >
+                {map.icon && <map.icon />}
+                {label}
+              </Button>
+            )
+          })
+        : null}
     </DropDrawer>
   )
 }

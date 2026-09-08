@@ -58,15 +58,6 @@ export const SIDEBAR_NAV = {
       { label: "Transactions", href: "/finance/transactions" },
     ],
   },
-  onboarding: {
-    label: "Onboarding",
-    href: "#",
-    icon: ClipboardList,
-    items: [
-      { label: "Operators", href: "/onboarding/operators" },
-      { label: "Partners", href: "/onboarding/partners" },
-    ],
-  },
   insights: {
     label: "Insights",
     href: "#",
@@ -86,6 +77,18 @@ export const SIDEBAR_NAV = {
       { label: "Users & Roles", href: "/settings/users-roles" },
       { label: "Integrations", href: "/settings/integrations" },
       { label: "Audit Log", href: "/settings/audit-log" },
+    ],
+  },
+} as const
+
+export const APPLICATION_NAV = {
+  onboarding: {
+    label: "Onboarding",
+    href: "#",
+    icon: ClipboardList,
+    items: [
+      { label: "Operators", href: "/onboarding/operators" },
+      { label: "Partners", href: "/onboarding/partners" },
     ],
   },
 } as const

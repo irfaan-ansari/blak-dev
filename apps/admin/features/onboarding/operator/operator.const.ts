@@ -1,5 +1,5 @@
 import { StatusConfig } from "@/features/shared/shared.type"
-import { BadgeCheck, CircleDashed, ClockFading, XCircle } from "lucide-react"
+import { BadgeCheck, CircleDashed, XCircle } from "lucide-react"
 import { ApplicationStatus } from "@/features/onboarding/application.type"
 
 export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
@@ -14,7 +14,7 @@ export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
     className: "text-primary-foreground bg-red-300 border-red-400",
   },
   PENDING_APPROVAL: {
-    label: "Under Review",
+    label: "New",
     icon: CircleDashed,
     className: "text-primary-foreground! bg-yellow-200! border-yellow-300!",
   },

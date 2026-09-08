@@ -26,12 +26,13 @@ enum MarketScope {
 }
 
 enum OrganizationStatus {
-    ONBOARDING
-    PENDING_APPROVAL
+    INVITED /**  application approved */
+    ACCOUNT_CREATED /** user created password */
+    PENDING_APPROVAL /* document submitted */
     ACTIVE
     INACTIVE
     SUSPENDED
-    TERMINATED
+    ONBOARDING /* deprecated - to be removed after migration */
 }
 
 enum OrganizationType {

@@ -91,7 +91,7 @@ model Organization {
     metadata    String?
     phoneNumber String
     email       String
-    status      OrganizationStatus @default(ONBOARDING)
+    status      OrganizationStatus @default(INVITED)
 
     website        String?
     registrationNo String?

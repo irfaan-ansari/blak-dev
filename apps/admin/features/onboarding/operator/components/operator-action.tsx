@@ -1,5 +1,5 @@
 import React from "react"
-import { Pencil } from "lucide-react"
+import { CircleCheck, Pencil } from "lucide-react"
 import { Button } from "@blak/ui/components/button"
 import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { OperatorApplication } from "../operator.type"
@@ -8,13 +8,7 @@ import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
 import { processOperatorApplication } from "../operator.action"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { STATUS_MAP } from "../operator.const"
 import { ApplicationStatus } from "@blak/db"
-
-const ACTION_OPTIONS = [
-  { value: "APPROVED", label: "Approve" },
-  { value: "REJECTED", label: "Reject" },
-] as const
 
 export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
   const { open } = useAppDialog()
@@ -79,10 +73,6 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
           },
         })
         return
-
-      case "PENDING_APPROVAL":
-        // Handle rejected status
-        break
     }
   }
 
@@ -101,22 +91,24 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
       }
       className="md:max-w-40"
     >
-      {data.currentStatus === "PENDING_APPROVAL"
-        ? ACTION_OPTIONS.map(({ value, label }) => {
-            const map = STATUS_MAP[value as ApplicationStatus]
-            return (
-              <Button
-                onClick={() => handleAction(value as ApplicationStatus)}
-                variant="ghost"
-                size="lg"
-                className="justify-start"
-              >
-                {map.icon && <map.icon />}
-                {label}
-              </Button>
-            )
-          })
-        : null}
+      <Button
+        onClick={() => handleAction("APPROVED")}
+        variant="ghost"
+        size="lg"
+        className="justify-start"
+      >
+        <CircleCheck />
+        Approve
+      </Button>
+      <Button
+        onClick={() => handleAction("REJECTED")}
+        variant="destructive"
+        size="lg"
+        className="justify-start"
+      >
+        <CircleCheck />
+        Reject
+      </Button>
     </DropDrawer>
   )
 }

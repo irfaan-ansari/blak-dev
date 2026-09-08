@@ -3,7 +3,6 @@
 import { prisma } from "@blak/db"
 import { headers } from "next/headers"
 import { auth } from "@blak/auth"
-import { slugify } from "@blak/utils/string"
 import { withPermission } from "@/lib/safe-action"
 import { OperatorApplication } from "./operator.type"
 import { processOperatorApplicationschema } from "./operator.schema"
@@ -178,7 +177,7 @@ async function createOrgUser(
   // create organization
   const org = await auth.api.createOrganization({
     body: {
-      slug: slugify(legalBusinessName),
+      slug: crypto.randomUUID(),
       name: operatingName ?? "",
       type: "OPERATOR",
       legalName: legalBusinessName,

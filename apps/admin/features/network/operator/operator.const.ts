@@ -1,7 +1,6 @@
 import {
-  BadgeCheck,
+  CircleCheck,
   CircleDashed,
-  CirclePause,
   CircleSlash,
   ClockFading,
   XCircleIcon,
@@ -16,24 +15,29 @@ export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
     icon: CircleDashed,
     className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
   },
+  INVITED: {
+    label: "Invited",
+    icon: CircleDashed,
+    className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
+  },
+  ACCOUNT_CREATED: {
+    label: "Account Created",
+    icon: CircleDashed,
+    className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
+  },
   PENDING_APPROVAL: {
     label: "Documents Submitted",
     icon: ClockFading,
     className: "text-primary-foreground! bg-sky-100! border-sky-200/80",
   },
   ACTIVE: {
-    label: "Approved",
-    icon: BadgeCheck,
+    label: "Active",
+    icon: CircleCheck,
     className: "text-primary-foreground bg-lime-200 border-lime-300",
   },
   SUSPENDED: {
     label: "Rejected",
     icon: XCircleIcon,
-    className: "text-primary-foreground bg-red-500 border-red-600",
-  },
-  TERMINATED: {
-    label: "Terminated",
-    icon: CirclePause,
     className: "text-primary-foreground bg-red-500 border-red-600",
   },
   INACTIVE: {

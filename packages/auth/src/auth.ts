@@ -93,7 +93,7 @@ export const auth = betterAuth({
             status: {
               type: "string",
               required: true,
-              defaultValue: "ONBOARDING",
+              defaultValue: "INVITED",
               input: false,
             },
             legalName: {

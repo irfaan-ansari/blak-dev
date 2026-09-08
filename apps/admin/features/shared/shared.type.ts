@@ -22,6 +22,7 @@ export interface StatusConfig {
   label: string
   icon?: LucideIcon
   className: string
+  variant?: string
 }
 
 export interface StatusActionConfig {

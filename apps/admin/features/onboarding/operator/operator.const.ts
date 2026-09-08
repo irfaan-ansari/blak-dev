@@ -1,11 +1,11 @@
 import { StatusConfig } from "@/features/shared/shared.type"
-import { BadgeCheck, CircleDashed, XCircle } from "lucide-react"
+import { CircleCheck, CircleDashed, XCircle } from "lucide-react"
 import { ApplicationStatus } from "@/features/onboarding/application.type"
 
 export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
   APPROVED: {
     label: "Approved",
-    icon: BadgeCheck,
+    icon: CircleCheck,
     className: "text-primary-foreground bg-lime-300 border-lime-400",
   },
   REJECTED: {

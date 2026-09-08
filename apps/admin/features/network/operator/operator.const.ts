@@ -12,7 +12,7 @@ import { StatusConfig } from "@/features/shared/shared.type"
 
 export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
   ONBOARDING: {
-    label: "Pending Onboarding",
+    label: "Invited",
     icon: CircleDashed,
     className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
   },

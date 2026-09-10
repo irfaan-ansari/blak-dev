@@ -19,7 +19,7 @@ const OperatorsPage = () => {
             <Button
               variant="outline"
               className="w-44 justify-start truncate"
-              size="lg"
+              size="sm"
               prefix={<ListFilter />}
             >
               {STATUS_MAP[searchParamsObj.status as keyof typeof STATUS_MAP]

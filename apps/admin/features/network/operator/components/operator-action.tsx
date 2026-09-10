@@ -104,7 +104,7 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
     })
   }
 
-  if (data.status === "ONBOARDING") {
+  if (data.status === "INVITED") {
     return (
       <Tooltip content="Send Reminder">
         <Button variant="invert" size="icon-sm" onClick={handleReminder}>

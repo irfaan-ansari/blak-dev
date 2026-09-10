@@ -3,6 +3,16 @@ import { CircleCheck, CircleDashed, XCircle } from "lucide-react"
 import { ApplicationStatus } from "@/features/onboarding/application.type"
 
 export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
+  INVITED: {
+    label: "Invited",
+    icon: CircleCheck,
+    className: "text-primary-foreground bg-lime-300 border-lime-400",
+  },
+  SUBMITTED: {
+    label: "SUBMITTED",
+    icon: CircleCheck,
+    className: "text-primary-foreground bg-lime-300 border-lime-400",
+  },
   APPROVED: {
     label: "Approved",
     icon: CircleCheck,

@@ -18,49 +18,55 @@ const OperatorsPage = () => {
           trigger={
             <Button
               variant="outline"
-              className="w-44 justify-start truncate"
-              size="sm"
+              className="w-40 justify-start truncate"
               prefix={<ListFilter />}
             >
-              {STATUS_MAP[searchParamsObj.status as keyof typeof STATUS_MAP]
-                ?.label ?? "All"}
+              <span className="truncate">
+                {STATUS_MAP[searchParamsObj.status as keyof typeof STATUS_MAP]
+                  ?.label ?? "All"}
+              </span>
             </Button>
           }
           className="*:justify-start"
         >
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => queryParams({ set: { status: "" } })}
           >
             All
           </Button>
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => queryParams({ set: { status: "ACTIVE" } })}
           >
             Active
           </Button>
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => queryParams({ set: { status: "ONBOARDING" } })}
           >
             Invited
           </Button>
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => queryParams({ set: { status: "ACCOUNT_CREATED" } })}
           >
             Account Created
           </Button>
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => queryParams({ set: { status: "PENDING_APPROVAL" } })}
           >
             Documents Submitted
           </Button>
         </DropDrawer>
 
-        <Button variant="outline" size="lg" prefix={<ListFilter />}>
+        <Button variant="outline" prefix={<ListFilter />}>
           Sort By
         </Button>
       </div>

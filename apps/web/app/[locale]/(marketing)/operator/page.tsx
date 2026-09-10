@@ -16,7 +16,11 @@ export const metadata: Metadata = {
     "Join the BLAK Operator Network and connect your chauffeur business to premium transportation opportunities while operating under a consistent service standard.",
 }
 
-const OperatorPage = async () => {
+const OperatorPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>
+}) => {
   const t = await getTranslations("operator.form")
   return (
     <React.Fragment>
@@ -24,7 +28,7 @@ const OperatorPage = async () => {
       <OperatorMarque />
       <WhoCanApply />
       <OperatorProcess />
-      <OperatorFormSection />
+      <OperatorFormSection searchParams={searchParams} />
       <OperatorCTA />
     </React.Fragment>
   )

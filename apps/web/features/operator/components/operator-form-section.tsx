@@ -2,9 +2,30 @@ import React from "react"
 import { getTranslations } from "next-intl/server"
 import { Container } from "@/components/container"
 import { OperatorForm } from "../form/operator-form"
+import { apiClient } from "@/lib/api-client"
 
-export const OperatorFormSection = async () => {
+import { ApiResponse } from "../operator.schema"
+
+export const OperatorFormSection = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>
+}) => {
+  const { key, email, type } = await searchParams
+
   const t = await getTranslations("operator.form")
+  let data = null
+
+  try {
+    const response = await apiClient.get<ApiResponse>(
+      `/application/invitations/${key}`,
+      { params: { email, type } }
+    )
+    data = response.data
+  } catch (error) {
+    console.error("error:", error)
+  }
+
   return (
     <section className="pt-32 pb-24 md:pt-40">
       <Container>
@@ -21,7 +42,7 @@ export const OperatorFormSection = async () => {
             </p>
           </div>
           <div>
-            <OperatorForm />
+            <OperatorForm values={data} />
           </div>
         </div>
       </Container>

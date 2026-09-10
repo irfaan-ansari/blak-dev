@@ -12,10 +12,16 @@ import partner from "./org-partner"
 import countries from "@/modules/countries/countries.routes"
 import markets from "@/modules/market/market.routes"
 import drivers from "@/modules/drivers/drivers.routes"
-import { analytics } from "@/modules/analytics/analytics.routes"
+import analytics from "@/modules/analytics/analytics.routes"
+import applicationInvitations from "@/modules/application/invitations/invitations.routes"
 
 const v1 = new Hono<AppContext>()
+
+  // public routes
   .route("/countries", countries)
+  .route("/application/invitations", applicationInvitations)
+
+  // protected routes
   .use("*", requireAuth)
 
   .route("/currencies", applications)
@@ -31,13 +37,18 @@ const v1 = new Hono<AppContext>()
   .route("/drivers", drivers)
   .route("/analytics", analytics)
 
-  //   operator routes
+  // operator routes
+  // add operator specific middleware
   .route("/operator", operator)
 
   // partner routes
+  // add partner specific middleware
   .route("/partner", partner)
 
-  //   driver routes
+  // driver routes
+  // add driver specific middleware
   .route("/driver", operator)
+
+// add passenger routes
 
 export default v1

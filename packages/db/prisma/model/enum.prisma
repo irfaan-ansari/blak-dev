@@ -53,6 +53,8 @@ enum ComplianceType {
 }
 
 enum ApplicationStatus {
+    INVITED
+    SUBMITTED
     PENDING_APPROVAL
     APPROVED
     REJECTED
@@ -68,6 +70,7 @@ enum ReviewEntity {
 }
 
 enum ReviewStatus {
+    INVITED
     SUBMITTED
     PENDING_APPROVAL
     UNDER_REVIEW

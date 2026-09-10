@@ -1,7 +1,7 @@
 import { prisma } from "./dist/index.js"
 
 async function main() {
-  console.log("Finished...")
+  console.log("success..")
 }
 
 main()

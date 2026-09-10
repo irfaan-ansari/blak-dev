@@ -55,4 +55,4 @@ const analytics = new Hono<OrgContext>().get("/", async (c) => {
   })
 })
 
-export { analytics }
+export default analytics

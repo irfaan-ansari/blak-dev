@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { FormProvider, useForm } from "react-hook-form"
+import { FormProvider, useFieldArray, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { toast } from "sonner"
@@ -14,17 +14,20 @@ import {
   CardTitle,
 } from "@blak/ui/components/card"
 
-import { FieldGroup } from "@blak/ui/components/field"
 import { Button } from "@blak/ui/components/button"
+import { FieldGroup } from "@blak/ui/components/field"
 
-import { UploadField } from "./upload-field"
-
-import { ComplianceFormSchema, complianceSchema } from "../compliance.schema"
-import { Compliance } from "../compliance.type"
-import { createComplianceRecord } from "../compliance.action"
-import { useQueryClient } from "@tanstack/react-query"
 import { authClient } from "@blak/auth/client"
+import { Compliance } from "../compliance.type"
+import { useQueryClient } from "@tanstack/react-query"
+import { createComplianceRecord } from "../compliance.action"
+
 import { uploadFiles } from "@/lib/api-client/upload-file"
+import {
+  ComplianceFormSchema,
+  complianceSchema,
+} from "@/features/shared/compliance.schema"
+import { UploadField } from "@/features/shared/components/upload-field"
 
 type ComplianceFormProps = {
   requirements: Compliance[]
@@ -33,15 +36,21 @@ type ComplianceFormProps = {
 export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
+
   const form = useForm<ComplianceFormSchema>({
     resolver: zodResolver(complianceSchema),
-
     defaultValues: {
       documents: requirements.map((requirement) => ({
         requirementId: requirement.id,
-        file: null,
+        label: requirement.label,
+        file: undefined,
       })),
     },
+  })
+
+  const documents = useFieldArray({
+    control: form.control,
+    name: "documents",
   })
 
   const handleSubmit = async (values: ComplianceFormSchema) => {
@@ -53,22 +62,14 @@ export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
           (document): document is typeof document & { file: File } =>
             document.file instanceof File
         )
-        .map(({ file, requirementId }) => {
-          const requirement = requirements.find(
-            (item) => item.id === requirementId
-          )
-
-          if (!requirement) {
-            throw new Error(`Requirement not found: ${requirementId}`)
-          }
-
+        .map(({ file, requirementId, label }) => {
           return {
             requirementId,
             file,
             meta: {
               ref: "OPERATOR",
               refId: organizationId,
-              field: requirement.label,
+              field: label,
             },
           }
         })
@@ -114,10 +115,7 @@ export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FieldGroup>
-              {requirements.map((requirement, index) => {
-                const record = requirement.record
-                const document = record?.document
-
+              {documents.fields.map((requirement, index) => {
                 return (
                   <UploadField
                     key={requirement.id}

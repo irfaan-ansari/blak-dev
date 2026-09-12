@@ -2,11 +2,10 @@ import { z } from "zod"
 
 export const complianceDocumentSchema = z.object({
   requirementId: z.string().min(1),
-  file: z
-    .instanceof(File, {
-      message: "Document is required",
-    })
-    .nullable(),
+  file: z.instanceof(File, {
+    message: "Document is required",
+  }),
+  label: z.string(),
 })
 
 export const complianceSchema = z.object({

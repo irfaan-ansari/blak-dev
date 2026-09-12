@@ -32,7 +32,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         varela.variable,
-        "font-sans font-normal antialiased selection:bg-primary/10"
+        "font-sans font-normal text-foreground antialiased"
       )}
     >
       <body>

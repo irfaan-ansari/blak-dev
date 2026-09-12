@@ -30,7 +30,7 @@ const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
           </Avatar>
           <div className="grid min-w-2xs gap-0.5">
             <CardTitle>
-              {data.make}{" "}
+              {data.make}
               <span className="text-xs text-muted-foreground">
                 ({data.exteriorColor})
               </span>
@@ -44,7 +44,6 @@ const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
           </div>
           <div className="grid min-w-2xs">
             <span className="text-muted-foreground">Year: {data.year}</span>
-
             <span className="text-muted-foreground">
               Trim Level: {data.trim}
             </span>
@@ -54,8 +53,8 @@ const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
         <CardAction className="relative space-x-2">
           <StatusBadge statusMap={STATUS_MAP} status={data.status} />
           <VehicleDialog>
-            <Button variant="outline" size="icon">
-              <SquarePen size="2.5!" />
+            <Button variant="invert" size="icon-sm">
+              <SquarePen className="size-3.5" />
             </Button>
           </VehicleDialog>
         </CardAction>

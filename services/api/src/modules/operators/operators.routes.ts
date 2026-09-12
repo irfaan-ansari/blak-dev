@@ -12,6 +12,22 @@ const operators = new Hono<AppContext>()
 
     const where: Prisma.OrganizationWhereInput = {
       type: "OPERATOR",
+      ...(q && {
+        OR: [
+          { name: { contains: q, mode: "insensitive" } },
+          { legalName: { contains: q, mode: "insensitive" } },
+          { slug: { contains: q, mode: "insensitive" } },
+          { email: { contains: q, mode: "insensitive" } },
+          { phoneNumber: { contains: q, mode: "insensitive" } },
+          { website: { contains: q, mode: "insensitive" } },
+          { registrationNo: { contains: q, mode: "insensitive" } },
+          { taxId: { contains: q, mode: "insensitive" } },
+          { contactName: { contains: q, mode: "insensitive" } },
+          { contactTitle: { contains: q, mode: "insensitive" } },
+          { contactEmail: { contains: q, mode: "insensitive" } },
+          { contactPhone: { contains: q, mode: "insensitive" } },
+        ],
+      }),
     }
 
     if (q) {
@@ -53,10 +69,21 @@ const operators = new Hono<AppContext>()
       where.status = status as OrganizationStatus
     }
 
-    const [partners, total] = await Promise.all([
+    const [operators, total] = await Promise.all([
       prisma.organization.findMany({
         where,
         take,
+        include: {
+          members: {
+            select: { id: true },
+            where: {
+              role: "driver",
+            },
+          },
+          vehicles: {
+            select: { id: true },
+          },
+        },
         skip,
         orderBy: {
           createdAt: "desc",
@@ -69,16 +96,21 @@ const operators = new Hono<AppContext>()
       }),
     ])
 
-    const data = partners.map(({ metadata, ...partner }) => {
-      let jsonMetadata = {}
-      try {
-        jsonMetadata = JSON.parse(metadata!)
-      } catch (error) {}
-      return {
-        ...partner,
-        metadata: jsonMetadata,
+    const data = operators.map(
+      ({ metadata, members, vehicles, ...partner }) => {
+        let jsonMetadata = {}
+        try {
+          jsonMetadata = JSON.parse(metadata!)
+        } catch (error) {}
+
+        return {
+          ...partner,
+          driverCount: members.length,
+          vehicleCount: vehicles.length,
+          metadata: jsonMetadata,
+        }
       }
-    })
+    )
 
     const pageCount = Math.ceil(total / take)
 

@@ -10,58 +10,59 @@ const vehicles = new Hono<AppContext>()
     const { q, status, cat, ...rest } = c.req.query()
     const { page, take, skip } = parsePagination(rest)
 
-    const where: Prisma.VehicleWhereInput = {}
+    const where: Prisma.VehicleWhereInput = {
+      ...(q && {
+        OR: [
+          { make: { contains: q, mode: "insensitive" } },
+          { model: { contains: q, mode: "insensitive" } },
+          { trim: { contains: q, mode: "insensitive" } },
+          { interiorColor: { contains: q, mode: "insensitive" } },
+          { exteriorColor: { contains: q, mode: "insensitive" } },
+          { engine: { contains: q, mode: "insensitive" } },
+          { licensePlate: { contains: q, mode: "insensitive" } },
+          { registrationNumber: { contains: q, mode: "insensitive" } },
+          { vin: { contains: q, mode: "insensitive" } },
+          {
+            organization: {
+              name: { contains: q, mode: "insensitive" },
+            },
+          },
+          {
+            driver: {
+              name: { contains: q, mode: "insensitive" },
+            },
+          },
+        ],
+      }),
+    }
+
     if (rest.organization) {
       where.organizationId = rest.organization
     }
     const [results, total] = await Promise.all([
       prisma.vehicle.findMany({
         where,
+        include: {
+          organization: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
         take,
         skip,
         orderBy: {
           createdAt: "desc",
         },
       }),
-      prisma.vehicle.count(),
+      prisma.vehicle.count({ where }),
     ])
-
-    const files = await prisma.file.findMany({
-      where: {
-        ref: "VEHICLE",
-        refId: {
-          in: results.map((r) => r.id),
-        },
-      },
-    })
-
-    const docsWithUrl = await Promise.all(
-      files.map(async ({ storageKey, ...file }) => ({
-        ...file,
-        size: Number(file.size),
-        url: await getR2Url(storageKey),
-      }))
-    )
-
-    const vehicleImages = docsWithUrl.reduce<
-      Record<string, (typeof docsWithUrl)[number][]>
-    >((acc, file) => {
-      if (!file.refId) return acc
-
-      ;(acc[file.refId] ??= []).push(file)
-
-      return acc
-    }, {})
-
-    const records = results.map((user) => ({
-      ...user,
-      images: vehicleImages[user.id] ?? [],
-    }))
 
     const pageCount = Math.ceil(total / take)
 
     return c.json({
-      data: records,
+      data: results,
       pagination: {
         page,
         pageSize: take,
@@ -75,6 +76,14 @@ const vehicles = new Hono<AppContext>()
 
     const result = await prisma.vehicle.findFirst({
       where: { id },
+      include: {
+        organization: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     })
 
     if (!result) throw new AppError("NOT_FOUND")

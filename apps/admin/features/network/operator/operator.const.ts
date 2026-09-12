@@ -3,6 +3,8 @@ import {
   CircleDashed,
   CircleSlash,
   ClockFading,
+  Mail,
+  MailCheck,
   XCircleIcon,
 } from "lucide-react"
 
@@ -12,17 +14,17 @@ import { StatusConfig } from "@/features/shared/shared.type"
 export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
   ONBOARDING: {
     label: "Invited",
-    icon: CircleDashed,
+    icon: Mail,
     className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
   },
   INVITED: {
     label: "Invited",
-    icon: CircleDashed,
+    icon: Mail,
     className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
   },
   ACCOUNT_CREATED: {
     label: "Account Created",
-    icon: CircleDashed,
+    icon: MailCheck,
     className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
   },
   PENDING_APPROVAL: {

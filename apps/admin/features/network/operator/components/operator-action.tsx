@@ -106,11 +106,9 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
 
   if (data.status === "INVITED") {
     return (
-      <Tooltip content="Send Reminder">
-        <Button variant="invert" size="icon-sm" onClick={handleReminder}>
-          <Mail />
-        </Button>
-      </Tooltip>
+      <Button variant="invert" size="sm" onClick={handleReminder}>
+        <Mail /> Send Reminder
+      </Button>
     )
   }
 
@@ -121,10 +119,11 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
       trigger={
         <Button
           variant="invert"
+
           disabled={data.status !== "PENDING_APPROVAL"}
-          size="icon-sm"
+          size="sm"
         >
-          <Pencil />
+          <Pencil className="size-3.5" /> Action
         </Button>
       }
     >

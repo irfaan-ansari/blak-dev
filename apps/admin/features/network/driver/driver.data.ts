@@ -4,11 +4,14 @@ import { AppError } from "@blak/utils"
 
 import { apiClient } from "@/lib/api-client"
 
-import { ApiResponse, PaginatedResponse } from "@/features/shared/shared.type"
-import { DriverWithDocs } from "./driver.type"
+import type {
+  ApiResponse,
+  PaginatedResponse,
+} from "@/features/shared/shared.type"
+import type { Driver, DriverWithDocs } from "./driver.type"
 
 export const useDrivers = (params?: Record<string, any>) => {
-  return useQuery<PaginatedResponse<DriverWithDocs>, AppError>({
+  return useQuery<PaginatedResponse<Driver>, AppError>({
     queryKey: ["drivers", params],
     queryFn: () => apiClient.get("/drivers", { params }),
   })
@@ -16,7 +19,7 @@ export const useDrivers = (params?: Record<string, any>) => {
 
 export const useDriver = (id: string) => {
   return useQuery<ApiResponse<DriverWithDocs>, AppError>({
-    queryKey: ["driver"],
+    queryKey: ["driver", id],
     queryFn: () => apiClient.get(`/drivers/${id}`),
   })
 }

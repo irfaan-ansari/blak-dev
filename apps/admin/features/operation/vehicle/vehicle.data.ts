@@ -4,11 +4,14 @@ import { AppError } from "@blak/utils"
 
 import { apiClient } from "@/lib/api-client"
 
-import { ApiResponse, PaginatedResponse } from "@/features/shared/shared.type"
-import { VehicleWithImages } from "./vehicle.type"
+import type {
+  ApiResponse,
+  PaginatedResponse,
+} from "@/features/shared/shared.type"
+import type { VehicleWithImages, Vehicle } from "./vehicle.type"
 
 export const useVehicles = (params?: Record<string, any>) => {
-  return useQuery<PaginatedResponse<VehicleWithImages>, AppError>({
+  return useQuery<PaginatedResponse<Vehicle>, AppError>({
     queryKey: ["vehicles", params],
     queryFn: () => apiClient.get("/vehicles", { params }),
   })
@@ -16,7 +19,7 @@ export const useVehicles = (params?: Record<string, any>) => {
 
 export const useVehicle = (id: string) => {
   return useQuery<ApiResponse<VehicleWithImages>, AppError>({
-    queryKey: ["vehicle"],
+    queryKey: ["vehicle", id],
     queryFn: () => apiClient.get(`/vehicles/${id}`),
   })
 }

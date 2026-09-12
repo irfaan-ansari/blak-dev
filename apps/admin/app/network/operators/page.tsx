@@ -18,12 +18,13 @@ const OperatorsPage = () => {
           trigger={
             <Button
               variant="outline"
+              size="sm"
               className="w-40 justify-start truncate"
-              prefix={<ListFilter />}
+              prefix={<ListFilter className="tex-muted-foreground size-3.5" />}
             >
               <span className="truncate">
                 {STATUS_MAP[searchParamsObj.status as keyof typeof STATUS_MAP]
-                  ?.label ?? "All"}
+                  ?.label ?? "Status: All"}
               </span>
             </Button>
           }
@@ -65,10 +66,6 @@ const OperatorsPage = () => {
             Documents Submitted
           </Button>
         </DropDrawer>
-
-        <Button variant="outline" prefix={<ListFilter />}>
-          Sort By
-        </Button>
       </div>
       <OperatorClient />
     </div>

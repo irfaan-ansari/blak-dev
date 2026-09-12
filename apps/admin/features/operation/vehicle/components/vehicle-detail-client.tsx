@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-
+import Image from "next/image"
 import {
   Card,
   CardContent,
@@ -9,8 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
-import { useVehicle } from "@/features/operation/vehicle/vehicle.data"
-import { useParams } from "next/navigation"
 import {
   Carousel,
   CarouselContent,
@@ -18,10 +16,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@blak/ui/components/carousel"
-import Image from "next/image"
+import { useParams } from "next/navigation"
+import { ArrowUpRight, Building2 } from "lucide-react"
 import { PageSkeleton } from "@blak/ui/components/blak/empty-state"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
-import { Building2, CircleUser } from "lucide-react"
+import { useVehicle } from "@/features/operation/vehicle/vehicle.data"
+import Link from "next/link"
 
 export const VehicleDetailClient = () => {
   const id = useParams()?.id
@@ -37,116 +37,123 @@ export const VehicleDetailClient = () => {
           {/* stats */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <Card size="sm">
-              <CardContent>
-                <CardTitle className="font-semibold">Total Trips</CardTitle>
-                <CardDescription>10</CardDescription>
+              <CardContent className="space-y-4">
+                <CardTitle>Total Trips</CardTitle>
+                <div className="text-2xl font-bold">0</div>
               </CardContent>
             </Card>
             <Card size="sm">
-              <CardContent>
-                <CardTitle className="font-semibold">Completed</CardTitle>
-                <CardDescription>10</CardDescription>
+              <CardContent className="space-y-4">
+                <CardTitle>Completed</CardTitle>
+                <div className="text-2xl font-bold">0</div>
               </CardContent>
             </Card>
             <Card size="sm">
-              <CardContent>
-                <CardTitle className="font-semibold">Cancelled</CardTitle>
-                <CardDescription>10</CardDescription>
+              <CardContent className="space-y-4">
+                <CardTitle>Cancelled</CardTitle>
+                <div className="text-2xl font-bold">0</div>
               </CardContent>
             </Card>
           </div>
 
           <Card size="sm">
-            <CardHeader className="grid grid-cols-2 gap-0 divide-x border-b">
-              <div className="flex items-center gap-4 pr-4">
+            <CardHeader className="border-b">
+              <Link
+                href={`/network/operators/${vehicle?.organization?.id}`}
+                className="group/link flex items-center gap-3"
+              >
                 <Avatar size="lg" className="rounded-md *:rounded-md">
                   <AvatarFallback>
-                    <CircleUser className="size-4 text-sky-500" />
+                    <Building2 className="size-4 text-rose-500" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid">
                   <CardTitle className="font-semibold">
-                    Lorem ipsum dolor sit.
+                    {vehicle?.organization?.name}
                   </CardTitle>
-                  <CardDescription>Vehicle</CardDescription>
+                  <CardDescription>
+                    #{vehicle?.organization?.id}
+                  </CardDescription>
                 </div>
-              </div>
-              <div className="flex items-center gap-4 pl-4">
-                <Avatar size="lg" className="rounded-md *:rounded-md">
-                  <AvatarFallback>
-                    <Building2 className="size-4 text-pink-500" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid">
-                  <CardTitle className="font-semibold">
-                    Lorem ipsum dolor sit.
-                  </CardTitle>
-                  <CardDescription>Operator</CardDescription>
-                </div>
-              </div>
+                <ArrowUpRight className="ml-auto size-4 text-muted-foreground transition group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+              </Link>
             </CardHeader>
-            <CardContent className="grid grid-cols-[1fr_1rem_1fr] border-b pb-6">
+            <CardContent className="grid grid-cols-[0.4fr_3rem_1fr] pb-4">
               <div>Make</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.make}</div>
+              <div>{vehicle?.make}</div>
               <div>Year</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.year}</div>
+              <div>{vehicle?.year}</div>
               <div>Model</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.model}</div>
+              <div>{vehicle?.model}</div>
               <div>Trim level</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.trim}</div>
+              <div>{vehicle?.trim}</div>
               <div>VIN</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.vin}</div>
+              <div>{vehicle?.vin}</div>
               <div>Engine</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.engine}</div>
+              <div>{vehicle?.engine}</div>
               <div>Exterior color</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.exteriorColor}</div>
+              <div>{vehicle?.exteriorColor}</div>
               <div>Interior color</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.interiorColor}</div>
+              <div>{vehicle?.interiorColor}</div>
               <div>License plate</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.licensePlate}</div>
+              <div>{vehicle?.licensePlate}</div>
               <div>Registration #</div>
               <div>:</div>
-              <div className="pl-10">{vehicle?.registrationNumber}</div>
+              <div>{vehicle?.registrationNumber}</div>
               <div>Registration expiry</div>
               <div>:</div>
-              <div className="pl-10">
-                {/* {vehicle?.registrationExpiry &&
-                  vehicle?.registrationExpiry?.toISOString()} */}
+              <div>
+                {vehicle?.registrationExpiry &&
+                  (vehicle?.registrationExpiry as any)?.split("T")?.[0]}
               </div>
             </CardContent>
 
-            <CardContent>
-              <Carousel>
-                <CarouselContent>
-                  {vehicle?.images?.map((image) => (
-                    <CarouselItem
-                      className="basis-1/2 lg:basis-1/3"
-                      key={image.id}
-                    >
-                      <div className="relative overflow-hidden rounded-md">
-                        <Image
-                          src={image.url ?? ""}
-                          alt="vehicle image"
-                          width={600}
-                          height={600}
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel>
-            </CardContent>
+            {(vehicle?.images?.length ?? 0) > 0 && (
+              <CardContent className="border-t pt-4">
+                <Carousel>
+                  <CarouselContent>
+                    {vehicle?.images?.map((image) => (
+                      <CarouselItem
+                        className="basis-1/2 lg:basis-1/3"
+                        key={image.id}
+                      >
+                        <div className="space-y-2">
+                          <div className="relative overflow-hidden rounded-md">
+                            <Image
+                              src={image.url ?? ""}
+                              alt="vehicle image"
+                              width={600}
+                              height={600}
+                            />
+                            <a
+                              href={image.url ?? ""}
+                              target="_blank"
+                              className="absolute inset-0 flex justify-end rounded-md bg-black/20 p-4 opacity-0 backdrop-blur-md transition hover:opacity-50"
+                            >
+                              <ArrowUpRight className="size-4" />
+                            </a>
+                          </div>
+                          <div className="truncate text-xs text-muted-foreground">
+                            {image.field}
+                          </div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
+              </CardContent>
+            )}
           </Card>
         </div>
 

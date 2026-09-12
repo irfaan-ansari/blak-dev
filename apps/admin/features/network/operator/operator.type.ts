@@ -9,6 +9,8 @@ type Metadata = {
 }
 export type Operator = Omit<Organization, "metadata"> & {
   metadata: Metadata
+  driverCount: number
+  vehicleCount: number
 }
 
 export type OperatorWithDocuments = Operator & {

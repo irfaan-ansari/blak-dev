@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { Button } from "@blak/ui/components/button"
-import { VehicleWithImages } from "../vehicle.type"
+import type { Vehicle } from "../vehicle.type"
 import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { VehicleStatus } from "@blak/db"
 import { STATUS_MAP } from "../vehicle.const"
@@ -21,7 +21,7 @@ const VehicleAction = ({
   data,
   children,
 }: {
-  data: VehicleWithImages
+  data: Vehicle
   children: React.ReactNode
 }) => {
   const queryClient = useQueryClient()

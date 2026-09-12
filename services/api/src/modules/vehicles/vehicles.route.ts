@@ -56,7 +56,7 @@ const vehicles = new Hono<AppContext>()
           createdAt: "desc",
         },
       }),
-      prisma.vehicle.count(),
+      prisma.vehicle.count({ where }),
     ])
 
     const pageCount = Math.ceil(total / take)

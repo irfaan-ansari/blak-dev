@@ -1,45 +1,46 @@
 "use client"
 
 import React from "react"
-import { Controller, useFormContext } from "react-hook-form"
-
-import { CloudUpload, Paperclip } from "lucide-react"
-
 import {
   Field,
   FieldError,
   FieldLabel,
   FieldLegend,
 } from "@blak/ui/components/field"
-
 import { Input } from "@blak/ui/components/input"
-
-import { ComplianceFormSchema } from "../compliance.schema"
+import { CloudUpload, Paperclip } from "lucide-react"
+import { ComplianceFormSchema } from "../../compliance/compliance.schema"
+import { Controller, useFormContext } from "react-hook-form"
 
 type UploadFieldProps = {
-  name: `documents.${number}.file`
+  name: string
   label: string
+  className?: string
 }
 
-export function UploadField({ name, label }: UploadFieldProps) {
+export function UploadField({ name, label, className }: UploadFieldProps) {
   const form = useFormContext<ComplianceFormSchema>()
 
   return (
     <Controller
       control={form.control}
+      // @ts-expect-error
       name={name}
       render={({ field, fieldState }) => {
         const file = field.value
 
         return (
-          <Field data-invalid={fieldState.invalid}>
+          <Field
+            data-invalid={fieldState.invalid}
+            className={`data-[invalid=true]:**:data-[slot=field-label]:border-destructive/50 data-[invalid=true]:**:data-[slot=field-label]:bg-destructive/5 ${className}`}
+          >
             <FieldLegend variant="label" className="m-0">
               {label}
             </FieldLegend>
 
             <FieldLabel
               htmlFor={field.name}
-              className="relative flex h-28 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed hover:bg-secondary"
+              className="relative flex h-28 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed hover:bg-secondary/50"
             >
               <div className="flex flex-col items-center justify-center">
                 <CloudUpload className="text-muted-foreground" />
@@ -53,8 +54,7 @@ export function UploadField({ name, label }: UploadFieldProps) {
                 {file instanceof File && (
                   <span className="mt-2 inline-flex max-w-full items-center gap-2 text-sm text-muted-foreground">
                     <Paperclip className="size-3.5 shrink-0" />
-
-                    <span className="max-w-[300px] truncate">{file.name}</span>
+                    <span className="truncate">{file.name}</span>
                   </span>
                 )}
               </div>

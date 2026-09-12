@@ -12,6 +12,7 @@ import {
 } from "@blak/ui/components/input-group"
 import { SidebarTrigger } from "@blak/ui/components/sidebar"
 import { OnboardingStatus } from "@/features/shared/components/onboarding-status"
+import { SearchQueryParam } from "@blak/ui/components/blak/search-input"
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -31,20 +32,10 @@ const AppHeader = () => {
       <div className="flex h-20 w-full items-center gap-4">
         <SidebarTrigger />
         <Link className="inline-flex items-center" href="/dashboard">
-          <Image src="/logo/logo-blak.png" width={140} height={40} alt="Blak" />
+          <Image src="/logo/logo-blak.png" width={120} height={40} alt="Blak" />
         </Link>
         <span className="flex-1"></span>
-        <InputGroup className="max-w-xs">
-          <InputGroupAddon>
-            <Search className="size-4" />
-          </InputGroupAddon>
-          <InputGroupInput placeholder="Search..." />
-          <InputGroupAddon align="inline-end">
-            <InputGroupButton>
-              <X />
-            </InputGroupButton>
-          </InputGroupAddon>
-        </InputGroup>
+        <SearchQueryParam />
         <Button
           variant="secondary"
           size="icon"

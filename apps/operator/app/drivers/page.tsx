@@ -10,7 +10,7 @@ const DriversPage = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <div className="flex-1 text-xl font-bold">Drivers</div>
-        <Button
+        {/* <Button
           size="sm"
           variant="outline"
           className="bg-card! hover:bg-card/80"
@@ -25,7 +25,7 @@ const DriversPage = () => {
         >
           Sort by
           <ListFilter />
-        </Button>
+        </Button> */}
         <DriverDialog>
           <Button size="sm">
             <Plus />

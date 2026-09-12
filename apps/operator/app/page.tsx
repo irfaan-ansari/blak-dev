@@ -4,6 +4,8 @@ import { Button } from "@blak/ui/components/button"
 import {
   Card,
   CardAction,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
@@ -70,7 +72,7 @@ const HomePage = () => {
         {/*  */}
         <div className="grid gap-4 lg:gap-6">
           <Card className="aspect-2/1" size="sm">
-            <CardHeader>
+            <CardHeader className="border-b">
               <div className="flex items-center gap-2">
                 <Image
                   src={"/icons/ride.png"}
@@ -86,10 +88,13 @@ const HomePage = () => {
                 </Button>
               </CardAction>
             </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                No Rides
+              </CardDescription>
+            </CardContent>
           </Card>
         </div>
-
-        <div className="h-36 rounded-2xl bg-secondary"></div>
       </div>
       <Card className="pt-0">
         <StatCard

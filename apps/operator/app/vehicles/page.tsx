@@ -10,7 +10,7 @@ const VehiclesPage = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <div className="flex-1 text-xl font-bold">Vehicles</div>
-        <Button
+        {/* <Button
           size="sm"
           variant="outline"
           className="bg-card! hover:bg-card/80"
@@ -25,7 +25,7 @@ const VehiclesPage = () => {
         >
           Sort by
           <ListFilter />
-        </Button>
+        </Button> */}
         <VehicleImportDialog>
           <Button size="sm">
             <CloudUpload />

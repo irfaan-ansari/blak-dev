@@ -31,39 +31,8 @@ const vehicles = new Hono<AppContext>()
 
     const pageCount = Math.ceil(total / take)
 
-    const files = await prisma.file.findMany({
-      where: {
-        ref: "VEHICLE",
-        refId: {
-          in: results.map((r) => r.id),
-        },
-      },
-    })
-
-    const filesWithUrl = await Promise.all(
-      files.map(async ({ storageKey, ...file }) => ({
-        ...file,
-        size: Number(file.size),
-        url: await getR2Url(storageKey),
-      }))
-    )
-    const imagesByVehicle = filesWithUrl.reduce<
-      Record<string, (typeof filesWithUrl)[number][]>
-    >((acc, file) => {
-      if (!file.refId) return acc
-
-      ;(acc[file.refId] ??= []).push(file)
-
-      return acc
-    }, {})
-
-    const data = results.map((vehicle) => ({
-      ...vehicle,
-      images: imagesByVehicle[vehicle.id] ?? [],
-    }))
-
     return c.json({
-      data,
+      data: results,
       pagination: {
         page,
         pageSize: take,

@@ -19,19 +19,18 @@ export const vehicleSchema = z.object({
     "EXECUTIVE_VAN",
   ]),
   status: z.enum(["ACTIVE", "INACTIVE"]),
+  images: z
+    .object({
+      label: z.string(),
+      file: z.instanceof(File, {
+        message: "Image is required",
+      }),
+    })
+    .array(),
 })
 
 export type VehicleFormValues = z.infer<typeof vehicleSchema>
 
-export const vehicleImageSchema = z.object({
-  name: z.string(),
-  mime: z.string(),
-  size: z.number(),
-  storageKey: z.string(),
-  url: z.string(),
-  label: z.string(),
-})
-
 export const vehicleCreateSchema = z.object({
-  data: vehicleSchema,
+  data: vehicleSchema.omit({ images: true }),
 })

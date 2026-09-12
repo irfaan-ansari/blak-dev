@@ -6,7 +6,7 @@ import { Compliance } from "./compliance.type"
 
 export const useCompliance = (entity: string) => {
   return useQuery<PaginatedResponse<Compliance>, AppError>({
-    queryKey: ["compliance"],
+    queryKey: ["compliance", entity],
     queryFn: async () => {
       const response = await apiClient.get<PaginatedResponse<Compliance>>(
         `/compliance`,
@@ -16,7 +16,7 @@ export const useCompliance = (entity: string) => {
           },
         }
       )
-      console.log(response)
+
       return response
     },
     staleTime: 1000 * 60 * 60,

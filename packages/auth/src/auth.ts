@@ -165,6 +165,7 @@ export const auth = betterAuth({
     },
   },
   advanced: {
+    cookiePrefix: "BLAK",
     crossSubDomainCookies: {
       enabled: true,
       domain: getRootDomain(process.env.BETTER_AUTH_URL as string),

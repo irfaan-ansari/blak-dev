@@ -4,6 +4,7 @@ import React from "react"
 
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -23,6 +24,8 @@ import { PageSkeleton } from "@blak/ui/components/blak/empty-state"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
 import { Building2, CircleUser } from "lucide-react"
 import { useVehicle } from "../vehicle.data"
+import { StatusBadge } from "@/features/shared/components/status-badge"
+import { STATUS_MAP } from "../vehicle.const"
 
 export const VehicleDetailClient = () => {
   const id = useParams()?.id
@@ -38,38 +41,32 @@ export const VehicleDetailClient = () => {
           {/* stats */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <Card size="sm">
-              <CardContent>
-                <CardTitle className="font-semibold">Total Trips</CardTitle>
-                <CardDescription>10</CardDescription>
+              <CardContent className="space-y-4">
+                <CardTitle>Total Trips</CardTitle>
+                <div className="text-2xl font-bold">0</div>
               </CardContent>
             </Card>
             <Card size="sm">
-              <CardContent>
-                <CardTitle className="font-semibold">Completed</CardTitle>
-                <CardDescription>10</CardDescription>
+              <CardContent className="space-y-4">
+                <CardTitle>Completed</CardTitle>
+                <div className="text-2xl font-bold">0</div>
               </CardContent>
             </Card>
             <Card size="sm">
-              <CardContent>
-                <CardTitle className="font-semibold">Cancelled</CardTitle>
-                <CardDescription>10</CardDescription>
+              <CardContent className="space-y-4">
+                <CardTitle>Cancelled</CardTitle>
+                <div className="text-2xl font-bold">0</div>
               </CardContent>
             </Card>
           </div>
 
           <Card size="sm">
             <CardHeader className="border-b">
-              <div className="flex items-center gap-4 pr-4">
-                <Avatar size="lg" className="rounded-md *:rounded-md">
-                  <AvatarFallback>
-                    <CircleUser className="size-4 text-sky-500" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid">
-                  <CardTitle className="font-semibold">Driver Name</CardTitle>
-                  <CardDescription>#123456</CardDescription>
-                </div>
-              </div>
+              <CardTitle className="font-semibold">{vehicle?.make}</CardTitle>
+              <CardDescription>#{vehicle?.id}</CardDescription>
+              <CardAction>
+                <StatusBadge statusMap={STATUS_MAP} status={vehicle?.status!} />
+              </CardAction>
             </CardHeader>
             <CardContent className="grid grid-cols-[1fr_1rem_1fr] border-b pb-6">
               <div>Make</div>
@@ -118,13 +115,18 @@ export const VehicleDetailClient = () => {
                       className="basis-1/2 lg:basis-1/3"
                       key={image.id}
                     >
-                      <div className="relative overflow-hidden rounded-md">
-                        <Image
-                          src={image.url ?? ""}
-                          alt="vehicle image"
-                          width={600}
-                          height={600}
-                        />
+                      <div className="space-y-2">
+                        <div className="relative overflow-hidden rounded-md">
+                          <Image
+                            src={image.url ?? ""}
+                            alt="vehicle image"
+                            width={600}
+                            height={600}
+                          />
+                        </div>
+                        <div className="truncate text-muted-foreground">
+                          {image.field}
+                        </div>
                       </div>
                     </CarouselItem>
                   ))}

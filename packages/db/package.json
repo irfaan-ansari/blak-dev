@@ -12,8 +12,8 @@
     }
   },
   "scripts": {
-    "build": "prisma generate && tsup",
     "dev": "prisma generate && tsup --watch",
+    "build": "prisma generate && tsup",
     "generate": "prisma generate",
     "typecheck": "tsc --noEmit",
     "migrate": "prisma migrate dev",

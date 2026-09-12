@@ -26,8 +26,9 @@ import { uploadFiles } from "@/lib/api-client/upload-file"
 import {
   ComplianceFormSchema,
   complianceSchema,
-} from "@/features/shared/compliance.schema"
+} from "@/features/compliance/compliance.schema"
 import { UploadField } from "@/features/shared/components/upload-field"
+import { useRouter } from "next/navigation"
 
 type ComplianceFormProps = {
   requirements: Compliance[]
@@ -36,6 +37,8 @@ type ComplianceFormProps = {
 export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
   const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
+
+  const router = useRouter()
 
   const form = useForm<ComplianceFormSchema>({
     resolver: zodResolver(complianceSchema),
@@ -93,6 +96,7 @@ export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
 
       queryClient.invalidateQueries({ queryKey: ["account"] })
       toast.success("Documents submitted successfully.")
+      router.replace("/")
     } catch (error) {
       console.error(error)
 
@@ -127,7 +131,7 @@ export const ComplianceForm = ({ requirements }: ComplianceFormProps) => {
               <div className="text-right">
                 <Button
                   type="submit"
-                  className="justify-between"
+                  className="min-w-36 justify-between"
                   disabled={form.formState.isSubmitting}
                   suffix={<ArrowRight />}
                 >

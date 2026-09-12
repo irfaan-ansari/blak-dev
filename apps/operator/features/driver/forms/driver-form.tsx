@@ -11,7 +11,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@blak/ui/components/input-group"
-import { createDriver } from "../driver.action"
+import { createDriver, createDriverComplianceRecord } from "../driver.action"
 import { ComplianceRequirement } from "@blak/db"
 import { Input } from "@blak/ui/components/input"
 import { Button } from "@blak/ui/components/button"
@@ -27,7 +27,6 @@ import { uploadFiles } from "@/lib/api-client/upload-file"
 import { Mail, Smartphone } from "lucide-react"
 import { type DriverFormValues, driverSchema } from "../driver.schema"
 import { UploadField } from "@/features/shared/components/upload-field"
-import { createComplianceRecord } from "@/features/compliance/compliance.action"
 import { AppDrawerClose } from "@blak/ui/components/blak/app-drawer"
 
 export const DriverForm = ({
@@ -104,7 +103,7 @@ export const DriverForm = ({
         fileId: uploadedFiles[index].id,
       }))
 
-      await createComplianceRecord({ data: records })
+      await createDriverComplianceRecord({ data: records })
 
       queryClient.invalidateQueries({
         queryKey: ["drivers"],

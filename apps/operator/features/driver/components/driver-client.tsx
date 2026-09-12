@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@blak/ui/components/card"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
-import { CircleCheck, Mail, Smartphone, UserCircle } from "lucide-react"
+import { CircleCheck, Mail, Smartphone, User, UserCircle } from "lucide-react"
 import { CopyButton } from "@blak/ui/components/blak/copy-button"
 import { Badge } from "@blak/ui/components/badge"
 import Link from "next/link"
@@ -45,10 +45,10 @@ export const DriverClient = () => {
             <div className="flex items-start gap-3">
               <Avatar>
                 <AvatarFallback>
-                  <UserCircle className="size-4 text-muted-foreground" />
+                  <User className="size-4 text-muted-foreground" />
                 </AvatarFallback>
               </Avatar>
-              <div className="grid min-w-2xs">
+              <div className="space-y-1">
                 <CardTitle>{drv.name}</CardTitle>
                 <CopyButton
                   value={drv.phoneNumber ?? ""}
@@ -61,8 +61,8 @@ export const DriverClient = () => {
               </div>
             </div>
             <CardAction className="relative space-x-2">
-              <Badge className="h-7 px-2" variant="outline">
-                <CircleCheck className="text-green-500" /> Active
+              <Badge className="h-7 px-2" variant="success-light">
+                <CircleCheck /> Active
               </Badge>
             </CardAction>
           </CardHeader>

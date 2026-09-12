@@ -62,7 +62,7 @@ export const OnboardingStatus = () => {
     )
   }
 
-  if (status === "ONBOARDING") {
+  if (status === "INVITED" || status === "ACCOUNT_CREATED") {
     return (
       <div className="border-b bg-yellow-500/10 px-4 py-3 lg:px-6">
         <div className="flex items-center justify-between gap-6">
@@ -74,7 +74,7 @@ export const OnboardingStatus = () => {
             </p>
           </div>
 
-          <Button asChild>
+          <Button asChild variant="invert">
             <Link href="/settings/compliance">Complete onboarding</Link>
           </Button>
         </div>

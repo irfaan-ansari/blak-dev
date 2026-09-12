@@ -14,14 +14,12 @@ export const complianceSchema = z.object({
 
 export type ComplianceFormSchema = z.infer<typeof complianceSchema>
 
+const complianceActionSchema = z.object({
+  requirementId: z.string().min(1),
+  fileId: z.string().min(1),
+  expiresAt: z.coerce.date().optional(),
+})
+
 export const createComplianceRecordSchema = z.object({
-  data: z
-    .array(
-      z.object({
-        requirementId: z.string().min(1),
-        fileId: z.string().min(1),
-        expiresAt: z.coerce.date().optional(),
-      })
-    )
-    .min(1),
+  data: complianceActionSchema.array(),
 })

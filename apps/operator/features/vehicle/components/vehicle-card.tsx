@@ -8,7 +8,7 @@ import {
 } from "@blak/ui/components/card"
 import { Car, SquarePen } from "lucide-react"
 import { VehicleWithImages } from "../vehicle.type"
-import { Avatar, AvatarFallback, AvatarImage } from "@blak/ui/components/avatar"
+
 import { StatusBadge } from "@/features/shared/components/status-badge"
 import { STATUS_MAP } from "../vehicle.const"
 
@@ -22,12 +22,6 @@ const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
       <Link href={`/vehicles/${data.id}`} className="absolute inset-0" />
       <CardHeader className="gap-x-10">
         <div className="flex h-full items-start gap-3">
-          <Avatar size="lg">
-            <AvatarImage src={data?.images?.[0]?.url ?? ""} />
-            <AvatarFallback>
-              <Car className="size-4 text-muted-foreground" />
-            </AvatarFallback>
-          </Avatar>
           <div className="grid min-w-2xs gap-0.5">
             <CardTitle>
               {data.make}

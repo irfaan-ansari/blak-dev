@@ -6,6 +6,7 @@ import { AppError } from "@blak/utils"
 
 import { withPermission } from "@/lib/safe-action"
 import { driverCreateSchema } from "./driver.schema"
+import { createComplianceRecordSchema } from "../compliance/compliance.schema"
 
 export const createDriver = withPermission({ app: ["operator"] })
   .inputSchema(driverCreateSchema)
@@ -61,4 +62,21 @@ export const createDriver = withPermission({ app: ["operator"] })
       success: true,
       id: user.id,
     }
+  })
+
+export const createDriverComplianceRecord = withPermission({
+  app: ["operator"],
+})
+  .inputSchema(createComplianceRecordSchema)
+  .action(async ({ ctx, clientInput }) => {
+    const { data } = clientInput
+
+    await prisma.complianceRecord.createMany({
+      data: data.map((document, index) => ({
+        requirementId: document.requirementId,
+        fileId: document.fileId,
+      })),
+    })
+
+    return { success: true }
   })

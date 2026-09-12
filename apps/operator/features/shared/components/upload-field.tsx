@@ -9,11 +9,11 @@ import {
 } from "@blak/ui/components/field"
 import { Input } from "@blak/ui/components/input"
 import { CloudUpload, Paperclip } from "lucide-react"
-import { ComplianceFormSchema } from "../compliance.schema"
+import { ComplianceFormSchema } from "../../compliance/compliance.schema"
 import { Controller, useFormContext } from "react-hook-form"
 
 type UploadFieldProps = {
-  name: `documents.${number}.file`
+  name: string
   label: string
   className?: string
 }
@@ -24,6 +24,7 @@ export function UploadField({ name, label, className }: UploadFieldProps) {
   return (
     <Controller
       control={form.control}
+      // @ts-expect-error
       name={name}
       render={({ field, fieldState }) => {
         const file = field.value

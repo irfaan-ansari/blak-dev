@@ -42,40 +42,8 @@ const drivers = new Hono<OrgContext>()
 
     const pageCount = Math.ceil(total / take)
 
-    const docs = await prisma.file.findMany({
-      where: {
-        ref: "DRIVER",
-        refId: {
-          in: results.map((user) => user.id),
-        },
-      },
-    })
-
-    const docsWithUrl = await Promise.all(
-      docs.map(async ({ storageKey, ...file }) => ({
-        ...file,
-        size: Number(file.size),
-        url: await getR2Url(storageKey),
-      }))
-    )
-
-    const docsByDriver = docsWithUrl.reduce<
-      Record<string, (typeof docsWithUrl)[number][]>
-    >((acc, file) => {
-      if (!file.refId) return acc
-
-      ;(acc[file.refId] ??= []).push(file)
-
-      return acc
-    }, {})
-
-    const records = results.map((user) => ({
-      ...user,
-      documents: docsByDriver[user.id] ?? [],
-    }))
-
     return c.json({
-      data: records,
+      data: results,
       pagination: {
         page,
         pageSize: take,

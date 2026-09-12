@@ -2,7 +2,7 @@
 
 import { prisma } from "@blak/db"
 import { withPermission } from "@/lib/safe-action"
-import { createComplianceRecordSchema } from "../shared/compliance.schema"
+import { createComplianceRecordSchema } from "./compliance.schema"
 import { sendEmail } from "@blak/email"
 import DocumentSubmitted from "@blak/email/templates/document-submitted"
 import { AppError } from "@blak/utils"

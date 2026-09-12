@@ -16,7 +16,7 @@ export const useCompliance = (entity: string) => {
           },
         }
       )
-      console.log(response)
+
       return response
     },
     staleTime: 1000 * 60 * 60,

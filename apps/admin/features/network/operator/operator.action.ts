@@ -49,6 +49,7 @@ export const updateOperatorStatus = withPermission({ app: ["admin"] })
 const reminderSchema = z.object({
   id: z.string(),
 })
+
 export const sendReminder = withPermission({ app: ["admin"] })
   .inputSchema(reminderSchema)
   .action(async ({ parsedInput }) => {

@@ -47,7 +47,7 @@ const OperatorsPage = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => queryParams({ set: { status: "ONBOARDING" } })}
+            onClick={() => queryParams({ set: { status: "INVITED" } })}
           >
             Invited
           </Button>

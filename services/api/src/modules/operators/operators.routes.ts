@@ -1,9 +1,9 @@
 import { Hono } from "hono"
+import { API_URL } from "@/lib/utils"
+import { AppError } from "@blak/utils"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
 import { OrganizationStatus, Prisma, prisma } from "@blak/db"
-import { AppError } from "@blak/utils"
-import { getR2Url } from "@/lib/r2"
 
 const operators = new Hono<AppContext>()
   .get("/", async (c) => {
@@ -149,6 +149,14 @@ const operators = new Hono<AppContext>()
     }
     const { _count, ...operator } = result
 
+    let jsonMetadata = {}
+
+    try {
+      jsonMetadata = JSON.parse(operator.metadata ?? "{}")
+    } catch {
+      jsonMetadata = {}
+    }
+
     const docs = await prisma.file.findMany({
       where: {
         ref: "OPERATOR",
@@ -156,21 +164,20 @@ const operators = new Hono<AppContext>()
       },
     })
 
-    const documents = await Promise.all(
-      docs.map(async ({ storageKey, ...file }) => ({
-        ...file,
-        size: Number(file.size),
-        url: await getR2Url(storageKey),
-      }))
-    )
+    const filesWithUrl = docs.map((file) => ({
+      ...file,
+      size: Number(file.size),
+      url: API_URL + `/v1/uploads/${file.id}`,
+    }))
 
     return c.json({
       success: true,
       data: {
         ...result,
+        metadata: jsonMetadata,
         vehicleCount: _count.vehicles,
         driverCount: _count.members,
-        documents,
+        documents: filesWithUrl,
       },
     })
   })

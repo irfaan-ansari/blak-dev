@@ -95,9 +95,6 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
             toast.error(serverError.message)
           } else {
             toast.success("Onboarding reminder sent")
-            queryClient.invalidateQueries({
-              queryKey: ["operators"],
-            })
           }
         },
       },
@@ -124,9 +121,6 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
             toast.error(serverError.message)
           } else {
             toast.success("Reminder sent successfully")
-            queryClient.invalidateQueries({
-              queryKey: ["operators"],
-            })
           }
         },
       },
@@ -148,6 +142,7 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
     <DropDrawer
       open={isOpen}
       setOpen={setIsOpen}
+      className="md:w-60"
       trigger={
         <Button
           variant="invert"
@@ -169,7 +164,7 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
           size="lg"
           onClick={hanldeSendOnboadringReminder}
         >
-          <CircleCheck />
+          <Mail />
           Send Onboarding Reminder
         </Button>
       )}

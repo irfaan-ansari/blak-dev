@@ -1,8 +1,8 @@
 import { Hono } from "hono"
 import { EntityType, prisma } from "@blak/db"
 import { AppError } from "@blak/utils"
-import { putObject, r2, R2_BUCKET } from "@/lib/r2"
-import { PutObjectCommand } from "@aws-sdk/client-s3"
+import { getR2Url, putObject, r2, R2_BUCKET } from "@/lib/r2"
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import type { AppContext } from "../../middlewares/context"
 
@@ -108,6 +108,36 @@ const uploads = new Hono<AppContext>()
         key,
         uploadUrl,
         expiresIn: 600,
+      },
+    })
+  })
+  .get("/:id", async (c) => {
+    const id = c.req.param("id")
+
+    const file = await prisma.file.findFirst({
+      where: { id },
+    })
+
+    if (!file) throw new AppError("NOT_FOUND")
+
+    const object = await r2.send(
+      new GetObjectCommand({
+        Bucket: R2_BUCKET,
+        Key: file.storageKey,
+      })
+    )
+
+    if (!object.Body) {
+      throw new AppError("NOT_FOUND")
+    }
+
+    return new Response(object.Body.transformToWebStream(), {
+      headers: {
+        "Content-Type":
+          file.mime || object.ContentType || "application/octet-stream",
+        "Content-Length": file.size.toString(),
+        "Content-Disposition": `inline; filename="${file.name}"`,
+        "Cache-Control": "public, max-age=3600",
       },
     })
   })

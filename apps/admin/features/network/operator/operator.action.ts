@@ -99,14 +99,20 @@ export const sendOnboardingReminder = withPermission({ app: ["admin"] })
       where: {
         id,
       },
+      select: {
+        email: true,
+        name: true,
+        contactEmail: true,
+      },
     })
+
     if (!org) throw new AppError("NOT_FOUND", { message: "Account not found" })
 
     const url = new URL(REDIRECT_MAP.operator!)
 
     await sendEmail({
-      to: org.contactEmail,
-      subject: "",
+      to: [...new Set([org.contactEmail, org.email].filter(Boolean))],
+      subject: "Complete Your Fleet Setup on BLAK",
       template: OnboardingReminderEmail({
         name: org.name,
         url: url.origin,

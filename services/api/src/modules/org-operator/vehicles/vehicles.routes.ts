@@ -2,8 +2,8 @@ import { Hono } from "hono"
 import { prisma } from "@blak/db"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { getR2Url } from "@/lib/r2"
 import { AppError } from "@blak/utils/error"
+import { API_URL } from "@/lib/utils"
 
 const vehicles = new Hono<AppContext>()
   .get("/", async (c) => {
@@ -63,17 +63,21 @@ const vehicles = new Hono<AppContext>()
       },
     })
 
-    const filesWithUrl = await Promise.all(
-      files.map(async ({ storageKey, ...file }) => ({
-        ...file,
-        size: Number(file.size),
-        url: await getR2Url(storageKey),
-      }))
+    const filesWithUrl = files.map((file) => ({
+      ...file,
+      size: Number(file.size),
+      url: API_URL + `/v1/uploads/${file.id}`,
+    }))
+
+    const documents = filesWithUrl.filter(
+      (file) => file.mime === "application/pdf"
     )
+
+    const images = filesWithUrl.filter((file) => file.mime.startsWith("image/"))
 
     return c.json({
       success: true,
-      data: { ...vehicle, images: filesWithUrl },
+      data: { ...vehicle, documents, images },
     })
   })
 

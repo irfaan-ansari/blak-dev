@@ -117,7 +117,7 @@ export const VehicleDetailClient = () => {
                     >
                       <div className="space-y-2">
                         <div className="relative overflow-hidden rounded-md">
-                          <Image
+                          <img
                             src={image.url ?? ""}
                             alt="vehicle image"
                             width={600}

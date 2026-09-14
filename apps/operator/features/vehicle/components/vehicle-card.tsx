@@ -1,4 +1,5 @@
 import React from "react"
+import Link from "next/link"
 import {
   Card,
   CardAction,
@@ -6,17 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@blak/ui/components/card"
-import { Car, SquarePen } from "lucide-react"
-import { VehicleWithImages } from "../vehicle.type"
-
-import { StatusBadge } from "@/features/shared/components/status-badge"
+import { SquarePen } from "lucide-react"
 import { STATUS_MAP } from "../vehicle.const"
-
+import { Vehicle } from "../vehicle.type"
 import { Button } from "@blak/ui/components/button"
-import { VehicleDialog } from "./vehicle-dialog"
-import Link from "next/link"
+import { StatusBadge } from "@/features/shared/components/status-badge"
 
-const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
+const VehicleCard = ({ data }: { data: Vehicle }) => {
   return (
     <Card className="relative" size="sm">
       <Link href={`/vehicles/${data.id}`} className="absolute inset-0" />
@@ -46,11 +43,12 @@ const VehicleCard = ({ data }: { data: VehicleWithImages }) => {
 
         <CardAction className="relative space-x-2">
           <StatusBadge statusMap={STATUS_MAP} status={data.status} />
-          <VehicleDialog>
-            <Button variant="invert" size="icon-sm">
+
+          <Button variant="invert" size="icon-sm" asChild>
+            <Link href={`/vehicles/${data.id}/edit`}>
               <SquarePen className="size-3.5" />
-            </Button>
-          </VehicleDialog>
+            </Link>
+          </Button>
         </CardAction>
       </CardHeader>
     </Card>

@@ -22,7 +22,7 @@ export const VehicleDialog = ({ children }: { children: React.ReactNode }) => {
             Add Vehicle
           </AppDrawerTitle>
         </AppDrawerHeader>
-        <VehicleForm onSuccess={() => setOpen(false)} />
+        <VehicleForm />
       </AppDrawerContent>
     </AppDrawer>
   )

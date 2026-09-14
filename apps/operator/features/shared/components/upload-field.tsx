@@ -16,9 +16,15 @@ type UploadFieldProps = {
   name: string
   label: string
   className?: string
+  accept?: string
 }
 
-export function UploadField({ name, label, className }: UploadFieldProps) {
+export function UploadField({
+  name,
+  label,
+  className,
+  accept = ".pdf,.jpg,.jpeg,.png",
+}: UploadFieldProps) {
   const form = useFormContext<ComplianceFormSchema>()
 
   return (
@@ -62,7 +68,8 @@ export function UploadField({ name, label, className }: UploadFieldProps) {
               <Input
                 id={field.name}
                 type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept={accept}
+
                 className="sr-only"
                 aria-invalid={fieldState.invalid}
                 onChange={(event) => {

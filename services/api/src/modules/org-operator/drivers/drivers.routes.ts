@@ -1,9 +1,9 @@
 import { Hono } from "hono"
+import { prisma } from "@blak/db"
+import { API_URL } from "@/lib/utils"
+import { AppError } from "@blak/utils/error"
 import type { OrgContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { prisma } from "@blak/db"
-import { getR2Url } from "@/lib/r2"
-import { AppError } from "@blak/utils/error"
 
 const drivers = new Hono<OrgContext>()
   .get("/", async (c) => {
@@ -79,17 +79,15 @@ const drivers = new Hono<OrgContext>()
       },
     })
 
-    const docsWithUrl = await Promise.all(
-      docs.map(async ({ storageKey, ...file }) => ({
-        ...file,
-        size: Number(file.size),
-        url: await getR2Url(storageKey),
-      }))
-    )
+    const filesWithUrl = docs.map((file) => ({
+      ...file,
+      size: Number(file.size),
+      url: API_URL + `/v1/uploads/${file.id}`,
+    }))
 
     return c.json({
       success: true,
-      data: { ...user, documents: docsWithUrl },
+      data: { ...user, documents: filesWithUrl },
     })
   })
 

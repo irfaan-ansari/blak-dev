@@ -17,7 +17,7 @@ import {
   CarouselPrevious,
 } from "@blak/ui/components/carousel"
 import { useParams } from "next/navigation"
-import { ArrowUpRight, Building2 } from "lucide-react"
+import { ArrowUpRight, Building2, FileTextIcon } from "lucide-react"
 import { PageSkeleton } from "@blak/ui/components/blak/empty-state"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
 import { useVehicle } from "@/features/operation/vehicle/vehicle.data"
@@ -128,7 +128,7 @@ export const VehicleDetailClient = () => {
                       >
                         <div className="space-y-2">
                           <div className="relative overflow-hidden rounded-md">
-                            <Image
+                            <img
                               src={image.url ?? ""}
                               alt="vehicle image"
                               width={600}
@@ -154,6 +154,34 @@ export const VehicleDetailClient = () => {
                 </Carousel>
               </CardContent>
             )}
+
+            <CardContent className="space-y-2">
+              {(vehicle?.documents?.length || 0) > 0 ? (
+                vehicle?.documents?.map((doc) => (
+                  <a
+                    href={doc.url!}
+                    key={doc.id}
+                    target="_blank"
+                    className="md group flex gap-4 rounded-md border bg-muted/50 p-4"
+                  >
+                    <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-md border bg-muted text-muted-foreground">
+                      <FileTextIcon className="size-4" />
+                    </span>
+                    <div className="grid flex-1">
+                      <span className="font-medium">{doc?.field}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {doc.name}
+                      </span>
+                    </div>
+                    <ArrowUpRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  </a>
+                ))
+              ) : (
+                <span className="text-muted-foreground">
+                  No documents found
+                </span>
+              )}
+            </CardContent>
           </Card>
         </div>
 

@@ -20,7 +20,7 @@ import {
 import React from "react"
 import type { Driver } from "../driver.type"
 import Link from "next/link"
-import DriverAction from "./driver-action"
+
 import { Button } from "@blak/ui/components/button"
 
 export const DriverCard = ({ data }: { data: Driver }) => {
@@ -32,7 +32,7 @@ export const DriverCard = ({ data }: { data: Driver }) => {
       />
       <CardHeader className="border-b">
         <div className="flex items-start gap-3">
-          <Avatar>
+          <Avatar className="rounded-md *:rounded-md" size="lg">
             <AvatarFallback>
               <UserCircle className="size-4 text-muted-foreground" />
             </AvatarFallback>

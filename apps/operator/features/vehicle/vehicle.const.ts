@@ -42,9 +42,9 @@ export const STATUS_MAP: Record<VehicleStatus, StatusConfig> = {
 }
 
 export const REQUIRED_IMAGES = [
-  { label: "Front" },
+  { label: "Front View" },
   { label: "Drivers Side Exterior" },
-  { label: "Rear" },
+  { label: "Rear View" },
   { label: "Passenger Side Exterior" },
   { label: "Driver Side Interior Front" },
   { label: "Driver Side Interior Rear" },

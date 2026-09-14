@@ -407,6 +407,9 @@ importers:
 
   packages/email:
     dependencies:
+      '@blak/utils':
+        specifier: workspace:*
+        version: link:../utils
       react:
         specifier: 19.2.4
         version: 19.2.4

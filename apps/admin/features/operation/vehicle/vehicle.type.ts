@@ -5,4 +5,5 @@ export type Vehicle = DBVehicle & {
 }
 export type VehicleWithImages = Vehicle & {
   images: File[]
+  documents: File[]
 }

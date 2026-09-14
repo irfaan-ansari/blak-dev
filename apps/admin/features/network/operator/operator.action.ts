@@ -2,11 +2,12 @@
 
 import z from "zod"
 import { auth } from "@blak/auth"
-import { AppError } from "@blak/utils"
 import { sendEmail } from "@blak/email"
 import { withPermission } from "@/lib/safe-action"
+import { AppError, REDIRECT_MAP } from "@blak/utils"
 import { OrganizationStatus, prisma } from "@blak/db"
-import AccountApprovedEmail from "@blak/email/templates/account-approved"
+import { AccountApprovedEmail } from "@blak/email/templates/account-approved"
+import { OnboardingReminderEmail } from "@blak/email/templates/onboarding-reminder"
 
 const schema = z.object({
   id: z.string(),
@@ -66,7 +67,7 @@ export const sendReminder = withPermission({ app: ["admin"] })
       where: {
         organizationId: id,
         user: {
-          email: org.contactEmail,
+          email: { in: [org.contactEmail, org.email] },
         },
       },
       include: {
@@ -84,6 +85,38 @@ export const sendReminder = withPermission({ app: ["admin"] })
         email: org.contactEmail,
         redirectTo: `${url.origin}/auth/create-password`,
       },
+    })
+
+    return { success: true }
+  })
+
+export const sendOnboardingReminder = withPermission({ app: ["admin"] })
+  .inputSchema(reminderSchema)
+  .action(async ({ parsedInput }) => {
+    const { id } = parsedInput
+
+    const org = await prisma.organization.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        email: true,
+        name: true,
+        contactEmail: true,
+      },
+    })
+
+    if (!org) throw new AppError("NOT_FOUND", { message: "Account not found" })
+
+    const url = new URL(REDIRECT_MAP.operator!)
+
+    await sendEmail({
+      to: [...new Set([org.contactEmail, org.email].filter(Boolean))],
+      subject: "Complete Your Fleet Setup on BLAK",
+      template: OnboardingReminderEmail({
+        name: org.name,
+        url: url.origin,
+      }),
     })
 
     return { success: true }

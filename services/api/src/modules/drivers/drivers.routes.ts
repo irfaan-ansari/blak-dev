@@ -4,6 +4,7 @@ import { parsePagination } from "@/lib/parse-pagination"
 import { Prisma, prisma } from "@blak/db"
 import { AppError } from "@blak/utils"
 import { getR2Url } from "@/lib/r2"
+import { API_URL } from "@/lib/utils"
 
 const drivers = new Hono<OrgContext>()
   .get("/", async (c) => {
@@ -111,17 +112,15 @@ const drivers = new Hono<OrgContext>()
       },
     })
 
-    const docsWithUrl = await Promise.all(
-      docs.map(async ({ storageKey, ...file }) => ({
-        ...file,
-        size: Number(file.size),
-        url: await getR2Url(storageKey),
-      }))
-    )
+    const filesWithUrl = docs.map((file) => ({
+      ...file,
+      size: Number(file.size),
+      url: API_URL + `/v1/uploads/${file.id}`,
+    }))
 
     return c.json({
       success: true,
-      data: { ...data, documents: docsWithUrl },
+      data: { ...data, documents: filesWithUrl },
     })
   })
 

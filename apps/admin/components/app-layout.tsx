@@ -7,6 +7,7 @@ import { Bell } from "lucide-react"
 import { NavUser } from "./nav-user"
 import { Button } from "@blak/ui/components/button"
 import { SearchQueryParam } from "@blak/ui/components/blak/search-input"
+import { SidebarTrigger } from "@blak/ui/components/sidebar"
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -23,11 +24,12 @@ const AppHeader = () => {
   return (
     <header className="@container border-b bg-card px-4 lg:px-6">
       <div className="flex h-18 w-full items-center gap-4">
-        <Link className="inline-flex items-center" href="/">
+        <SidebarTrigger className="md:hidden" />
+        <Link className="inline-flex shrink-0 items-center" href="/">
           <Image src="/logo/logo-blak.png" width={120} height={40} alt="Blak" />
         </Link>
         <span className="flex-1"></span>
-        <SearchQueryParam className="rounded-full bg-muted" />
+        <SearchQueryParam className="hidden max-w-3xs rounded-full bg-muted md:flex lg:max-w-xs" />
         <Button
           variant="secondary"
           size="icon"

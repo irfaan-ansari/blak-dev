@@ -1,7 +1,14 @@
 import { prisma } from "./dist/index.js"
 
 async function main() {
-  console.log("success..")
+  const { count } = await prisma.complianceRequirement.deleteMany({
+    where: {
+      entityType: "VEHICLE",
+      name: { in: ["operating_permit"] },
+    },
+  })
+
+  console.log(`Deleted ${count} requirements`)
 }
 
 main()

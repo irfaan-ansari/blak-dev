@@ -10,46 +10,39 @@ export const OnboardingReminderEmail = ({
   name,
   url,
 }: OnboardingReminderEmailProps) => (
-  <Template title="Complete your operator setup">
+  <Template title="Get your fleet ready for BLAK trips">
     <Text className="font-14 text-card-fg mx-auto mt-0 mb-6 max-w-95 text-center font-sans">
-      Hello {name},
+      Hi {name},
     </Text>
 
-    <Text className="font-14 text-card-fg mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
-      Your BLAK company profile has been created. The next step is to add the
-      vehicles and chauffeurs you want to make available through the BLAK
-      network.
+    <Text className="font-14 text-card-fg mx-auto mt-0 mb-6 max-w-95 text-center font-sans">
+      Your BLAK company profile is ready, and we are excited to have you on
+      board. Add your vehicles and drivers to take the next step toward
+      receiving trip requests through BLAK.
     </Text>
 
-    <Section className="mb-8 text-center">
-      <Text className="font-14 text-fg m-0 mb-2 font-sans font-medium">
-        Add your vehicles
-      </Text>
-      <Text className="font-14 text-fg m-0 mb-2 font-sans font-medium">
-        Add your chauffeurs
-      </Text>
-      <Text className="font-14 text-fg m-0 font-sans font-medium">
-        Upload the required documents
-      </Text>
-    </Section>
-
-    <Text className="font-14 text-card-fg mx-auto mt-0 mb-6 max-w-95 text-center font-sans">
-      You do not need to add your entire fleet. Only add the vehicles and
-      chauffeurs you intend to make available for BLAK trips.
+    <Text className="font-14 text-fg mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
+      Add all the vehicles and drivers you intend to make available for BLAK
+      trips — the more you add, the more trips you can take on.
     </Text>
 
     <Text className="font-14 text-card-fg mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
       For larger fleets, you can use the Bulk Upload option inside the portal.
     </Text>
-
     <Section className="mb-6 text-center">
       <Button
         href={url}
         className="bg-brand font-16 text-inverted-fg inline-block rounded-lg px-6 py-3 text-center font-sans leading-6"
       >
-        Continue onboarding
+        Continue to Portal
       </Button>
     </Section>
+
+    <Text className="font-14 text-card-fg mx-auto mt-0 mb-2 max-w-95 text-center font-sans">
+      We look forward to working with you.
+      <br />
+      The BLAK Team
+    </Text>
   </Template>
 )
 

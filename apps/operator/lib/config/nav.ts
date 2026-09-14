@@ -21,7 +21,7 @@ export const SIDEBAR_NAV = {
     label: "Rides",
     href: "/rides",
     icon: Waypoints,
-    disabled: true,
+    disabled: false,
     items: [],
   },
   vehicles: {

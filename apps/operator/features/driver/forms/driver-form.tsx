@@ -128,9 +128,16 @@ export const DriverForm = ({
             name="name"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field className="sm:col-span-2">
+              <Field
+                className="sm:col-span-2"
+                data-invalid={fieldState.invalid}
+              >
                 <FieldLabel>Name</FieldLabel>
-                <Input placeholder="John Doe" {...field} />
+                <Input
+                  aria-invalid={fieldState.invalid}
+                  placeholder="John Doe"
+                  {...field}
+                />
                 {fieldState.error && (
                   <FieldError>{fieldState.error.message}</FieldError>
                 )}
@@ -141,13 +148,17 @@ export const DriverForm = ({
             name="phoneNumber"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field>
+              <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Phone Number</FieldLabel>
                 <InputGroup>
                   <InputGroupAddon>
                     <Smartphone />
                   </InputGroupAddon>
-                  <InputGroupInput placeholder="(555) 123-4567" {...field} />
+                  <InputGroupInput
+                    aria-invalid={fieldState.invalid}
+                    placeholder="(555) 123-4567"
+                    {...field}
+                  />
                 </InputGroup>
                 {fieldState.error && (
                   <FieldError>{fieldState.error.message}</FieldError>
@@ -159,13 +170,17 @@ export const DriverForm = ({
             name="email"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field>
+              <Field defaultValue-invalid={fieldState.invalid}>
                 <FieldLabel>Email</FieldLabel>
                 <InputGroup>
                   <InputGroupAddon>
                     <Mail />
                   </InputGroupAddon>
-                  <InputGroupInput placeholder="name@email.com" {...field} />
+                  <InputGroupInput
+                    aria-invalid={fieldState.invalid}
+                    placeholder="name@email.com"
+                    {...field}
+                  />
                 </InputGroup>
                 {fieldState.error && (
                   <FieldError>{fieldState.error.message}</FieldError>

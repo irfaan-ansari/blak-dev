@@ -2,12 +2,15 @@ import React from "react"
 import { toast } from "sonner"
 import { Button } from "@blak/ui/components/button"
 import { useQueryClient } from "@tanstack/react-query"
-import { Tooltip } from "@blak/ui/components/blak/tooltip"
 import { Operator, OperatorStatus } from "../operator.type"
 import { CircleCheck, CircleX, Mail, Pencil } from "lucide-react"
 import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
-import { sendReminder, updateOperatorStatus } from "../operator.action"
+import {
+  sendOnboardingReminder,
+  sendReminder,
+  updateOperatorStatus,
+} from "../operator.action"
 
 export const OperatorAction = ({ data }: { data: Operator }) => {
   const { open } = useAppDialog()
@@ -75,6 +78,35 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
     }
   }
 
+  const hanldeSendOnboadringReminder = () => {
+    open({
+      variant: "success",
+      title: "Send Onboarding Reminder",
+      description:
+        "Send the operator a reminder to add their vehicles, drivers, and required documents.",
+      action: {
+        label: "Send Reminder",
+        onClick: async () => {
+          const { serverError } = await sendOnboardingReminder({
+            id: data.id,
+          })
+
+          if (serverError) {
+            toast.error(serverError.message)
+          } else {
+            toast.success("Onboarding reminder sent")
+            queryClient.invalidateQueries({
+              queryKey: ["operators"],
+            })
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+      },
+    })
+  }
+
   const handleReminder = () => {
     open({
       variant: "success",
@@ -119,14 +151,28 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
       trigger={
         <Button
           variant="invert"
-
-          disabled={data.status !== "PENDING_APPROVAL"}
+          disabled={
+            data.status !== "ACCOUNT_CREATED" &&
+            data.status !== "PENDING_APPROVAL"
+          }
           size="sm"
         >
           <Pencil className="size-3.5" /> Action
         </Button>
       }
     >
+      {(data.status === "ACCOUNT_CREATED" ||
+        data.status === "PENDING_APPROVAL") && (
+        <Button
+          variant="ghost"
+          className="justify-start shadow-none"
+          size="lg"
+          onClick={hanldeSendOnboadringReminder}
+        >
+          <CircleCheck />
+          Send Onboarding Reminder
+        </Button>
+      )}
       {data.status === "PENDING_APPROVAL" && (
         <>
           <Button

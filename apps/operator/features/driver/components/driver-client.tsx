@@ -13,10 +13,18 @@ import {
   CardTitle,
 } from "@blak/ui/components/card"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
-import { CircleCheck, Mail, Smartphone, User, UserCircle } from "lucide-react"
+import {
+  ArrowRight,
+  CircleCheck,
+  Mail,
+  Smartphone,
+  User,
+  UserCircle,
+} from "lucide-react"
 import { CopyButton } from "@blak/ui/components/blak/copy-button"
 import { Badge } from "@blak/ui/components/badge"
 import Link from "next/link"
+import { Button } from "@blak/ui/components/button"
 
 export const DriverClient = () => {
   const { data, isPending, isError, error } = useDrivers()
@@ -39,31 +47,38 @@ export const DriverClient = () => {
   return (
     <div className="space-y-2">
       {data.data?.map((drv) => (
-        <Card key={drv.id} size="sm" className="relative">
-          <Link href={`/drivers/${drv.id}`} className="absolute inset-0" />
+        <Card size="sm" className="relative">
+          <Link href={`/drivers/${drv?.id}`} className="absolute inset-0" />
           <CardHeader>
             <div className="flex items-start gap-3">
-              <Avatar>
+              <Avatar className="rounded-md *:rounded-md" size="lg">
                 <AvatarFallback>
-                  <User className="size-4 text-muted-foreground" />
+                  <UserCircle className="size-4 text-muted-foreground" />
                 </AvatarFallback>
               </Avatar>
-              <div className="space-y-1">
+              <div className="grid gap-0.5">
                 <CardTitle>{drv.name}</CardTitle>
-                <CopyButton
-                  value={drv.phoneNumber ?? ""}
-                  prefix={<Smartphone className="size-3" />}
-                />
-                <CopyButton
-                  value={drv.email}
-                  prefix={<Mail className="size-3" />}
-                />
+
+                <div className="flex">
+                  <CopyButton
+                    value={drv.phoneNumber ?? ""}
+                    prefix={<Smartphone className="size-3" />}
+                  />
+                  <CopyButton
+                    value={drv.email}
+                    prefix={<Mail className="size-3" />}
+                  />
+                </div>
               </div>
             </div>
-            <CardAction className="relative space-x-2">
+
+            <CardAction className="space-x-1">
               <Badge className="h-7 px-2" variant="success-light">
                 <CircleCheck /> Active
               </Badge>
+              <Button size="sm" variant="invert" className="ml-auto">
+                View details <ArrowRight className="size-3.5" />
+              </Button>
             </CardAction>
           </CardHeader>
         </Card>

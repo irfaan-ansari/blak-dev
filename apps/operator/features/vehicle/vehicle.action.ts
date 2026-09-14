@@ -3,7 +3,7 @@
 import z from "zod"
 import { AppError } from "@blak/utils"
 import { withPermission } from "@/lib/safe-action"
-import { vehicleCreateSchema } from "./vehicle.schema"
+import { vehicleCreateSchema, vehicleImportSchema } from "./vehicle.schema"
 import { prisma, VehicleCategory, VehicleStatus } from "@blak/db"
 
 // create
@@ -35,7 +35,7 @@ export const createVehicle = withPermission({ app: ["operator"] })
     } catch (error) {
       throw new AppError("INVALID_REQUEST", {
         message:
-          "Unable to create vehicle. Please check the provided information.",
+          "Unable to create vehicle. Check the license plate, VIN, or registration number.",
       })
     }
   })
@@ -74,7 +74,48 @@ export const updateVehicle = withPermission({ app: ["operator"] })
     } catch (error) {
       throw new AppError("INVALID_REQUEST", {
         message:
-          "Unable to create vehicle. Please check the provided information.",
+          "Unable to update vehicle. Check the license plate, VIN, or registration number.",
+      })
+    }
+  })
+
+export const importVehicles = withPermission({ app: ["operator"] })
+  .inputSchema(vehicleImportSchema)
+  .action(async ({ ctx, clientInput }) => {
+    const { data } = clientInput
+    const organizationId = ctx.session.activeOrganizationId!
+    try {
+      const result = await prisma.vehicle.createMany({
+        data: data.map((vehicle) => ({
+          organizationId,
+          year: Number(vehicle.year),
+          make: vehicle.make.trim(),
+          model: vehicle.model.trim(),
+          trim: vehicle.trim.trim(),
+          interiorColor: vehicle.interiorColor.trim(),
+          exteriorColor: vehicle.exteriorColor.trim(),
+          engine: vehicle.engine.trim(),
+          licensePlate: vehicle.licensePlate.trim(),
+          registrationNumber: vehicle.registrationNumber?.trim() || null,
+          vin: vehicle.vin?.trim() || null,
+          registrationExpiry: vehicle.registrationExpiry
+            ? new Date(`${vehicle.registrationExpiry}T00:00:00.000Z`)
+            : null,
+          category: VehicleCategory.LUXURY_SEDAN,
+          status: VehicleStatus.PENDING_APPROVAL,
+        })),
+      })
+
+      return {
+        success: true,
+        count: result.count,
+      }
+    } catch (error) {
+      console.error(error)
+
+      throw new AppError("INVALID_REQUEST", {
+        message:
+          "Unable to import vehicles. Please check the CSV data and try again.",
       })
     }
   })

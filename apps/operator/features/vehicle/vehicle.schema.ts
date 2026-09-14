@@ -67,3 +67,21 @@ export const DEFAULT_VALUES = {
     file: undefined,
   })),
 }
+
+export const vehicleImportSchema = z.object({
+  data: z.array(
+    z.object({
+      year: z.coerce.number(),
+      make: z.string(),
+      model: z.string(),
+      trim: z.string(),
+      interiorColor: z.string(),
+      exteriorColor: z.string(),
+      engine: z.string(),
+      licensePlate: z.string(),
+      registrationNumber: z.string().optional(),
+      vin: z.string().optional(),
+      registrationExpiry: z.string().optional(),
+    })
+  ),
+})

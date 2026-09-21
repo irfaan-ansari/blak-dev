@@ -15,7 +15,7 @@ export const PartnerClient = () => {
     <QueryBoundary query={query} isEmpty={query.data?.data.length === 0}>
       {(data) => (
         <>
-          <div className="space-y-2">
+          <div className="h-full space-y-2">
             {data.data.map((app) => (
               <PartnerCard data={app} key={app.id} />
             ))}

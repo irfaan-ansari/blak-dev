@@ -13,8 +13,8 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <React.Fragment>
       <AppHeader />
-      <div className="h-full px-4 py-6 lg:px-6">
-        <div className="@container mx-auto max-w-7xl">{children}</div>
+      <div className="@container/page-content mx-auto h-full w-full max-w-7xl space-y-6 px-4 py-6 lg:px-6">
+        {children}
       </div>
     </React.Fragment>
   )
@@ -22,7 +22,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
 const AppHeader = () => {
   return (
-    <header className="@container border-b bg-card px-4 lg:px-6">
+    <header className="border-b bg-card px-4 lg:px-6">
       <div className="flex h-18 w-full items-center gap-4">
         <SidebarTrigger className="md:hidden" />
         <Link className="inline-flex shrink-0 items-center" href="/">

@@ -1,43 +1,45 @@
 import React from "react"
 import { toast } from "sonner"
-import { Operator } from "../operator.type"
-import { EllipsisVertical } from "lucide-react"
 import { Button } from "@blak/ui/components/button"
+import { useQueryClient } from "@tanstack/react-query"
+import { Operator, OperatorStatus } from "../operator.type"
+import { CircleCheck, CircleX, Mail, Pencil } from "lucide-react"
 import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
-import { useQueryClient } from "@tanstack/react-query"
-import { AVAILABLE_ACTIONS } from "../operator.const"
+import {
+  sendOnboardingReminder,
+  sendReminder,
+  updateOperatorStatus,
+} from "../operator.action"
 
 export const OperatorAction = ({ data }: { data: Operator }) => {
   const { open } = useAppDialog()
-  const [isOpen, setIsOpen] = React.useState(false)
   const queryClient = useQueryClient()
+  const [isOpen, setIsOpen] = React.useState(false)
 
-  const actions = AVAILABLE_ACTIONS[data.status] ?? []
-
-  const handleAction = (action: string) => {
+  const handleAction = (action: OperatorStatus) => {
     switch (action) {
-      case "approve":
+      case "ACTIVE":
         open({
           variant: "success",
-          title: "Approve application",
+          title: "Approve Documents",
           description:
-            "Approving this application will send an invitation email to the operator.",
+            "Confirm that the submitted documents have been reviewed and approved. The operator account will be activated.",
           action: {
-            label: "Yes, approve",
+            label: "Approve Documents",
             onClick: async () => {
-              //   const { serverError } = await processOperatorApplication({
-              //     id: data.id,
-              //     action,
-              //   })
-              //   if (serverError) {
-              //     toast.error(serverError.message)
-              //   } else {
-              //     toast.success("Approved and invitation sent.")
-              //     queryClient.invalidateQueries({
-              //       queryKey: ["operator-applications"],
-              //     })
-              //   }
+              const { serverError } = await updateOperatorStatus({
+                id: data.id,
+                data: { status: action },
+              })
+              if (serverError) {
+                toast.error(serverError.message)
+              } else {
+                toast.success("Documents approved successfully")
+                queryClient.invalidateQueries({
+                  queryKey: ["operators"],
+                })
+              }
             },
           },
           cancel: {
@@ -45,42 +47,28 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
           },
         })
         return
-      case "reject":
+      case "SUSPENDED":
         open({
           variant: "warning",
-          title: "Reject application",
+          title: "Reject Documents",
           description:
-            "Rejecting this application will send a notification email to the operator.",
+            "Reject the submitted documents. The operator will need to address the issues and resubmit them for review.",
           action: {
-            label: "Yes, reject",
+            label: "Reject Documents",
             onClick: async () => {
-              //   const { serverError } = await processOperatorApplication({
-              //     id: data.id,
-              //     action,
-              //   })
-              //   if (serverError) {
-              //     toast.error(serverError.message)
-              //   } else {
-              //     toast.success("Approved and invitation sent.")
-              //     queryClient.invalidateQueries({
-              //       queryKey: ["operator-applications"],
-              //     })
-              //   }
+              const { serverError } = await updateOperatorStatus({
+                id: data.id,
+                data: { status: action },
+              })
+              if (serverError) {
+                toast.error(serverError.message)
+              } else {
+                toast.success("Rejected successfully")
+                queryClient.invalidateQueries({
+                  queryKey: ["operators"],
+                })
+              }
             },
-          },
-          cancel: {
-            label: "Cancel",
-          },
-        })
-        return
-      case "request_information":
-        open({
-          variant: "info",
-          title: "Request information",
-          description:
-            "Rejecting this application will send a notification email to the operator.",
-          action: {
-            label: "Yes, reject",
           },
           cancel: {
             label: "Cancel",
@@ -90,28 +78,118 @@ export const OperatorAction = ({ data }: { data: Operator }) => {
     }
   }
 
+  const hanldeSendOnboadringReminder = () => {
+    open({
+      variant: "success",
+      title: "Send Onboarding Reminder",
+      description:
+        "Send the operator a reminder to add their vehicles, drivers, and required documents.",
+      action: {
+        label: "Send Reminder",
+        onClick: async () => {
+          const { serverError } = await sendOnboardingReminder({
+            id: data.id,
+          })
+
+          if (serverError) {
+            toast.error(serverError.message)
+          } else {
+            toast.success("Onboarding reminder sent")
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+      },
+    })
+  }
+
+  const handleReminder = () => {
+    open({
+      variant: "success",
+      title: "Send Account Reminder",
+      description:
+        "Send a reminder email to the operator with instructions to complete their account setup.",
+      action: {
+        label: "Send Reminder",
+        onClick: async () => {
+          const { serverError } = await sendReminder({
+            id: data.id,
+          })
+
+          if (serverError) {
+            toast.error(serverError.message)
+          } else {
+            toast.success("Reminder sent successfully")
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+      },
+    })
+  }
+
+  if (data.status === "INVITED") {
+    return (
+      <Button variant="invert" size="sm" onClick={handleReminder}>
+        <Mail /> Send Reminder
+      </Button>
+    )
+  }
+
   return (
     <DropDrawer
       open={isOpen}
       setOpen={setIsOpen}
+      className="md:w-60"
       trigger={
-        <Button variant="outline" size="icon" disabled={!actions.length}>
-          <EllipsisVertical />
+        <Button
+          variant="invert"
+          disabled={
+            data.status !== "ACCOUNT_CREATED" &&
+            data.status !== "PENDING_APPROVAL"
+          }
+          size="sm"
+        >
+          <Pencil className="size-3.5" /> Action
         </Button>
       }
     >
-      {actions.map((ac) => (
+      {(data.status === "ACCOUNT_CREATED" ||
+        data.status === "PENDING_APPROVAL") && (
         <Button
-          onClick={() => handleAction(ac.action)}
-          variant={ac.variant}
+          variant="ghost"
           className="justify-start shadow-none"
-          size="sm"
-          key={ac.action}
+          size="lg"
+          onClick={hanldeSendOnboadringReminder}
         >
-          {ac.icon && <ac.icon />}
-          {ac.label}
+          <Mail />
+          Send Onboarding Reminder
         </Button>
-      ))}
+      )}
+      {data.status === "PENDING_APPROVAL" && (
+        <>
+          <Button
+            variant="ghost"
+            className="justify-start shadow-none"
+            size="lg"
+            onClick={() => handleAction("ACTIVE")}
+          >
+            <CircleCheck />
+            Approve Documents
+          </Button>
+          <Button
+            variant="destructive"
+            className="justify-start shadow-none"
+            size="lg"
+            onClick={() => handleAction("SUSPENDED")}
+          >
+            <CircleX />
+            Reject Documents
+          </Button>
+        </>
+      )}
     </DropDrawer>
   )
 }

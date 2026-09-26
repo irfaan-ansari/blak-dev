@@ -1,5 +1,4 @@
 import { NextIntlClientProvider } from "next-intl"
-import { PageTransition } from "@/components/page-transition"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 

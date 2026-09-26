@@ -30,27 +30,34 @@ import {
 import { SIDEBAR_NAV } from "@/lib/config/nav"
 import Link from "next/link"
 import { Avatar, AvatarFallback } from "@blak/ui/components/avatar"
+import { useAccount } from "@/features/account/account.data"
+import { Skeleton } from "@blak/ui/components/skeleton"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data, isPending } = useAccount()
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu className="group-data-[collapsible=icon]:items-center">
           <SidebarMenuItem>
-            <SidebarMenuButton className="h-auto items-start py-2 group-data-[collapsible=icon]:p-0!">
-              <Avatar className="after:border-muted/10">
-                <AvatarFallback className="bg-muted/10">
-                  <Building2 className="size-4" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid min-w-0 flex-1">
-                <span className="font-medium">Lorem Fleet</span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  United Sates
-                </span>
-              </div>
-              <ChevronsUpDown className="self-center" />
-            </SidebarMenuButton>
+            {isPending ? (
+              <Skeleton className="h-12" />
+            ) : (
+              <SidebarMenuButton className="h-auto items-center py-2 group-data-[collapsible=icon]:p-0!">
+                <Avatar className="after:border-muted/10">
+                  <AvatarFallback className="bg-muted/10">
+                    <Building2 className="size-4" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid min-w-0 flex-1">
+                  <span className="font-medium">{data?.data?.name}</span>
+                  {/* <span className="text-xs font-medium text-muted-foreground">
+                    {data?.data?.status}
+                  </span> */}
+                </div>
+                <ChevronsUpDown className="self-center" />
+              </SidebarMenuButton>
+            )}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -58,12 +65,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarMenu className="group-data-[collapsible=icon]:items-center">
             {Object.entries(SIDEBAR_NAV).map(
-              ([key, { label, href, icon, items: subItems }]) => {
+              ([key, { label, href, icon, items: subItems, disabled }]) => {
                 const Icon = icon
                 if (!subItems.length)
                   return (
                     <SidebarMenuItem key={key}>
-                      <SidebarMenuButton asChild>
+                      <SidebarMenuButton
+                        asChild
+                        disabled={disabled}
+                        className={disabled ? "cursor-default opacity-60" : ""}
+                        onClick={(e) => {
+                          if (disabled) {
+                            e.preventDefault()
+                          }
+                        }}
+                      >
                         <Link href={href}>
                           <Icon />
                           {label}
@@ -75,7 +91,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Collapsible key={key} asChild className="group/collapsible">
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
-                        <SidebarMenuButton tooltip={label}>
+                        <SidebarMenuButton
+                          tooltip={label}
+
+                          disabled={disabled}
+                          className={disabled ? "opacity-60" : ""}
+                          onClick={(e) => {
+                            if (disabled) {
+                              e.preventDefault()
+                            }
+                          }}
+                        >
                           <Icon />
                           {label}
                           <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />

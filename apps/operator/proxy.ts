@@ -9,7 +9,7 @@ export default async function proxy(req: NextRequest) {
   }
 
   const { authenticated, authorized } = await checkAuth({ app: ["operator"] })
-  console.log(authenticated, authorized)
+
   if (!authorized || !authenticated) {
     return NextResponse.redirect(new URL(AUTH_URL, req.nextUrl))
   }

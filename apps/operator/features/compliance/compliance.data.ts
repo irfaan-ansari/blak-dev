@@ -1,0 +1,24 @@
+import { type AppError } from "@blak/utils"
+import { apiClient } from "@/lib/api-client"
+import { useQuery } from "@tanstack/react-query"
+import { PaginatedResponse } from "@/features/shared/shared.type"
+import { Compliance } from "./compliance.type"
+
+export const useCompliance = (entity: string) => {
+  return useQuery<PaginatedResponse<Compliance>, AppError>({
+    queryKey: ["compliance", entity],
+    queryFn: async () => {
+      const response = await apiClient.get<PaginatedResponse<Compliance>>(
+        `/compliance`,
+        {
+          params: {
+            entity,
+          },
+        }
+      )
+
+      return response
+    },
+    staleTime: 1000 * 60 * 60,
+  })
+}

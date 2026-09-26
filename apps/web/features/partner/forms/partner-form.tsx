@@ -29,7 +29,7 @@ export function PartnerForm() {
 
   const commonT = useTranslations("common")
   const t = useTranslations("partner.form")
-  const [active, setActive] = React.useState(3)
+  const [active, setActive] = React.useState(0)
   const [pending, setPending] = React.useState(false)
 
   const form = useForm<PartnerSchema>({
@@ -42,8 +42,22 @@ export function PartnerForm() {
     setPending(true)
     try {
       const { acknowledgment, ...payload } = values
-      const { success } = await createPartner(payload)
-      if (!success) throw new Error("Failed")
+
+      const [, partnerResult] = await Promise.all([
+        fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            formType: "partner-v2",
+            ...values,
+          }),
+        }),
+        createPartner(payload),
+      ])
+
+      if (!partnerResult.success) {
+        throw new Error("Failed")
+      }
+
       open({
         variant: "success",
         title: "Application received.",

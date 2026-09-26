@@ -1,4 +1,4 @@
-import "./styles.css"
+import "@blak/ui/globals.css"
 import { cn } from "@blak/ui/lib/utils"
 
 import { Manrope } from "next/font/google"

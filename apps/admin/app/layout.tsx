@@ -1,4 +1,4 @@
-import "./styles.css"
+import "@blak/ui/globals.css"
 import { cn } from "@blak/ui/lib/utils"
 
 import { Manrope } from "next/font/google"
@@ -8,6 +8,7 @@ import { AppProvider } from "@/components/provider"
 import { SidebarInset, SidebarProvider } from "@blak/ui/components/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppLayout } from "@/components/app-layout"
+import { Suspense } from "react"
 
 const varela = Manrope({
   variable: "--font-sans",
@@ -15,10 +16,10 @@ const varela = Manrope({
 
 export const metadata: Metadata = {
   title: {
-    default: "Blak",
-    template: `%s | Blak`,
+    default: "BLAK | A First Class Experience",
+    template: `%s | BLAK`,
   },
-  description: "Blak",
+  description: "BLAK A First Class Experience",
 }
 
 export default function RootLayout({
@@ -32,7 +33,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         varela.variable,
-        "font-sans font-normal antialiased selection:bg-primary/10"
+        "font-sans font-normal antialiased selection:bg-primary"
       )}
     >
       <body>
@@ -47,8 +48,10 @@ export default function RootLayout({
             }
           >
             <AppSidebar variant="sidebar" />
-            <SidebarInset>
-              <AppLayout>{children}</AppLayout>
+            <SidebarInset className="bg-neutral-50/80">
+              <Suspense>
+                <AppLayout>{children}</AppLayout>
+              </Suspense>
             </SidebarInset>
           </SidebarProvider>
         </AppProvider>

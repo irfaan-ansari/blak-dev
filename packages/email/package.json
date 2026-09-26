@@ -4,25 +4,38 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./src/index.ts",
-    "./client": "./src/client.ts",
-    "./types": "./src/types.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./templates/*": {
+      "types": "./dist/templates/*.d.ts",
+      "import": "./dist/templates/*.js"
+    }
   },
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.ts\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "tsup",
+    "preview": "email dev -p 3004 --dir ./src",
+    "export": "email export",
+    "start": "email start -p 3004 --dir ./src"
   },
   "dependencies": {
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-email": "6.9.2"
+    "react-email": "6.9.2",
+    "resend": "^6.26.0",
+    "@blak/utils": "workspace:*"
   },
   "devDependencies": {
     "@blak/ts-config": "workspace:*",
     "@react-email/ui": "6.9.2",
     "@types/node": "^20.19.43",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4"
+    "@types/react-dom": "^19.2.4",
+    "tailwindcss": "^4.3.3",
+    "tsup": "^8.5.1"
   }
 }

@@ -1,50 +1,41 @@
+"use client"
 import React from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { Bell } from "lucide-react"
+
 import { NavUser } from "./nav-user"
 import { Button } from "@blak/ui/components/button"
-import { Bell, Search, X } from "lucide-react"
-import { Badge } from "@blak/ui/components/badge"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@blak/ui/components/input-group"
-import Image from "next/image"
-import Link from "next/link"
+import { SearchQueryParam } from "@blak/ui/components/blak/search-input"
+import { SidebarTrigger } from "@blak/ui/components/sidebar"
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <React.Fragment>
       <AppHeader />
-      <div className="h-full px-4 py-6 lg:px-6">{children}</div>
+      <div className="@container/page-content mx-auto h-full w-full max-w-7xl space-y-6 px-4 py-6 lg:px-6">
+        {children}
+      </div>
     </React.Fragment>
   )
 }
 
 const AppHeader = () => {
   return (
-    <header className="@container border-b px-4 lg:px-6">
-      <div className="flex h-20 w-full items-center gap-4">
-        <Link className="inline-flex items-center" href="/">
-          <Image src="/logo/logo.png" width={140} height={40} alt="Blak" />
+    <header className="border-b bg-card px-4 lg:px-6">
+      <div className="flex h-18 w-full items-center gap-4">
+        <SidebarTrigger className="md:hidden" />
+        <Link className="inline-flex shrink-0 items-center" href="/">
+          <Image src="/logo/logo-blak.png" width={120} height={40} alt="Blak" />
         </Link>
         <span className="flex-1"></span>
-        <InputGroup className="max-w-xs">
-          <InputGroupAddon>
-            <Search className="size-4" />
-          </InputGroupAddon>
-          <InputGroupInput placeholder="Search..." />
-          <InputGroupAddon align="inline-end">
-            <InputGroupButton>
-              <X />
-            </InputGroupButton>
-          </InputGroupAddon>
-        </InputGroup>
-        <Button variant="ghost" size="lg" className="relative rounded-full">
-          <Bell className="size-5" />
-          <Badge variant="warning" className="rounded-full">
-            10
-          </Badge>
+        <SearchQueryParam className="hidden max-w-3xs rounded-full bg-muted md:flex lg:max-w-xs" />
+        <Button
+          variant="secondary"
+          size="icon"
+          className="relative rounded-full border border-border bg-secondary/50"
+        >
+          <Bell />
         </Button>
         <NavUser />
       </div>

@@ -1,73 +1,52 @@
 import {
   BadgeCheck,
+  CircleCheck,
   CircleDashed,
-  CircleMinus,
   CircleSlash,
-  ClockFading,
-  Info,
+  XCircle,
 } from "lucide-react"
-
 import { StatusActionConfig, StatusConfig } from "@/features/shared/shared.type"
 import { ApplicationStatus } from "@/features/onboarding/application.type"
 
 export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
-  PENDING: {
-    label: "Submitted",
-    icon: CircleDashed,
-    className: "text-primary-foreground bg-blue-500 border-blue-600",
+  INVITED: {
+    label: "Invited",
+    icon: CircleCheck,
+    className: "text-primary-foreground bg-lime-300 border-lime-400",
   },
-  UNDER_REVIEW: {
-    label: "Under Review",
-    icon: ClockFading,
-    className: "text-primary-foreground bg-yellow-500 border-yellow-600",
-  },
-  INFO_REQUIRED: {
-    label: "Info Required",
-    icon: Info,
-    className: "text-primary-foreground bg-orange-500 border-orange-600",
+  SUBMITTED: {
+    label: "SUBMITTED",
+    icon: CircleCheck,
+    className: "text-primary-foreground bg-lime-300 border-lime-400",
   },
   APPROVED: {
     label: "Approved",
-    icon: BadgeCheck,
-    className: "text-primary-foreground bg-green-500 border-green-600",
+    icon: CircleCheck,
+    className: "text-primary-foreground bg-lime-300 border-lime-400",
   },
   REJECTED: {
     label: "Rejected",
-    icon: CircleSlash,
-    className: "text-primary-foreground bg-red-500 border-red-600",
+    icon: XCircle,
+    className: "text-primary-foreground bg-red-300 border-red-400",
+  },
+  PENDING_APPROVAL: {
+    label: "New",
+    icon: CircleDashed,
+    className: "text-primary-foreground! bg-yellow-200! border-yellow-300!",
   },
 } as const
 
 export const AVAILABLE_ACTIONS: Partial<
   Record<ApplicationStatus, StatusActionConfig[]>
 > = {
-  PENDING: [
+  PENDING_APPROVAL: [
     {
       label: "Approve",
       variant: "ghost",
       icon: BadgeCheck,
       action: "approve",
     },
-    {
-      label: "Request information",
-      variant: "ghost",
-      icon: Info,
-      action: "request_information",
-    },
-    {
-      label: "Reject",
-      variant: "destructive",
-      icon: CircleSlash,
-      action: "reject",
-    },
-  ],
-  INFO_REQUIRED: [
-    {
-      label: "Approve",
-      variant: "ghost",
-      icon: BadgeCheck,
-      action: "approve",
-    },
+
     {
       label: "Reject",
       variant: "destructive",

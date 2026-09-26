@@ -23,7 +23,7 @@ export const SIDEBAR_NAV = {
     items: [
       { label: "Bookings", href: "/operation/bookings" },
       { label: "Live Dispatch", href: "/operation/dispatch" },
-      { label: "Fleet", href: "/operation/fleet" },
+      { label: "Vehicles", href: "/operation/vehicles" },
     ],
   },
   network: {
@@ -33,7 +33,7 @@ export const SIDEBAR_NAV = {
     items: [
       { label: "Operators", href: "/network/operators" },
       { label: "Partners", href: "/network/partners" },
-      { label: "Chauffeurs", href: "/network/chauffeurs" },
+      { label: "Drivers", href: "/network/drivers" },
       { label: "Passengers", href: "/network/passengers" },
     ],
   },
@@ -58,15 +58,6 @@ export const SIDEBAR_NAV = {
       { label: "Transactions", href: "/finance/transactions" },
     ],
   },
-  onboarding: {
-    label: "Onboarding",
-    href: "#",
-    icon: ClipboardList,
-    items: [
-      { label: "Operators", href: "/onboarding/operators" },
-      { label: "Partners", href: "/onboarding/partners" },
-    ],
-  },
   insights: {
     label: "Insights",
     href: "#",
@@ -86,6 +77,18 @@ export const SIDEBAR_NAV = {
       { label: "Users & Roles", href: "/settings/users-roles" },
       { label: "Integrations", href: "/settings/integrations" },
       { label: "Audit Log", href: "/settings/audit-log" },
+    ],
+  },
+} as const
+
+export const APPLICATION_NAV = {
+  onboarding: {
+    label: "Onboarding",
+    href: "#",
+    icon: ClipboardList,
+    items: [
+      { label: "Operators", href: "/onboarding/operators" },
+      { label: "Partners", href: "/onboarding/partners" },
     ],
   },
 } as const

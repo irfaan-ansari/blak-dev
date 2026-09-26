@@ -1,0 +1,84 @@
+import { Hono } from "hono"
+import { prisma } from "@blak/db"
+import type { AppContext } from "@/middlewares"
+import { parsePagination } from "@/lib/parse-pagination"
+import { AppError } from "@blak/utils/error"
+import { API_URL } from "@/lib/utils"
+
+const vehicles = new Hono<AppContext>()
+  .get("/", async (c) => {
+    const organizationId = c.get("session").activeOrganizationId!
+    const { q, status, cat, ...rest } = c.req.query()
+    const { page, take, skip } = parsePagination(rest)
+
+    const [results, total] = await Promise.all([
+      prisma.vehicle.findMany({
+        where: {
+          organizationId,
+        },
+        take,
+        skip,
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.vehicle.count({
+        where: {
+          organizationId,
+        },
+      }),
+    ])
+
+    const pageCount = Math.ceil(total / take)
+
+    return c.json({
+      data: results,
+      pagination: {
+        page,
+        pageSize: take,
+        pageCount,
+        total,
+      },
+    })
+  })
+  .get("/:id", async (c) => {
+    const id = c.req.param("id")
+    const organizationId = c.get("session").activeOrganizationId!
+
+    const vehicle = await prisma.vehicle.findUnique({
+      where: {
+        id,
+        organizationId,
+      },
+    })
+
+    if (!vehicle) {
+      throw new AppError("NOT_FOUND")
+    }
+
+    const files = await prisma.file.findMany({
+      where: {
+        ref: "VEHICLE",
+        refId: id,
+      },
+    })
+
+    const filesWithUrl = files.map((file) => ({
+      ...file,
+      size: Number(file.size),
+      url: API_URL + `/v1/uploads/${file.id}`,
+    }))
+
+    const documents = filesWithUrl.filter(
+      (file) => file.mime === "application/pdf"
+    )
+
+    const images = filesWithUrl.filter((file) => file.mime.startsWith("image/"))
+
+    return c.json({
+      success: true,
+      data: { ...vehicle, documents, images },
+    })
+  })
+
+export default vehicles

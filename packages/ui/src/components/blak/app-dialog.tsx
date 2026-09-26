@@ -121,7 +121,7 @@ export function AppDialogProvider({ children }: { children: React.ReactNode }) {
         {children}
 
         {dialog && (
-          <AlertDialogContent className="max-w-sm! p-6">
+          <AlertDialogContent className="max-w-sm! p-6 ring-0">
             <div className="flex flex-col items-center justify-center gap-1.5 text-center">
               <AlertDialogMedia
                 className={cn("size-12 rounded-full", config.mediaClassName)}
@@ -146,10 +146,13 @@ export function AppDialogProvider({ children }: { children: React.ReactNode }) {
                   variant={config.actionVariant}
                   className="h-10! flex-1"
                   onClick={handleAction}
-                  loading={isLoading}
                   disabled={isLoading}
                 >
-                  {dialog.action.label ?? "Continue"}
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    (dialog.action.label ?? "Continue")
+                  )}
                 </Button>
               )}
 

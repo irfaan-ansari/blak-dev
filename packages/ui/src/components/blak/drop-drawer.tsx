@@ -39,7 +39,7 @@ export const DropDrawer = ({
   className,
   open,
   setOpen,
-  modal = false,
+  modal = true,
   ...props
 }: DropDrawerProps) => {
   const isMobile = useMobile()
@@ -67,7 +67,7 @@ export const DropDrawer = ({
       <PopoverContent
         {...props}
         className={cn(
-          "w-[max(var(--radix-popover-trigger-width),192px)] gap-0 rounded-lg p-2",
+          "w-[max(var(--radix-popover-trigger-width),192px)] gap-0 rounded-lg p-1 ring-border",
           className
         )}
         align="end"

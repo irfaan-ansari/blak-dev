@@ -1,20 +1,22 @@
 @import "@blak/ui/globals.css";
 
 :root {
-  --radius: 0.675rem;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.185 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.25 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.75 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(0.27 0 0);
+  --input: oklch(0.215 0 0);
 }
 @theme inline {
   --font-sans: var(--font-sans);
 }
-
-/* @layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  .heading {
-    font-family: var(--font-aviano);
-  }
-} */

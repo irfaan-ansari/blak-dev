@@ -11,39 +11,57 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@blak/ui/components/dropdown-menu"
-import { SidebarMenuButton, useSidebar } from "@blak/ui/components/sidebar"
+
 import {
-  ChevronsUpDownIcon,
-  SparklesIcon,
   BadgeCheckIcon,
-  CreditCardIcon,
-  BellIcon,
   LogOutIcon,
+  CircleUser,
+  ShieldCheckIcon,
+  Building2Icon,
 } from "lucide-react"
 
-const user = {
-  name: "shadcn",
-  email: "m@example.com",
-  avatar: "/avatars/shadcn.jpg",
-}
+import Link from "next/link"
+import { authClient } from "@blak/auth/client"
+import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
 
 export function NavUser() {
+  const { open } = useAppDialog()
+  const { data: session } = authClient.useSession()
+  const user = session?.user
+
+  const handleLogout = async () => {
+    await authClient.signOut()
+    open({
+      title: "Logout",
+      description: "You have been logged out successfully.",
+      variant: "success",
+      action: {
+        label: "OK",
+        onClick: () => {
+          const authUrl = process.env.NEXT_PUBLIC_AUTH_URL!
+          window.location.href = authUrl
+        },
+      },
+    })
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          size="icon-lg"
-          variant="ghost"
-          className="rounded-full shadow-none"
+          size="icon"
+          variant="secondary"
+          className="relative rounded-full border border-border bg-secondary/50"
         >
           <Avatar className="size-9 rounded-full **:rounded-full after:hidden">
-            <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={user?.image ?? ""} alt={user?.name} />
+            <AvatarFallback>
+              <CircleUser />
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-fit"
+        className="w-fit min-w-48"
         side="bottom"
         align="end"
         sideOffset={4}
@@ -51,39 +69,39 @@ export function NavUser() {
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <AvatarImage src={user?.image ?? ""} alt={user?.name} />
+              <AvatarFallback>
+                <CircleUser className="size-4" />
+              </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
+              <span className="truncate font-medium">{user?.name}</span>
+              <span className="truncate text-xs">{user?.email}</span>
             </div>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <SparklesIcon />
-            Upgrade to Pro
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem disabled>
             <BadgeCheckIcon />
-            Account
+            Profile
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <CreditCardIcon />
-            Billing
+          <DropdownMenuItem asChild>
+            <Link href="/settings/compliance">
+              <ShieldCheckIcon />
+              Compliance
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <BellIcon />
-            Notifications
+          <DropdownMenuItem asChild>
+            <Link href="/settings/general">
+              <Building2Icon />
+              Business Profile
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOutIcon />
           Log out
         </DropdownMenuItem>

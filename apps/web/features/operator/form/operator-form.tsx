@@ -6,17 +6,25 @@ import { Button } from "@blak/ui/components/button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 import { ArrowRight, Loader2 } from "lucide-react"
-import { OperatorFormValues, operatorSchema } from "../operator.schema"
+import {
+  ApiResponse,
+  OperatorFormValues,
+  operatorSchema,
+} from "../operator.schema"
 import { StepWrapper } from "@/features/shared/components/form-step-wrapper"
 import { INITIAL_VALUES } from "./form.const"
 import { STEPS } from "./form.steps"
 import { useRouter } from "@/i18n/navigation"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
-import { createOperator } from "../operator.action"
+import { createOperator, updateOperator } from "../operator.action"
 
 const SUBMIT_STEP = STEPS.length - 1
 
-export const OperatorForm = () => {
+export const OperatorForm = ({
+  values,
+}: {
+  values: ApiResponse["data"] | null
+}) => {
   const commonT = useTranslations("common")
   const t = useTranslations("operator.form")
   const router = useRouter()
@@ -24,19 +32,70 @@ export const OperatorForm = () => {
   const [active, setActive] = React.useState(0)
   const [pending, setPending] = React.useState(false)
 
+  // default values
+  const defaultValues = values
+    ? (() => {
+        const { application } = values
+
+        return {
+          legalBusinessName: application.legalBusinessName,
+          operatingName: application.operatingName ?? "",
+          businessType: application.businessType,
+          website: application.website ?? "",
+          businessEmail: application.businessEmail,
+          businessPhone: application.businessPhone,
+          address: application.address,
+          city: application.city,
+          state: application.state,
+          pincode: application.pincode,
+          country: application.country,
+
+          contactName: values.contactName,
+          contactTitle: values.contactTitle,
+          contactEmail: values.contactEmail,
+          contactPhone: values.contactPhone,
+
+          commerciallyLicensedInsured: application.commerciallyLicensedInsured,
+          operatesLuxurySedansSuvs: application.operatesLuxurySedansSuvs,
+          operatingMarkets: application.operatingMarkets,
+
+          yearsInOperation: String(application.yearsInOperation),
+          vehicleCount: String(application.vehicleCount),
+          chauffeurCount: String(application.chauffeurCount),
+
+          serviceTypes: application.serviceTypes,
+        }
+      })()
+    : INITIAL_VALUES
+
   const form = useForm({
-    defaultValues: INITIAL_VALUES,
+    defaultValues,
     resolver: zodResolver(operatorSchema),
     mode: "onTouched",
   })
 
-  async function onSubmit(values: OperatorFormValues) {
+  async function onSubmit(formValues: OperatorFormValues) {
     setPending(true)
+
     try {
-      const { success } = await createOperator(values)
-      console.log(values)
-      if (!success) {
-        return
+      let result: Awaited<ReturnType<typeof updateOperator>> | null = null
+      if (values) {
+        result = await updateOperator(values.id, formValues)
+      } else {
+        ;[, result] = await Promise.all([
+          fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              formType: "operator-v2",
+              ...formValues,
+            }),
+          }),
+          createOperator(formValues),
+        ])
+      }
+
+      if (!result?.success) {
+        throw new Error("Failed")
       }
 
       open({
@@ -50,6 +109,7 @@ export const OperatorForm = () => {
         },
       })
       form.reset()
+      setActive(0)
     } catch (error) {
       console.log("submit failed - operator-form:", error)
       open({
@@ -81,7 +141,7 @@ export const OperatorForm = () => {
 
     setActive((current) => current + 1)
   }
-
+  console.log(form.formState.errors)
   return (
     <FormProvider {...form}>
       <form

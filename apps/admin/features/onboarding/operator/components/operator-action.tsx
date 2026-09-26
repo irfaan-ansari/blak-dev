@@ -1,24 +1,23 @@
 import React from "react"
-import { EllipsisVertical } from "lucide-react"
+import { CircleCheck, Pencil } from "lucide-react"
 import { Button } from "@blak/ui/components/button"
 import { DropDrawer } from "@blak/ui/components/blak/drop-drawer"
 import { OperatorApplication } from "../operator.type"
 import { useAppDialog } from "@blak/ui/components/blak/app-dialog"
-import { AVAILABLE_ACTIONS } from "../operator.const"
+
 import { processOperatorApplication } from "../operator.action"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { ApplicationStatus } from "@blak/db"
 
 export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
   const { open } = useAppDialog()
   const [isOpen, setIsOpen] = React.useState(false)
   const queryClient = useQueryClient()
 
-  const actions = AVAILABLE_ACTIONS[data.currentStatus] ?? []
-
-  const handleAction = (action: string) => {
+  const handleAction = (action: ApplicationStatus) => {
     switch (action) {
-      case "approve":
+      case "APPROVED":
         open({
           variant: "success",
           title: "Approve application",
@@ -46,7 +45,7 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
           },
         })
         return
-      case "reject":
+      case "REJECTED":
         open({
           variant: "warning",
           title: "Reject application",
@@ -62,26 +61,12 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
               if (serverError) {
                 toast.error(serverError.message)
               } else {
-                toast.success("Approved and invitation sent.")
+                toast.success("Application rejected.")
                 queryClient.invalidateQueries({
                   queryKey: ["operator-applications"],
                 })
               }
             },
-          },
-          cancel: {
-            label: "Cancel",
-          },
-        })
-        return
-      case "request_information":
-        open({
-          variant: "info",
-          title: "Request information",
-          description:
-            "Rejecting this application will send a notification email to the operator.",
-          action: {
-            label: "Yes, reject",
           },
           cancel: {
             label: "Cancel",
@@ -96,23 +81,34 @@ export const OperatorAction = ({ data }: { data: OperatorApplication }) => {
       open={isOpen}
       setOpen={setIsOpen}
       trigger={
-        <Button variant="outline" size="icon">
-          <EllipsisVertical />
+        <Button
+          variant="invert"
+          size="icon-sm"
+          disabled={data.currentStatus !== "PENDING_APPROVAL"}
+        >
+          <Pencil className="size-3.5" />
         </Button>
       }
+      className="md:max-w-40"
     >
-      {actions.map((ac) => (
-        <Button
-          onClick={() => handleAction(ac.action)}
-          variant={ac.variant}
-          className="justify-start shadow-none"
-          size="sm"
-          key={ac.action}
-        >
-          {ac.icon && <ac.icon />}
-          {ac.label}
-        </Button>
-      ))}
+      <Button
+        onClick={() => handleAction("APPROVED")}
+        variant="ghost"
+        size="lg"
+        className="justify-start"
+      >
+        <CircleCheck />
+        Approve
+      </Button>
+      <Button
+        onClick={() => handleAction("REJECTED")}
+        variant="destructive"
+        size="lg"
+        className="justify-start"
+      >
+        <CircleCheck />
+        Reject
+      </Button>
     </DropDrawer>
   )
 }

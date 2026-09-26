@@ -3,10 +3,10 @@
 import { prisma } from "@blak/db"
 import { headers } from "next/headers"
 import { auth } from "@blak/auth"
-import { slugify } from "@blak/utils/string"
 import { withPermission } from "@/lib/safe-action"
 import { OperatorApplication } from "./operator.type"
 import { processOperatorApplicationschema } from "./operator.schema"
+import { AppError } from "@blak/utils/error"
 
 export const processOperatorApplication = withPermission({
   application: ["update"],
@@ -15,18 +15,39 @@ export const processOperatorApplication = withPermission({
   .action(async ({ parsedInput, ctx }) => {
     const { id, action } = parsedInput
     const { session } = ctx
-    const application = await prisma.application.findUnique({
+
+    const application = await prisma.application.findFirst({
       where: { id },
       include: { operatorApplication: true },
     })
 
     if (!application) throw new Error("Application not found")
 
-    if (action === "reject") {
+    if (action === "PENDING_APPROVAL") {
+      await Promise.all([
+        prisma.application.update({
+          where: { id },
+          data: {
+            currentStatus: "PENDING_APPROVAL",
+          },
+        }),
+        prisma.review.create({
+          data: {
+            entityId: id,
+            entityType: "APPLICATION",
+            status: "PENDING_APPROVAL",
+            reason: "Application under review",
+            reviewerId: session.userId,
+          },
+        }),
+      ])
+    }
+
+    if (action === "REJECTED") {
       await rejectApplication(id, session.userId)
     }
 
-    if (action === "approve") {
+    if (action === "APPROVED") {
       await approveApplication(
         {
           ...application,
@@ -66,24 +87,12 @@ export async function approveApplication(
   application: Omit<OperatorApplication, "reviews">,
   userId: string
 ) {
-  const org = await createOrgForApplication(application)
+  const org = await createOrgUser(application)
 
-  const invitation = await auth.api.createInvitation({
-    body: {
-      email: application.contactEmail,
-      role: "owner",
-      organizationId: org.id,
-      resend: true,
-      userRole: "operator",
-    },
-    headers: await headers(),
-  })
-
-  return prisma.$transaction([
+  await Promise.all([
     prisma.application.update({
       where: { id: application.id },
       data: {
-        invitationId: invitation.id,
         currentStatus: "APPROVED",
         organizationId: org.id,
         decidedAt: new Date(),
@@ -102,7 +111,7 @@ export async function approveApplication(
 }
 
 /** create organization */
-async function createOrgForApplication(
+async function createOrgUser(
   application: Omit<OperatorApplication, "reviews">
 ) {
   const {
@@ -118,9 +127,57 @@ async function createOrgForApplication(
     country,
   } = application.application
 
+  // create user
+  const user = await auth.api.signUpEmail({
+    body: {
+      name: application.contactName,
+      email: application.contactEmail,
+      password: application.id,
+      phoneNumber: application.contactPhone,
+    },
+  })
+
+  // update user role
+  const url = new URL(process.env.NEXT_PUBLIC_AUTH_URL!)
+  await Promise.all([
+    auth.api.requestPasswordReset({
+      body: {
+        email: application.contactEmail,
+        redirectTo: `${url.origin}/auth/create-password`,
+      },
+    }),
+    prisma.user.update({
+      where: {
+        id: user.user.id,
+      },
+      data: {
+        role: "operator",
+      },
+    }),
+  ])
+
+  // find and map market
+  const market = await prisma.market.findFirst({
+    where: {
+      country: {
+        name: {
+          contains: country,
+          mode: "insensitive",
+        },
+      },
+    },
+  })
+
+  if (!market) {
+    throw new AppError("NOT_FOUND", {
+      message: "Market not found",
+    })
+  }
+
+  // create organization
   const org = await auth.api.createOrganization({
     body: {
-      slug: slugify(legalBusinessName),
+      slug: crypto.randomUUID(),
       name: operatingName ?? "",
       type: "OPERATOR",
       legalName: legalBusinessName,
@@ -132,11 +189,20 @@ async function createOrgForApplication(
       contactTitle: application.contactTitle,
       contactPhone: application.contactPhone,
       contactEmail: application.contactEmail,
+      marketId: market.id,
     },
     headers: await headers(),
   })
 
   if (!org) throw new Error("Failed to create organization")
+
+  await auth.api.addMember({
+    body: {
+      userId: user.user.id,
+      role: "owner",
+      organizationId: org.id,
+    },
+  })
 
   return org
 }

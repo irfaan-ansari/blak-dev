@@ -3,7 +3,7 @@ type PaginationQuery = {
   limit?: string | number
 }
 
-const DEFAULT_LIMIT = 24
+const DEFAULT_LIMIT = 100
 
 export function parsePagination({ page, limit }: PaginationQuery) {
   const pageNum = Math.max(Number(page) || 1, 1)

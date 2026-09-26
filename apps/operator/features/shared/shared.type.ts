@@ -3,9 +3,9 @@ import { LucideIcon } from "lucide-react"
 
 export interface Pagination {
   page: number
-  limit: number
+  pageSize: number
   total: number
-  totalPages: number
+  pageCount: number
 }
 
 export interface ApiResponse<T> {
@@ -20,7 +20,6 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
 
 export interface StatusConfig {
   label: string
-  icon?: LucideIcon
   className: string
 }
 

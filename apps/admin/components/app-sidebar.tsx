@@ -8,6 +8,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -23,7 +24,7 @@ import {
   CollapsibleTrigger,
 } from "@blak/ui/components/collapsible"
 import { ChevronRight, Settings } from "lucide-react"
-import { SIDEBAR_NAV } from "@/lib/config/nav"
+import { APPLICATION_NAV, SIDEBAR_NAV } from "@/lib/config/nav"
 import Link from "next/link"
 
 const data = {
@@ -92,6 +93,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 )
               }
             )}
+          </SidebarMenu>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Applications</SidebarGroupLabel>
+          <SidebarMenu>
+            {APPLICATION_NAV.onboarding.items.map((item) => (
+              <SidebarMenuItem key={item.label}>
+                <SidebarMenuButton asChild>
+                  <Link href={item.href}>{item.label}</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

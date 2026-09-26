@@ -1,3 +1,4 @@
+import type { Application, OperatorApplication } from "@blak/db"
 import { z } from "zod"
 
 export const businessSchema = z.object({
@@ -46,3 +47,10 @@ export const operatorSchema = z.object({
 })
 
 export type OperatorFormValues = z.infer<typeof operatorSchema>
+
+export type ApiResponse = {
+  success: boolean
+  data: Application & {
+    application: OperatorApplication
+  }
+}

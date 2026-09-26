@@ -1,16 +1,19 @@
 import { prisma } from "@blak/db"
-import { betterAuth } from "better-auth"
 import {
   bearer,
   emailOTP,
   admin as adminPlugin,
-  organization as organizationPlugin,
   phoneNumber as phoneNumberPlugin,
+  organization as organizationPlugin,
 } from "better-auth/plugins"
+import { sendEmail } from "@blak/email"
+import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 import { userAc, userRoles } from "./permission"
-import { getUserOrganization } from "./resolve-org"
 import { prismaAdapter } from "better-auth/adapters/prisma"
+import { getRootDomain, getUserOrganization } from "./utils"
+import { orgAc, orgUserRoles } from "./org-permissions"
+import PasswordResetEmail from "@blak/email/templates/reset-password"
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -28,6 +31,18 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true,
+    disdisableSignUp: true,
+    resetPasswordTokenExpiresIn: 60 * 60 * 24 * 7,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      sendEmail({
+        to: user.email,
+        subject: "Create your password",
+        template: PasswordResetEmail({
+          url,
+        }),
+      })
+    },
   },
   session: {
     additionalFields: {
@@ -51,11 +66,8 @@ export const auth = betterAuth({
     }),
     phoneNumberPlugin(),
     organizationPlugin({
-      // allowUserToCreateOrganization: async (user) => {
-      //   return true
-      // },
-      //   ac: orgAc,
-      //   roles: orgRoles,
+      ac: orgAc,
+      roles: orgUserRoles,
       schema: {
         organization: {
           additionalFields: {
@@ -82,7 +94,7 @@ export const auth = betterAuth({
             status: {
               type: "string",
               required: true,
-              defaultValue: "PENDING_ONBOARDING",
+              defaultValue: "INVITED",
               input: false,
             },
             legalName: {
@@ -135,7 +147,7 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user, context) => {
-          console.log(user)
+          console.log("before user create:", user)
         },
       },
     },
@@ -151,6 +163,18 @@ export const auth = betterAuth({
           }
         },
       },
+    },
+  },
+  advanced: {
+    cookiePrefix: "BLAK",
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: getRootDomain(process.env.BETTER_AUTH_URL as string),
+    },
+    defaultCookieAttributes: {
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
     },
   },
   trustedOrigins: (process.env.BETTER_AUTH_ORIGINS ?? "")

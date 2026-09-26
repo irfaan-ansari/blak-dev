@@ -110,22 +110,7 @@ export const AcceptInvitationCard = () => {
           You have been invited to join BLAK {data?.userRole}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col items-center gap-2 px-12 text-center">
-        <Avatar>
-          <AvatarFallback>
-            <CircleUser className="size-4" />
-          </AvatarFallback>
-        </Avatar>
-        <ArrowDown className="size-4 text-muted-foreground" />
-        <Button variant="ghost" className="rounded-full pl-1.5">
-          <Avatar>
-            <AvatarFallback>
-              <Building2 className="size-4" />
-            </AvatarFallback>
-          </Avatar>
-          <span>Lorem Ipsum Company</span>
-        </Button>
-      </CardContent>
+
       <CardContent className="px-12">
         <Button
           className="w-full justify-between"

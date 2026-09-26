@@ -1,16 +1,11 @@
-enum DocumentType {
-    IMAGE
-    VIDEO
-    AUDIO
-    DOCUMENT
-    OTHER
+enum SymbolPosition {
+    PREFIX
+    SUFFIX
 }
 
-enum DocumentStatus {
-    PENDING
-    APPROVED
-    REJECTED
-    EXPIRED
+enum DistanceUnit {
+    KM
+    MILES
 }
 
 enum MarketStatus {
@@ -26,16 +21,18 @@ enum MarketStatus {
 
 enum MarketScope {
     COUNTRY
-    REGION
+    STATE
     CITY
 }
 
 enum OrganizationStatus {
-    PENDING_ONBOARDING
-    UNDER_REVIEW
+    INVITED /**  application approved */
+    ACCOUNT_CREATED /** user created password */
+    PENDING_APPROVAL /* document submitted */
     ACTIVE
-    SUSPENDED
     INACTIVE
+    SUSPENDED
+    ONBOARDING /* deprecated - to be removed after migration */
 }
 
 enum OrganizationType {
@@ -43,33 +40,24 @@ enum OrganizationType {
     PARTNER
 }
 
-enum ApplicationType {
+enum EntityType {
     OPERATOR
     PARTNER
     DRIVER
+    VEHICLE
+}
+
+enum ComplianceType {
+    NUMBER
+    DOCUMENT
 }
 
 enum ApplicationStatus {
-    PENDING
-    UNDER_REVIEW
-    INFO_REQUIRED
+    INVITED
+    SUBMITTED
+    PENDING_APPROVAL
     APPROVED
     REJECTED
-}
-
-enum VehicleCategory {
-    LUXURY_SEDAN
-    LUXURY_SUV
-    LIMOUSINE
-    EXECUTIVE_VAN
-}
-
-enum VehicleStatus {
-    PENDING_APPROVAL
-    ACTIVE
-    REJECTED
-    INACTIVE
-    MAINTENANCE
 }
 
 enum ReviewEntity {
@@ -82,17 +70,42 @@ enum ReviewEntity {
 }
 
 enum ReviewStatus {
-    PENDING
+    INVITED
+    SUBMITTED
+    PENDING_APPROVAL
     UNDER_REVIEW
     INFO_REQUIRED
     APPROVED
     REJECTED
 }
 
-enum DriverStatus {
-    PENDING
-    UNDER_REVIEW
-    INFO_REQUIRED
-    APPROVED
+enum ComplianceStatus {
+    PENDING_APPROVAL
+    VERIFIED
     REJECTED
+    EXPIRED
+}
+
+enum VehicleCategory {
+    LUXURY_SEDAN
+    LUXURY_SUV
+    LIMOUSINE
+    EXECUTIVE_VAN
+}
+
+enum VehicleStatus {
+    PENDING_APPROVAL
+    ACTIVE
+    DRIVER_ASSIGNED
+    REJECTED
+    INACTIVE
+    MAINTENANCE
+}
+
+enum DriverStatus {
+    PENDING_APPROVAL
+    ACTIVE
+    INACTIVE
+    ASSIGNED
+    SUSPENDED
 }

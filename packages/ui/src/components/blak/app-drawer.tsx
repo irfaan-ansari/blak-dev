@@ -103,7 +103,7 @@ const AppDrawerContent = ({
   return (
     <AppDrawerContent
       className={cn(
-        "flex flex-col data-[slot=drawer-content]:p-6 data-[slot=drawer-content]:pt-2 data-[vaul-drawer-direction=bottom]:max-h-[90vh] data-[vaul-drawer-direction=bottom]:rounded-b-none",
+        "flex flex-col ring-0 data-[slot=drawer-content]:p-6 data-[slot=drawer-content]:pt-2 data-[vaul-drawer-direction=bottom]:max-h-[90vh] data-[vaul-drawer-direction=bottom]:rounded-b-none",
         className
       )}
       {...props}

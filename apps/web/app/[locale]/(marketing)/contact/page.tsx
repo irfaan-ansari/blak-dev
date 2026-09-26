@@ -2,6 +2,13 @@ import React from "react"
 import { World } from "@/components/assets/world"
 import { Container } from "@/components/container"
 import { PartnershipForm } from "@/features/contact/forms/contact.form"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description:
+    "Contact BLAK to learn more about our premium ground transportation services, operator network, partnerships, or business solutions.",
+}
 
 const PartnerPage = () => {
   return (

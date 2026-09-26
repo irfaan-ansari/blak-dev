@@ -12,13 +12,14 @@
     }
   },
   "scripts": {
-    "build": "prisma generate && tsup",
     "dev": "prisma generate && tsup --watch",
+    "build": "prisma generate && tsup",
     "generate": "prisma generate",
     "typecheck": "tsc --noEmit",
     "migrate": "prisma migrate dev",
-    "migrate:deploy": "prisma migrate deploy",
-    "studio": "prisma studio"
+    "deploy": "prisma migrate deploy",
+    "studio": "prisma studio",
+    "seed": "tsx seed.ts"
   },
   "dependencies": {
     "@prisma/adapter-neon": "^7.9.1",
@@ -31,6 +32,7 @@
     "@types/node": "^26.2.0",
     "prisma": "^7.9.1",
     "tsup": "^8.5.1",
+    "tsx": "^4.23.12",
     "typescript": "^5.7.3"
   }
 }

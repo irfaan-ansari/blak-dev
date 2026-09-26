@@ -91,9 +91,9 @@ model Vehicle {
     interiorColor      String
     exteriorColor      String
     engine             String
-    licensePlate       String          @unique
-    registrationNumber String?         @unique
-    vin                String?         @unique
+    licensePlate       String
+    registrationNumber String?
+    vin                String?
     registrationExpiry DateTime?
     category           VehicleCategory
     status             VehicleStatus   @default(PENDING_APPROVAL)

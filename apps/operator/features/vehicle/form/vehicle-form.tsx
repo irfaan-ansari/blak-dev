@@ -289,12 +289,7 @@ export function VehicleForm({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field>
-                    <FieldLabel>
-                      Registration number
-                      <span className="ml-1 text-muted-foreground">
-                        (optional)
-                      </span>
-                    </FieldLabel>
+                    <FieldLabel>Registration number</FieldLabel>
 
                     <Input
                       aria-invalid={fieldState.invalid}
@@ -314,12 +309,7 @@ export function VehicleForm({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field>
-                    <FieldLabel>
-                      VIN
-                      <span className="ml-1 text-muted-foreground">
-                        (optional)
-                      </span>
-                    </FieldLabel>
+                    <FieldLabel>VIN</FieldLabel>
 
                     <Input
                       {...field}
@@ -361,12 +351,7 @@ export function VehicleForm({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="sm:col-span-2">
-                    <FieldLabel>
-                      Registration expiry
-                      <span className="ml-1 text-muted-foreground">
-                        (optional)
-                      </span>
-                    </FieldLabel>
+                    <FieldLabel>Registration expiry</FieldLabel>
 
                     <Input
                       aria-invalid={fieldState.invalid}

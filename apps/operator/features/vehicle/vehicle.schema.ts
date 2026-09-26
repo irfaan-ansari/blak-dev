@@ -10,7 +10,7 @@ export const vehicleSchema = z.object({
   interiorColor: z.string().min(1, "Color is required"),
   exteriorColor: z.string().min(1, "Color is required"),
   licensePlate: z.string().min(1, "Plate number is required"),
-  registrationNumber: z.string().optional(),
+  registrationNumber: z.string().min(1, "Registration number is required"),
   vin: z.string().min(1, "VIN is required"),
   registrationExpiry: z.string().min(1, "Registration expiry is required"),
   category: z.string(),
@@ -71,7 +71,7 @@ export const DEFAULT_VALUES = {
 export const vehicleImportSchema = z.object({
   data: z.array(
     z.object({
-      year: z.coerce.number(),
+      year: z.string(),
       make: z.string(),
       model: z.string(),
       trim: z.string(),

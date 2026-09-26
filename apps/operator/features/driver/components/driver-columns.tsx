@@ -71,16 +71,18 @@ export const driverColumns: DataTableColumnDef<DriverWithVehicle>[] = [
   },
   {
     id: "actions",
-    header: "Actions",
+    header: "",
     cell: ({ row }) => (
-      <Button variant="outline" size="sm" asChild>
-        <Link
-          href={`/drivers/${row.original.id}`}
-          aria-label={`View details for ${row.original.name}`}
-        >
-          View details
-        </Link>
-      </Button>
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" asChild>
+          <Link
+            href={`/drivers/${row.original.id}`}
+            aria-label={`View details for ${row.original.name}`}
+          >
+            View details
+          </Link>
+        </Button>
+      </div>
     ),
   },
 ]

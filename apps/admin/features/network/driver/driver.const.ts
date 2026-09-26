@@ -1,46 +1,33 @@
 import { VehicleStatus } from "@blak/db"
-import {
-  CircleCheck,
-  CircleX,
-  ClockFading,
-  PauseCircle,
-  Wrench,
-} from "lucide-react"
 import { StatusConfig } from "@/features/shared/shared.type"
 
 export const STATUS_MAP: Record<VehicleStatus, StatusConfig> = {
   PENDING_APPROVAL: {
     label: "Under Review",
-    icon: ClockFading,
-    className: "text-primary-foreground! bg-amber-200! border-amber-300!",
+    className: "border-amber-500 bg-amber-400 text-amber-950",
   },
   DRIVER_ASSIGNED: {
     label: "Pending Approval",
-    icon: ClockFading,
-    className: "text-primary-foreground! bg-amber-200! border-amber-300!",
+    className: "border-blue-600 bg-blue-600 text-white",
   },
 
   ACTIVE: {
     label: "Active",
-    icon: CircleCheck,
-    className: "text-primary-foreground! bg-lime-300! border-lime-400!",
+    className: "border-emerald-600 bg-emerald-600 text-white",
   },
 
   REJECTED: {
     label: "Rejected",
-    icon: CircleX,
-    className: "text-primary-foreground! bg-red-500! border-red-600!",
+    className: "border-rose-600 bg-rose-600 text-white",
   },
 
   INACTIVE: {
     label: "Inactive",
-    icon: PauseCircle,
-    className: "text-primary-foreground! bg-gray-200! border-gray-300!",
+    className: "border-slate-600 bg-slate-600 text-white",
   },
 
   MAINTENANCE: {
     label: "Maintenance",
-    icon: Wrench,
-    className: "text-primary-foreground! bg-orange-500! border-orange-600!",
+    className: "border-orange-600 bg-orange-600 text-white",
   },
 }

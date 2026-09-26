@@ -86,7 +86,10 @@ export function VehicleForm({
     }
 
     const uploads = [...images, ...documents]
-      .filter(({ file }) => file instanceof File)
+      .filter(
+        (upload): upload is typeof upload & { file: File } =>
+          upload.file instanceof File
+      )
       .map(({ file, label }) => ({
         file,
         meta: {

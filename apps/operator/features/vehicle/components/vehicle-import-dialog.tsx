@@ -103,11 +103,18 @@ export const VehicleImportDialog = ({
           return
         }
 
-        const rows = results.data.filter((row) =>
-          Object.values(row).some(
-            (value) => String(value ?? "").trim().length > 0
+        const rows = results.data
+          .map((row, index) => ({
+            ...row,
+            originalRowNumber: index + 2,
+          }))
+          .filter((row) =>
+            Object.entries(row).some(
+              ([key, value]) =>
+                key !== "originalRowNumber" &&
+                String(value ?? "").trim().length > 0
+            )
           )
-        )
 
         if (rows.length === 0) {
           toast.error("The CSV file is empty")
@@ -148,7 +155,9 @@ export const VehicleImportDialog = ({
       if (data.errors.length > 0) {
         const failedRows = new Set(data.errors.map((error) => error.row))
         setVehicles((rows) =>
-          rows.filter((_, index) => failedRows.has(index + 2))
+          rows.filter((row, index) =>
+            failedRows.has(row.originalRowNumber ?? index + 2)
+          )
         )
       }
 

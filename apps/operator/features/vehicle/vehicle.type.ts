@@ -8,6 +8,7 @@ export type VehicleWithImages = DBVehicle & {
 }
 
 export type VehicleImportRow = {
+  originalRowNumber?: number
   year: string
   make: string
   model: string

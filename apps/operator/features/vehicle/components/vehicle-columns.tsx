@@ -45,16 +45,18 @@ export const vehicleColumns: DataTableColumnDef<Vehicle>[] = [
   },
   {
     id: "actions",
-    header: "Actions",
+    header: "",
     cell: ({ row }) => (
-      <Button variant="outline" size="sm" asChild>
-        <Link
-          href={`/vehicles/${row.original.id}/edit`}
-          aria-label={`Edit ${row.original.licensePlate}`}
-        >
-          Edit
-        </Link>
-      </Button>
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" asChild>
+          <Link
+            href={`/vehicles/${row.original.id}/edit`}
+            aria-label={`Edit ${row.original.licensePlate}`}
+          >
+            Edit
+          </Link>
+        </Button>
+      </div>
     ),
   },
 ]

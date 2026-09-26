@@ -1,4 +1,4 @@
-import "@blak/ui/globals.css"
+import "./styles.css"
 import { cn } from "@blak/ui/lib/utils"
 
 import { Metadata } from "next"

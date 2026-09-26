@@ -30,26 +30,26 @@ function VehicleEditPage() {
         exteriorColor: `${vehicle?.exteriorColor}`,
         licensePlate: `${vehicle?.licensePlate}`,
         vin: `${vehicle?.vin}`,
-        registrationExpiry: `${vehicle?.registrationExpiry}`,
+        registrationExpiry: vehicle?.registrationExpiry
+          ? new Date(vehicle.registrationExpiry).toISOString().slice(0, 10)
+          : "",
         registrationNumber: `${vehicle?.registrationNumber}`,
         category: `${vehicle?.category}`,
         status: `${vehicle?.status}`,
-        // @ts-expect-error
         documents: vehicle?.documents?.length
           ? vehicle.documents.map((doc) => ({
               id: doc.id,
               label: doc.field!,
-              file: undefined as any,
-              url: doc.url,
+              file: undefined,
+              url: doc.url ?? undefined,
             }))
           : DEFAULT_VALUES.documents,
-        // @ts-expect-error
         images: vehicle?.images?.length
           ? vehicle.images.map((img) => ({
               id: img.id,
               label: img.field!,
-              file: undefined as any,
-              url: img.url,
+              file: undefined,
+              url: img.url ?? undefined,
             }))
           : DEFAULT_VALUES.images,
       }}

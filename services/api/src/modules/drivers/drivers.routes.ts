@@ -8,7 +8,7 @@ import { API_URL } from "@/lib/utils"
 
 const drivers = new Hono<OrgContext>()
   .get("/", async (c) => {
-    const { q, ...rest } = c.req.query()
+    const { q, status, ...rest } = c.req.query()
     const { page, take, skip } = parsePagination(rest)
 
     const where: Prisma.UserWhereInput = {
@@ -27,6 +27,8 @@ const drivers = new Hono<OrgContext>()
           { phoneNumber: { contains: q.trim(), mode: "insensitive" } },
         ],
       }),
+      ...(status === "ACTIVE" && { banned: false }),
+      ...(status === "BANNED" && { banned: true }),
     }
     const [results, total] = await Promise.all([
       prisma.user.findMany({
@@ -34,6 +36,14 @@ const drivers = new Hono<OrgContext>()
         take,
         skip,
         include: {
+          vehicle: {
+            select: {
+              id: true,
+              make: true,
+              model: true,
+              licensePlate: true,
+            },
+          },
           members: {
             select: {
               organization: {
@@ -50,13 +60,7 @@ const drivers = new Hono<OrgContext>()
         },
       }),
       prisma.user.count({
-        where: {
-          members: {
-            some: {
-              role: "driver",
-            },
-          },
-        },
+        where,
       }),
     ])
 

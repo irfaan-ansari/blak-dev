@@ -5,6 +5,7 @@ import { AppError } from "@blak/utils"
 import { withPermission } from "@/lib/safe-action"
 import { vehicleCreateSchema, vehicleImportSchema } from "./vehicle.schema"
 import { prisma, VehicleCategory, VehicleStatus } from "@blak/db"
+import type { VehicleImportRow } from "./vehicle.type"
 
 const parseDateOnly = (value?: string | null) => {
   if (!value?.trim()) return null
@@ -55,9 +56,10 @@ export const updateVehicle = withPermission({ app: ["operator"] })
   )
   .action(async ({ ctx, clientInput }) => {
     const { data, id } = clientInput
+    const organizationId = ctx.session.activeOrganizationId!
 
     const existing = await prisma.vehicle.findFirst({
-      where: { id },
+      where: { id, organizationId },
     })
 
     if (!existing) throw new AppError("NOT_FOUND")
@@ -79,12 +81,13 @@ export const updateVehicle = withPermission({ app: ["operator"] })
 export const importVehicles = withPermission({ app: ["operator"] })
   .inputSchema(vehicleImportSchema)
   .action(async ({ ctx, clientInput }) => {
-    const { data } = clientInput
+    const data = clientInput.data as VehicleImportRow[]
     const organizationId = ctx.session.activeOrganizationId!
     const imported: number[] = []
     const errors: Array<{ row: number; message: string }> = []
 
     for (const [index, vehicle] of data.entries()) {
+      const row = vehicle.originalRowNumber ?? index + 2
       const year = Number(vehicle.year)
       const required = [
         vehicle.make,
@@ -102,7 +105,7 @@ export const importVehicles = withPermission({ app: ["operator"] })
         required.some((value) => !value.trim())
       ) {
         errors.push({
-          row: index + 2,
+          row,
           message: "Missing required fields or invalid year.",
         })
         continue
@@ -111,7 +114,7 @@ export const importVehicles = withPermission({ app: ["operator"] })
         const registrationExpiry = parseDateOnly(vehicle.registrationExpiry)
         if (vehicle.registrationExpiry?.trim() && !registrationExpiry) {
           errors.push({
-            row: index + 2,
+            row,
             message:
               "Registration expiry must use YYYY-MM-DD and be a valid date.",
           })
@@ -135,13 +138,13 @@ export const importVehicles = withPermission({ app: ["operator"] })
             status: VehicleStatus.PENDING_APPROVAL,
           },
         })
-        imported.push(index + 2)
+        imported.push(row)
       } catch (error) {
         console.error(error)
         errors.push({
-          row: index + 2,
+          row,
           message:
-            "Duplicate or invalid vehicle details (plate, VIN, or registration number).",
+            "Unable to import this row. Please check the vehicle details and try again.",
         })
       }
     }

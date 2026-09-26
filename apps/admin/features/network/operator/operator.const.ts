@@ -1,50 +1,33 @@
-import {
-  CircleCheck,
-  CircleDashed,
-  CircleSlash,
-  ClockFading,
-  Mail,
-  MailCheck,
-  XCircleIcon,
-} from "lucide-react"
-
 import { OperatorStatus } from "./operator.type"
 import { StatusConfig } from "@/features/shared/shared.type"
 
 export const STATUS_MAP: Record<OperatorStatus, StatusConfig> = {
   ONBOARDING: {
     label: "Invited",
-    icon: Mail,
-    className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
+    className: "border-sky-600 bg-sky-600 text-white",
   },
   INVITED: {
     label: "Invited",
-    icon: Mail,
-    className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
+    className: "border-sky-600 bg-sky-600 text-white",
   },
   ACCOUNT_CREATED: {
     label: "Account Created",
-    icon: MailCheck,
-    className: "text-primary-foreground! bg-amber-100! border-amber-200/80",
+    className: "border-violet-600 bg-violet-600 text-white",
   },
   PENDING_APPROVAL: {
     label: "Documents Submitted",
-    icon: ClockFading,
-    className: "text-primary-foreground! bg-sky-100! border-sky-200/80",
+    className: "border-indigo-600 bg-indigo-600 text-white",
   },
   ACTIVE: {
     label: "Active",
-    icon: CircleCheck,
-    className: "text-primary-foreground bg-lime-200 border-lime-300",
+    className: "border-emerald-600 bg-emerald-600 text-white",
   },
   SUSPENDED: {
     label: "Rejected",
-    icon: XCircleIcon,
-    className: "text-primary-foreground bg-red-500 border-red-600",
+    className: "border-rose-600 bg-rose-600 text-white",
   },
   INACTIVE: {
     label: "Inactive",
-    icon: CircleSlash,
-    className: "text-primary-foreground bg-gray-500 border-gray-600",
+    className: "border-slate-600 bg-slate-600 text-white",
   },
 } as const

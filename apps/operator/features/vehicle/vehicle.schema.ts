@@ -1,6 +1,28 @@
 import { z } from "zod"
 import { REQUIRED_IMAGES } from "./vehicle.const"
 
+const importRequiredString = z.preprocess(
+  (value) => (value == null ? "" : String(value)),
+  z.string()
+)
+
+const importOptionalString = z.preprocess(
+  (value) => (value == null ? undefined : String(value)),
+  z.string().optional()
+)
+
+const uploadSlotSchema = z
+  .object({
+    id: z.string().optional(),
+    label: z.string(),
+    file: z.instanceof(File).optional(),
+    url: z.string().optional(),
+  })
+  .refine((value) => value.file instanceof File || Boolean(value.id || value.url), {
+    message: "Required",
+    path: ["file"],
+  })
+
 export const vehicleSchema = z.object({
   year: z.string().min(4, "Year is required"),
   make: z.string().min(1, "Make is required"),
@@ -15,26 +37,8 @@ export const vehicleSchema = z.object({
   registrationExpiry: z.string().min(1, "Registration expiry is required"),
   category: z.string(),
   status: z.string(),
-  documents: z
-    .object({
-      id: z.string().optional(),
-      label: z.string(),
-      file: z.instanceof(File, {
-        message: "Required",
-      }),
-      url: z.string().optional(),
-    })
-    .array(),
-  images: z
-    .object({
-      id: z.string().optional(),
-      label: z.string(),
-      file: z.instanceof(File, {
-        message: "Image is required",
-      }),
-      url: z.string().optional(),
-    })
-    .array(),
+  documents: uploadSlotSchema.array(),
+  images: uploadSlotSchema.array(),
 })
 
 export type VehicleFormValues = z.infer<typeof vehicleSchema>
@@ -71,17 +75,18 @@ export const DEFAULT_VALUES = {
 export const vehicleImportSchema = z.object({
   data: z.array(
     z.object({
-      year: z.string(),
-      make: z.string(),
-      model: z.string(),
-      trim: z.string(),
-      interiorColor: z.string(),
-      exteriorColor: z.string(),
-      engine: z.string(),
-      licensePlate: z.string(),
-      registrationNumber: z.string().optional(),
-      vin: z.string().optional(),
-      registrationExpiry: z.string().optional(),
+      originalRowNumber: z.number().int().positive().optional(),
+      year: importRequiredString,
+      make: importRequiredString,
+      model: importRequiredString,
+      trim: importRequiredString,
+      interiorColor: importRequiredString,
+      exteriorColor: importRequiredString,
+      engine: importRequiredString,
+      licensePlate: importRequiredString,
+      registrationNumber: importOptionalString,
+      vin: importOptionalString,
+      registrationExpiry: importOptionalString,
     })
   ),
 })

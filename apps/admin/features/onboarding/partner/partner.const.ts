@@ -1,38 +1,27 @@
-import {
-  BadgeCheck,
-  CircleCheck,
-  CircleDashed,
-  CircleSlash,
-  XCircle,
-} from "lucide-react"
+import { BadgeCheck, CircleSlash } from "lucide-react"
 import { StatusActionConfig, StatusConfig } from "@/features/shared/shared.type"
 import { ApplicationStatus } from "@/features/onboarding/application.type"
 
 export const STATUS_MAP: Record<ApplicationStatus, StatusConfig> = {
   INVITED: {
     label: "Invited",
-    icon: CircleCheck,
-    className: "text-primary-foreground bg-lime-300 border-lime-400",
+    className: "border-sky-600 bg-sky-600 text-white",
   },
   SUBMITTED: {
-    label: "SUBMITTED",
-    icon: CircleCheck,
-    className: "text-primary-foreground bg-lime-300 border-lime-400",
+    label: "Submitted",
+    className: "border-indigo-600 bg-indigo-600 text-white",
   },
   APPROVED: {
     label: "Approved",
-    icon: CircleCheck,
-    className: "text-primary-foreground bg-lime-300 border-lime-400",
+    className: "border-emerald-600 bg-emerald-600 text-white",
   },
   REJECTED: {
     label: "Rejected",
-    icon: XCircle,
-    className: "text-primary-foreground bg-red-300 border-red-400",
+    className: "border-rose-600 bg-rose-600 text-white",
   },
   PENDING_APPROVAL: {
     label: "New",
-    icon: CircleDashed,
-    className: "text-primary-foreground! bg-yellow-200! border-yellow-300!",
+    className: "border-amber-500 bg-amber-400 text-amber-950",
   },
 } as const
 

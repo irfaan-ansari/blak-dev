@@ -1,22 +1,39 @@
 "use client"
-import React from "react"
+
+import { DataTable } from "@blak/ui/components/data-table"
 import { useVehicles } from "../vehicle.data"
-import { QueryBoundary } from "@/components/query-boundry"
-import { VehicleCard } from "./vehicle-card"
 import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
+import { vehicleColumns } from "./vehicle-columns"
 
 export const VehicleClient = () => {
-  const { queryParams, searchParamsObj } = useRouterStuff()
+  const { searchParamsObj } = useRouterStuff()
   const query = useVehicles(searchParamsObj)
+  const pagination = query.data?.pagination
+
   return (
-    <QueryBoundary query={query}>
-      {(data) => (
-        <div className="space-y-2">
-          {data.data?.map((vehicle) => (
-            <VehicleCard key={vehicle.id} data={vehicle} />
-          ))}
-        </div>
-      )}
-    </QueryBoundary>
+    <DataTable
+      columns={vehicleColumns}
+      data={query.data?.data ?? []}
+      getRowId={(vehicle) => vehicle.id}
+      isLoading={query.isPending}
+      error={{
+        isError: query.isError,
+        title: query.error?.message,
+        description: query.error?.details,
+      }}
+      empty={{
+        isEmpty: query.data?.data.length === 0,
+        title: "No vehicles found",
+        description: "There are no vehicles to display.",
+      }}
+      pagination={
+        pagination && {
+          page: pagination.page,
+          limit: pagination.pageSize,
+          total: pagination.total,
+          totalPages: pagination.pageCount,
+        }
+      }
+    />
   )
 }

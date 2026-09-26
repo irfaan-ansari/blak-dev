@@ -1,17 +1,27 @@
 import { Hono } from "hono"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { prisma } from "@blak/db"
+import { OrganizationStatus, Prisma, prisma } from "@blak/db"
 
 const partners = new Hono<AppContext>().get("/", async (c) => {
   const { q, status, cat, ...rest } = c.req.query()
   const { page, take, skip } = parsePagination(rest)
+  const where: Prisma.OrganizationWhereInput = {
+    type: "PARTNER",
+    ...(status && { status: status as OrganizationStatus }),
+    ...(q && {
+      OR: [
+        { name: { contains: q, mode: "insensitive" } },
+        { legalName: { contains: q, mode: "insensitive" } },
+        { email: { contains: q, mode: "insensitive" } },
+        { phoneNumber: { contains: q, mode: "insensitive" } },
+      ],
+    }),
+  }
 
   const [partners, total] = await Promise.all([
     prisma.organization.findMany({
-      where: {
-        type: "PARTNER",
-      },
+      where,
       take,
       skip,
       orderBy: {
@@ -19,9 +29,7 @@ const partners = new Hono<AppContext>().get("/", async (c) => {
       },
     }),
     prisma.organization.count({
-      where: {
-        type: "PARTNER",
-      },
+      where,
     }),
   ])
 

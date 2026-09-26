@@ -20,6 +20,20 @@ import { importVehicles } from "../vehicle.action"
 import { REQUIRED_FIELDS, SAMPLE_CSV } from "../vehicle.sampeCSV"
 import { VehicleImportRow } from "../vehicle.type"
 
+const HEADER_NAMES: Record<string, keyof VehicleImportRow> = {
+  year: "year",
+  make: "make",
+  model: "model",
+  trim: "trim",
+  interiorcolor: "interiorColor",
+  exteriorcolor: "exteriorColor",
+  engine: "engine",
+  licenseplate: "licensePlate",
+  registrationnumber: "registrationNumber",
+  vin: "vin",
+  registrationexpiry: "registrationExpiry",
+}
+
 export const VehicleImportDialog = ({
   children,
 }: {
@@ -30,12 +44,19 @@ export const VehicleImportDialog = ({
   const [vehicles, setVehicles] = React.useState<VehicleImportRow[]>([])
   const [isUploading, setIsUploading] = React.useState(false)
 
+  const [importResult, setImportResult] = React.useState<{
+    count: number
+    imported: number[]
+    errors: Array<{ row: number; message: string }>
+  } | null>(null)
+
   const inputRef = React.useRef<HTMLInputElement>(null)
   const queryClient = useQueryClient()
 
   const resetImport = () => {
     setFile(null)
     setVehicles([])
+    setImportResult(null)
   }
 
   const handleFile = (selectedFile: File) => {
@@ -51,7 +72,14 @@ export const VehicleImportDialog = ({
     Papa.parse<VehicleImportRow>(selectedFile, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: (header) => header.trim(),
+      transformHeader: (header) => {
+        const normalized = header
+          .replace(/^\uFEFF/, "")
+          .trim()
+          .toLowerCase()
+          .replace(/[\s_-]/g, "")
+        return HEADER_NAMES[normalized] ?? header.trim()
+      },
 
       complete: (results) => {
         if (results.errors.length > 0) {
@@ -60,6 +88,11 @@ export const VehicleImportDialog = ({
         }
 
         const headers = results.meta.fields ?? []
+
+        if (headers.length === 0) {
+          toast.error("The first row must contain the CSV headers")
+          return
+        }
 
         const missingFields = REQUIRED_FIELDS.filter(
           (field) => !headers.includes(field)
@@ -70,13 +103,26 @@ export const VehicleImportDialog = ({
           return
         }
 
-        if (results.data.length === 0) {
+        const rows = results.data
+          .map((row, index) => ({
+            ...row,
+            originalRowNumber: index + 2,
+          }))
+          .filter((row) =>
+            Object.entries(row).some(
+              ([key, value]) =>
+                key !== "originalRowNumber" &&
+                String(value ?? "").trim().length > 0
+            )
+          )
+
+        if (rows.length === 0) {
           toast.error("The CSV file is empty")
           return
         }
 
         setFile(selectedFile)
-        setVehicles(results.data)
+        setVehicles(rows)
       },
 
       error: (error) => {
@@ -99,23 +145,39 @@ export const VehicleImportDialog = ({
         data: vehicles,
       })
 
-      if (serverError) {
-        toast.error(serverError.message)
+      if (serverError || !data) {
+        toast.error(serverError?.message ?? "Unable to import vehicles")
         return
       }
 
-      const count = data?.count ?? vehicles.length
+      const count = data.count
+      setImportResult({ count, imported: data.imported, errors: data.errors })
+      if (data.errors.length > 0) {
+        const failedRows = new Set(data.errors.map((error) => error.row))
+        setVehicles((rows) =>
+          rows.filter((row, index) =>
+            failedRows.has(row.originalRowNumber ?? index + 2)
+          )
+        )
+      }
 
-      toast.success(
-        `${count} vehicle${count === 1 ? "" : "s"} imported successfully`
-      )
+      if (count > 0)
+        toast.success(
+          `${count} vehicle${count === 1 ? "" : "s"} imported successfully`
+        )
+      if (data.errors.length > 0)
+        toast.error(
+          `${data.errors.length} row${data.errors.length === 1 ? "" : "s"} failed to import`
+        )
 
       await queryClient.invalidateQueries({
         queryKey: ["vehicles"],
       })
 
-      resetImport()
-      setOpen(false)
+      if (data.errors.length === 0) {
+        resetImport()
+        setOpen(false)
+      }
     } catch (error) {
       console.error(error)
       toast.error("Failed to import vehicles")
@@ -251,6 +313,24 @@ export const VehicleImportDialog = ({
               Download sample
             </Button>
           </div>
+
+          {importResult && (
+            <div className="space-y-2 rounded-lg border p-3 text-sm">
+              <p className="font-semibold">
+                Imported {importResult.count} vehicle
+                {importResult.count === 1 ? "" : "s"}
+              </p>
+              {importResult.errors.length > 0 && (
+                <div className="max-h-32 space-y-1 overflow-auto text-destructive">
+                  {importResult.errors.map((error) => (
+                    <p key={error.row}>
+                      Row {error.row}: {error.message}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex justify-end gap-3">
             <Button

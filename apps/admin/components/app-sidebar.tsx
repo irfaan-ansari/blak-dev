@@ -98,13 +98,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupLabel>Applications</SidebarGroupLabel>
           <SidebarMenu>
-            {APPLICATION_NAV.onboarding.items.map((item) => (
-              <SidebarMenuItem key={item.label}>
-                <SidebarMenuButton asChild>
-                  <Link href={item.href}>{item.label}</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {APPLICATION_NAV.onboarding.items.map((item) => {
+              const Icon = item.icon
+
+              return (
+                <SidebarMenuItem key={item.label}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.href}>
+                      <Icon />
+                      {item.label}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

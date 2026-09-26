@@ -9,7 +9,6 @@ import {
 } from "@blak/ui/components/field"
 import { Input } from "@blak/ui/components/input"
 import { CloudUpload, Paperclip } from "lucide-react"
-import { ComplianceFormSchema } from "../../compliance/compliance.schema"
 import { Controller, useFormContext } from "react-hook-form"
 
 type UploadFieldProps = {
@@ -25,15 +24,18 @@ export function UploadField({
   className,
   accept = ".pdf,.jpg,.jpeg,.png",
 }: UploadFieldProps) {
-  const form = useFormContext<ComplianceFormSchema>()
+  const form = useFormContext()
+  const urlName = name.replace(/\.file$/, ".url")
 
   return (
     <Controller
       control={form.control}
-      // @ts-expect-error
       name={name}
       render={({ field, fieldState }) => {
         const file = field.value
+        const existingUrl = form.getValues(urlName)
+        const hasExistingFile =
+          typeof existingUrl === "string" && existingUrl.length > 0
 
         return (
           <Field
@@ -54,13 +56,17 @@ export function UploadField({
                 <span className="text-sm text-muted-foreground">
                   {file instanceof File
                     ? "Click to replace"
-                    : "Click to upload"}
+                    : hasExistingFile
+                      ? "Click to replace existing file"
+                      : "Click to upload"}
                 </span>
 
-                {file instanceof File && (
+                {(file instanceof File || hasExistingFile) && (
                   <span className="mt-2 inline-flex max-w-full items-center gap-2 text-sm text-muted-foreground">
                     <Paperclip className="size-3.5 shrink-0" />
-                    <span className="truncate">{file.name}</span>
+                    <span className="truncate">
+                      {file instanceof File ? file.name : "Existing file"}
+                    </span>
                   </span>
                 )}
               </div>

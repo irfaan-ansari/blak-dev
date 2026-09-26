@@ -2,26 +2,19 @@ import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { NavUser } from "./nav-user"
-import { Bell, Search, X } from "lucide-react"
+import { Bell } from "lucide-react"
 import { Button } from "@blak/ui/components/button"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@blak/ui/components/input-group"
+
 import { SidebarTrigger } from "@blak/ui/components/sidebar"
-import { OnboardingStatus } from "@/features/shared/components/onboarding-status"
 import { SearchQueryParam } from "@blak/ui/components/blak/search-input"
+import { OnboardingStatus } from "@/features/shared/components/onboarding-status"
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <React.Fragment>
       <AppHeader />
       <OnboardingStatus />
-      <div className="h-full px-4 py-6 lg:px-6">
-        <div className="@container mx-auto max-w-7xl">{children}</div>
-      </div>
+      <div className="h-full px-4 py-6 lg:px-6">{children}</div>
     </React.Fragment>
   )
 }

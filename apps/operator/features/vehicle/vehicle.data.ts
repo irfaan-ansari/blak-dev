@@ -5,10 +5,10 @@ import { AppError } from "@blak/utils"
 import { apiClient } from "@/lib/api-client"
 import { Vehicle, VehicleWithImages } from "./vehicle.type"
 
-export const useVehicles = () => {
+export const useVehicles = (page = 1, limit = 100) => {
   return useQuery<PaginatedResponse<Vehicle>, AppError>({
-    queryKey: ["vehicles"],
-    queryFn: () => apiClient.get("/vehicles"),
+    queryKey: ["vehicles", { page, limit }],
+    queryFn: () => apiClient.get("/vehicles", { params: { page, limit } }),
   })
 }
 

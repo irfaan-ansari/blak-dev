@@ -25,7 +25,7 @@ export function StatusBadge<K extends string>({
 
   if (!config) {
     return (
-      <Badge variant="outline" className={cn("h-7 px-2", className)}>
+      <Badge variant="outline" className={cn("h-7 px-2.5", className)}>
         {status}
         {children}
       </Badge>

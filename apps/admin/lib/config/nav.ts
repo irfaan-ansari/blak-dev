@@ -7,6 +7,8 @@ import {
   ClipboardList,
   BarChart3,
   Settings,
+  Building2,
+  Handshake,
 } from "lucide-react"
 
 export const SIDEBAR_NAV = {
@@ -42,10 +44,10 @@ export const SIDEBAR_NAV = {
     href: "#",
     icon: Tags,
     items: [
-      { label: "Services", href: "/commercial/pricing" },
+      { label: "Services", href: "/commercial/services" },
       { label: "Pricing", href: "/commercial/pricing" },
       { label: "Taxes & Fees", href: "/commercial/taxes-fees" },
-      { label: "Promotions", href: "/commercial/taxes-fees" },
+      { label: "Promotions", href: "/commercial/promotions" },
     ],
   },
   finance: {
@@ -87,8 +89,8 @@ export const APPLICATION_NAV = {
     href: "#",
     icon: ClipboardList,
     items: [
-      { label: "Operators", href: "/onboarding/operators" },
-      { label: "Partners", href: "/onboarding/partners" },
+      { label: "Operators", href: "/onboarding/operators", icon: Building2 },
+      { label: "Partners", href: "/onboarding/partners", icon: Handshake },
     ],
   },
 } as const

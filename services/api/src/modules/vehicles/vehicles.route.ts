@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import type { AppContext } from "@/middlewares"
 import { parsePagination } from "@/lib/parse-pagination"
-import { Prisma, prisma } from "@blak/db"
+import { Prisma, VehicleStatus, prisma } from "@blak/db"
 import { getR2Url } from "@/lib/r2"
 import { AppError } from "@blak/utils"
 import { API_URL } from "@/lib/utils"
@@ -39,6 +39,10 @@ const vehicles = new Hono<AppContext>()
 
     if (rest.organization) {
       where.organizationId = rest.organization
+    }
+
+    if (status) {
+      where.status = status as VehicleStatus
     }
     const [results, total] = await Promise.all([
       prisma.vehicle.findMany({

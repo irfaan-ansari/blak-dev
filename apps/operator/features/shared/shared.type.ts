@@ -20,7 +20,6 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
 
 export interface StatusConfig {
   label: string
-  icon?: LucideIcon
   className: string
 }
 

@@ -1,5 +1,5 @@
-import { OperatorDetailClient } from "@/features/onboarding/operator/components/operator-detail-client"
 import React from "react"
+import { OperatorDetailClient } from "@/features/onboarding/operator/components/operator-detail-client"
 
 const OperatorDetailPage = () => {
   return <OperatorDetailClient />

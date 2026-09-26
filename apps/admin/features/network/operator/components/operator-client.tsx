@@ -1,36 +1,39 @@
 "use client"
-import React from "react"
 
-import { OperatorCard } from "./operator-card"
+import { DataTable } from "@blak/ui/components/data-table"
 import { useOperators } from "../operator.data"
-import { QueryBoundary } from "@/components/query-boundry"
-import { Pagination } from "@blak/ui/components/blak/pagination"
 import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
+import { operatorColumns } from "./operator-columns"
 
 export const OperatorClient = () => {
-  const { queryParams, searchParamsObj } = useRouterStuff()
+  const { searchParamsObj } = useRouterStuff()
   const query = useOperators(searchParamsObj)
+  const pagination = query.data?.pagination
 
   return (
-    <QueryBoundary query={query} isEmpty={query.data?.data?.length === 0}>
-      {(data) => (
-        <>
-          <div className="space-y-2">
-            {data?.data.map((app) => (
-              <OperatorCard data={app} key={app.id} />
-            ))}
-          </div>
-          <Pagination
-            page={data?.pagination.page}
-            pageSize={data?.pagination.pageSize}
-            pageCount={data?.pagination.pageCount}
-            total={data?.pagination.total}
-            onPageChange={(page) => {
-              queryParams({ set: { page: page.toString() } })
-            }}
-          />
-        </>
-      )}
-    </QueryBoundary>
+    <DataTable
+      columns={operatorColumns}
+      data={query.data?.data ?? []}
+      getRowId={(operator) => operator.id}
+      isLoading={query.isPending}
+      error={{
+        isError: query.isError,
+        title: query.error?.message,
+        description: query.error?.details,
+      }}
+      empty={{
+        isEmpty: query.data?.data.length === 0,
+        title: "No operators found",
+        description: "There are no operators to display.",
+      }}
+      pagination={
+        pagination && {
+          page: pagination.page,
+          limit: pagination.pageSize,
+          total: pagination.total,
+          totalPages: pagination.pageCount,
+        }
+      }
+    />
   )
 }

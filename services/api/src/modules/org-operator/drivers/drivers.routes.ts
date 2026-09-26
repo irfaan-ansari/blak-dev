@@ -22,6 +22,12 @@ const drivers = new Hono<OrgContext>()
           },
         },
 
+        include: {
+          vehicle: {
+            where: { organizationId: session?.activeOrganizationId! },
+            select: { id: true, make: true, model: true, licensePlate: true },
+          },
+        },
         take,
         skip,
         orderBy: {

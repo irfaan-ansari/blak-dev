@@ -85,8 +85,8 @@ function ComplianceCard({ name, label }: ComplianceCardProps) {
                     render={({ field, fieldState }) => (
                       <Field>
                         <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-
                         <Input
+                          className="h-9"
                           id={field.name}
                           {...field}
                           aria-invalid={fieldState.invalid}
@@ -103,6 +103,7 @@ function ComplianceCard({ name, label }: ComplianceCardProps) {
                         <FieldLabel htmlFor={field.name}>Label</FieldLabel>
 
                         <Input
+                          className="h-9"
                           id={field.name}
                           {...field}
                           aria-invalid={fieldState.invalid}
@@ -124,6 +125,7 @@ function ComplianceCard({ name, label }: ComplianceCardProps) {
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger
+                            className="h-9!"
                             id={field.name}
                             aria-invalid={fieldState.invalid}
                           >

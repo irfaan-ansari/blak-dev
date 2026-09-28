@@ -58,8 +58,8 @@ export const CountrySelector = ({
                 return (
                   <Button
                     key={country.id}
-                    variant="ghost"
-                    size="lg"
+                    variant={checked ? "secondary" : "ghost"}
+                    size="sm"
                     className="w-full justify-start"
                     onClick={() => {
                       onSelectedChange?.(country)
@@ -80,88 +80,3 @@ export const CountrySelector = ({
     </DropDrawer>
   )
 }
-
-// const MarketStates = ({
-//   countryId,
-//   selectedStateIds,
-//   selectedCityIds,
-//   onToggleState,
-//   onToggleCity,
-// }: {
-//   countryId: string
-//   selectedStateIds: string[]
-//   selectedCityIds: string[]
-//   onToggleState: (stateId: string) => void
-//   onToggleCity: (cityId: string) => void
-// }) => {
-//   const { data: states, isPending } = useCountryStates(countryId)
-
-//   return (
-//     <QueryState
-//       isPending={isPending}
-//       isError={false}
-//       isEmpty={states?.data?.length === 0}
-//     >
-//       {states?.data?.map((state) => (
-//         <Collapsible key={state.id}>
-//           <Field
-//             orientation="horizontal"
-//             className="h-9 gap-2 rounded-md px-2 hover:bg-secondary/50"
-//           >
-//             <Checkbox
-//               checked={selectedStateIds.includes(state.id)}
-//               onCheckedChange={() => onToggleState(state.id)}
-//             />
-//             <CollapsibleTrigger className="inline-flex flex-1 items-center justify-start">
-//               {state.name} state
-//               <span className="ml-auto">{state.cityCount} cities</span>
-//               <ChevronDown className="size-4 text-muted-foreground" />
-//             </CollapsibleTrigger>
-//           </Field>
-
-//           <CollapsibleContent className="pl-4">
-//             <MarketCities
-//               stateId={state.id}
-//               selectedCityIds={selectedCityIds}
-//               onToggleCity={onToggleCity}
-//             />
-//           </CollapsibleContent>
-//         </Collapsible>
-//       ))}
-//     </QueryState>
-//   )
-// }
-
-// const MarketCities = ({
-//   stateId,
-//   selectedCityIds,
-//   onToggleCity,
-// }: {
-//   stateId: string
-//   selectedCityIds: string[]
-//   onToggleCity: (cityId: string) => void
-// }) => {
-//   const { data: cities, isPending } = useStateCities(stateId)
-
-//   return (
-//     <QueryState
-//       isPending={isPending}
-//       isError={false}
-//       isEmpty={cities?.data?.length === 0}
-//     >
-//       {cities?.data.map((city) => (
-//         <Field
-//           key={city.id}
-//           orientation="horizontal"
-//           className="h-8 gap-2 rounded-md px-2 hover:bg-secondary/50"
-//         >
-//           <Checkbox
-//             checked={selectedCityIds.includes(city.id)}
-//             onCheckedChange={() => onToggleCity(city.id)}
-//           />
-//           <span>{city.name} city</span>
-//         </Field>
-//       ))}
-//     </QueryState>
-//   )
-// }

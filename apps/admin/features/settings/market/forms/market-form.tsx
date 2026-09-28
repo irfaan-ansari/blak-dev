@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { MarketGeneral } from "./market-general"
 import { Button } from "@blak/ui/components/button"
@@ -20,6 +21,7 @@ const MarketForm = ({
   values?: MarketFormValues
   onSuccess?: () => void
 }) => {
+  const queryClient = useQueryClient()
   const form = useForm<MarketFormValues>({
     resolver: zodResolver(marketSchema),
     defaultValues: values || DEFAULT_VALUES,
@@ -48,6 +50,7 @@ const MarketForm = ({
         toast.error(serverError.message)
       } else {
         toast.success("Market updated successfully")
+        await queryClient.invalidateQueries({ queryKey: ["markets"] })
         onSuccess?.()
       }
     } else {
@@ -61,6 +64,7 @@ const MarketForm = ({
         toast.error(serverError.message)
       } else {
         toast.success("Market created successfully")
+        await queryClient.invalidateQueries({ queryKey: ["markets"] })
         onSuccess?.()
       }
     }

@@ -10,15 +10,15 @@ const MarketsPage = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <h1 className="flex-1 text-xl font-bold">Markets</h1>
-        <Button variant="outline" size="lg" suffix={<ChevronDown />}>
+        <Button variant="outline" size="sm" disabled suffix={<ChevronDown />}>
           Filter by Status
         </Button>
-        <Button variant="outline" size="lg" prefix={<ListFilter />}>
+        <Button variant="outline" size="sm" disabled prefix={<ListFilter />}>
           Sort By
         </Button>
 
         <MarketDialog>
-          <Button size="lg" prefix={<Plus />}>
+          <Button size="sm" prefix={<Plus />}>
             Add New
           </Button>
         </MarketDialog>

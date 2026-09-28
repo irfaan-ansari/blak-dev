@@ -1,36 +1,38 @@
 "use client"
 
-import React from "react"
-import { MarketCard } from "./market-card"
+import { DataTable } from "@blak/ui/components/data-table"
+import { marketColumns } from "./market-columns"
 import { useMarkets } from "../market.data"
-import { QueryBoundary } from "@/components/query-boundry"
-import { Pagination } from "@blak/ui/components/blak/pagination"
 import { useRouterStuff } from "@blak/ui/hooks/use-router-stuff"
 
 export const MarketClient = () => {
-  const { queryParams } = useRouterStuff()
-  const query = useMarkets()
+  const { searchParams } = useRouterStuff()
+  const requestedPage = Number(searchParams.get("page") ?? 1)
+  const page =
+    Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1
+  const { data, isPending, isError, error } = useMarkets(page)
 
   return (
-    <QueryBoundary query={query} isEmpty={query.data?.data.length === 0}>
-      {(data) => (
-        <>
-          <div className="space-y-2">
-            {data.data.map((market) => (
-              <MarketCard key={market.id} data={market} />
-            ))}
-          </div>
-          <Pagination
-            page={data?.pagination.page}
-            pageSize={data?.pagination.pageSize}
-            pageCount={data?.pagination.pageCount}
-            total={data?.pagination.total}
-            onPageChange={(page) => {
-              queryParams({ set: { page: page.toString() } })
-            }}
-          />
-        </>
-      )}
-    </QueryBoundary>
+    <DataTable
+      columns={marketColumns}
+      data={data?.data ?? []}
+      getRowId={(market) => market.id}
+      isLoading={isPending}
+      error={{ isError, title: error?.message, description: error?.details }}
+      empty={{
+        title: "No markets found",
+        description: "Add a market to get started.",
+      }}
+      pagination={
+        data?.pagination
+          ? {
+              page: data.pagination.page,
+              limit: data.pagination.pageSize,
+              total: data.pagination.total,
+              totalPages: data.pagination.pageCount,
+            }
+          : undefined
+      }
+    />
   )
 }

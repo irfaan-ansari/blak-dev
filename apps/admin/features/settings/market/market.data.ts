@@ -5,13 +5,13 @@ import { PaginatedResponse } from "@/features/shared/shared.type"
 import { type AppError } from "@blak/utils"
 import { MarketWithRelations } from "./market.type"
 
-export const useMarkets = () => {
+export const useMarkets = (page = 1, limit = 100) => {
   return useQuery<PaginatedResponse<MarketWithRelations>, AppError>({
-    queryKey: ["countries"],
+    queryKey: ["markets", { page, limit }],
     queryFn: async () => {
-      const response =
-        await apiClient.get<PaginatedResponse<MarketWithRelations>>("/markets")
-      console.log(response)
+      const response = await apiClient.get<
+        PaginatedResponse<MarketWithRelations>
+      >("/markets", { params: { page, limit } })
       return response
     },
     staleTime: 1000 * 60 * 60,

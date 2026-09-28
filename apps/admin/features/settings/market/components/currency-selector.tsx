@@ -56,8 +56,8 @@ export const CurrencySelector = ({
                 return (
                   <Button
                     key={currency.id}
-                    variant="ghost"
-                    size="lg"
+                    variant={checked ? "secondary" : "ghost"}
+                    size="sm"
                     className="w-full justify-start"
                     onClick={() => {
                       onSelectedChange?.(currency)

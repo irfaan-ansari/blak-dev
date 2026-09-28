@@ -27,30 +27,13 @@ import { ChevronRight, Settings } from "lucide-react"
 import { APPLICATION_NAV, SIDEBAR_NAV } from "@/lib/config/nav"
 import Link from "next/link"
 
-const data = {
-  markets: [
-    {
-      name: "United States",
-      code: "US",
-    },
-    {
-      name: "Germany",
-      code: "DE",
-    },
-    {
-      name: "Japan",
-      code: "JP",
-    },
-  ],
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      {/* <SidebarHeader>
         <MarketSwitcher markets={data.markets} />
-      </SidebarHeader>
-      <SidebarContent>
+      </SidebarHeader> */}
+      <SidebarContent className="mt-16">
         <SidebarGroup>
           <SidebarMenu>
             {Object.entries(SIDEBAR_NAV).map(
